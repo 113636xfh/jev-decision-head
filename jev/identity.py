@@ -1,3 +1,7 @@
+import os as _os
+JEV_DATA = _os.environ.get('JEV_DATA', _os.path.expanduser('~/jev-data'))
+STRATA = _os.environ.get('STRATA_ROOT', _os.path.expanduser('~/strata'))
+JEV_PY = _os.environ.get('JEV_PY', 'python3')
 """Live identity for the abliterated backbone: record which pair actually answers.
 
 Why not the accepted certificate: adaptive-head-v1/compatibility.json binds
@@ -20,11 +24,11 @@ import time
 import urllib.request
 from pathlib import Path
 
-RUNTIME = Path('/home/xfh/strata/v0.1.44.1')
-V3 = Path('/home/xfh/data/jev-v3-fast')
-V4 = Path('/home/xfh/data/jev-v4-gpu')
+RUNTIME = Path(STRATA + '/v0.1.44.1')
+V3 = Path(JEV_DATA + '/jev-v3-fast')
+V4 = Path(JEV_DATA + '/jev-v4-gpu')
 RUN = V4 / 'runs/middle5-s1'
-AD = Path('/home/xfh/data/strata-upgrade-20261016/adaptive-head-v1')
+AD = Path(JEV_DATA + '/strata-upgrade-20261016/adaptive-head-v1')
 BASE = 'http://127.0.0.1:8100'
 TAPS = '15,23,29,35,41,-1'
 # The frozen serving policy of the accepted head (same numbers the certificate carries).

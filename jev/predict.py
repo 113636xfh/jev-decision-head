@@ -1,3 +1,7 @@
+import os as _os
+JEV_DATA = _os.environ.get('JEV_DATA', _os.path.expanduser('~/jev-data'))
+STRATA = _os.environ.get('STRATA_ROOT', _os.path.expanduser('~/strata'))
+JEV_PY = _os.environ.get('JEV_PY', 'python3')
 """End-to-end live or cached feature routing; threshold defaults are examples, not calibrated values."""
 import argparse,json,sys,urllib.request,os
 from pathlib import Path
@@ -46,7 +50,7 @@ def main():
     ap.add_argument('--base',default='http://127.0.0.1:8100');ap.add_argument('--model',required=True);ap.add_argument('--cached-shards',nargs='+')
     ap.add_argument('--min-confidence',type=float,default=.8);ap.add_argument('--min-margin',type=float,default=.2);ap.add_argument('--max-entropy',type=float,default=.55)
     ap.add_argument('--max-tokens',type=int,default=2048);ap.add_argument('--policy',help='dev-selected policy JSON')
-    ap.add_argument('--model-identity',required=True);ap.add_argument('--model-config',default='/home/xfh/strata/v0.1.41/strata-iq3_s.json')
+    ap.add_argument('--model-identity',required=True);ap.add_argument('--model-config',default=STRATA + '/v0.1.41/strata-iq3_s.json')
     ap.add_argument('--readout-compatibility',help='explicit evidence-bound old/new pair certificate; original head manifest stays unchanged');args=ap.parse_args()
     manifest=json.loads((Path(args.run)/'manifest.json').read_text());layers=list(map(int,manifest['args']['layers'].split(',')))
     artifacts=verify_manifest(args.model_identity,args.model_config)

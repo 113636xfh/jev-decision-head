@@ -2,9 +2,11 @@
 # Complete the frozen five-split table on the CURRENT (abliterated) backbone.
 # Read-only archive replay: no retrain, no re-extraction, no production change.
 set -uo pipefail
-cd /home/xfh/data/jev-abliterated-eval-20261018
-PY=/home/xfh/jevtest/.venv/bin/python3
-ID=/home/xfh/data/jev-abliterated-eval-20261018/runtime-identity.run-20261018.json
+JEV_DATA=${JEV_DATA:-$HOME/jev-data}
+JEV_PY=${JEV_PY:-python3}
+cd "$JEV_DATA/jev-abliterated-eval-20261018"
+
+ID="$JEV_DATA/jev-abliterated-eval-20261018/runtime-identity.run-20261018.json"
 DEADLINE='2026-10-19 00:30:00'
 for split in ood cal; do
   echo "STAGE $split start $(date '+%F %T')"

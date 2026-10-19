@@ -1,3 +1,7 @@
+import os as _os
+JEV_DATA = _os.environ.get('JEV_DATA', _os.path.expanduser('~/jev-data'))
+STRATA = _os.environ.get('STRATA_ROOT', _os.path.expanduser('~/strata'))
+JEV_PY = _os.environ.get('JEV_PY', 'python3')
 """Serial, atomic, resumable extraction. No corpus or vectors loaded wholesale."""
 import argparse
 import fcntl
@@ -14,10 +18,10 @@ from fingerprint_model import verify_manifest
 
 def tokenizer():
     # Reuse existing production dependencies; do not install anything.
-    sys.path.append('/home/xfh/strata/v0.1.41/.venv/lib/python3.12/site-packages')
-    sys.path.insert(0, '/home/xfh/strata/v0.1.41')
-    sys.path.insert(0, '/home/xfh/strata/v0.1.41/tools')
-    sys.path.insert(0, '/home/xfh/strata/v0.1.41/serve')
+    sys.path.append(STRATA + '/v0.1.41/.venv/lib/python3.12/site-packages')
+    sys.path.insert(0, STRATA + '/v0.1.41')
+    sys.path.insert(0, STRATA + '/v0.1.41/tools')
+    sys.path.insert(0, STRATA + '/v0.1.41/serve')
     import strata_tokenizer as st
     from serve.frontend import ChatTemplate
     root = Path('/strata/data/packs/iq3_s/tokenizer')
@@ -47,12 +51,12 @@ def main():
     ap.add_argument('--base', default='http://127.0.0.1:8100')
     ap.add_argument('--timeout', type=float, default=180)
     ap.add_argument('--limit', type=int, default=0)
-    ap.add_argument('--server-file', default='/home/xfh/strata/v0.1.41/serve/server.py')
-    ap.add_argument('--engine-file', default='/home/xfh/strata/v0.1.41/engine-cuda12/strata')
-    ap.add_argument('--model-config', default='/home/xfh/strata/v0.1.41/strata-iq3_s.json')
+    ap.add_argument('--server-file', default=STRATA + '/v0.1.41/serve/server.py')
+    ap.add_argument('--engine-file', default=STRATA + '/v0.1.41/engine-cuda12/strata')
+    ap.add_argument('--model-config', default=STRATA + '/v0.1.41/strata-iq3_s.json')
     ap.add_argument('--model-artifact', action='append', default=[], help='small smoke identity files only; formal runs require --model-identity')
     ap.add_argument('--model-identity', help='full weight hash manifest from fingerprint_model.py')
-    ap.add_argument('--acceptance', default='/home/xfh/data/jev-v3-fast/evidence/online-acceptance.json')
+    ap.add_argument('--acceptance', default=JEV_DATA + '/jev-v3-fast/evidence/online-acceptance.json')
     ap.add_argument('--max-prompt-tokens', type=int, default=4096,
                     help='conservative until repaired engine passes long-prompt acceptance; never truncate')
     ap.add_argument('--allow-legacy-smoke', action='store_true', help='explicitly permit <=4 short smoke items on 0006; never formal data')

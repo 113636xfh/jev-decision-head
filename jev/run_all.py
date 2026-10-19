@@ -1,3 +1,7 @@
+import os as _os
+JEV_DATA = _os.environ.get('JEV_DATA', _os.path.expanduser('~/jev-data'))
+STRATA = _os.environ.get('STRATA_ROOT', _os.path.expanduser('~/strata'))
+JEV_PY = _os.environ.get('JEV_PY', 'python3')
 """Orchestrate the 04:00 sweep: JevBench 231 x2 -> dev 1996 -> test 1999, one shared identity.
 
 Every stage runs as its own process (a crash in one stage cannot corrupt the other evidence) but
@@ -14,7 +18,7 @@ from datetime import datetime
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-PY = '/home/xfh/jevtest/.venv/bin/python3'
+PY = JEV_PY
 STAGES = [
     ('jevbench-criterion', ['run_jevbench_abliterated.py', '--mode', 'criterion_as_option',
                             '--out', 'jevbench/criterion_as_option']),

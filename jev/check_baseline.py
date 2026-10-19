@@ -1,3 +1,7 @@
+import os as _os
+JEV_DATA = _os.environ.get('JEV_DATA', _os.path.expanduser('~/jev-data'))
+STRATA = _os.environ.get('STRATA_ROOT', _os.path.expanduser('~/strata'))
+JEV_PY = _os.environ.get('JEV_PY', 'python3')
 """Prove the archive-replay path reproduces the ACCEPTED baseline predictions.
 
 The comparison is only meaningful if "old features" here means the same tensor the 2026-10-15
@@ -12,7 +16,7 @@ import argparse
 import json
 from pathlib import Path
 
-RUN = Path('/home/xfh/data/jev-v4-gpu/runs/middle5-s1')
+RUN = Path(JEV_DATA + '/jev-v4-gpu/runs/middle5-s1')
 
 
 def main():

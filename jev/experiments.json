@@ -13,7 +13,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "depth4-s0",
@@ -27,7 +27,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "depth8-s0",
@@ -41,7 +41,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "width1024-s0",
@@ -55,7 +55,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "middle5-s0",
@@ -69,7 +69,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "weighted3-s0",
@@ -83,7 +83,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "data2k-s0",
@@ -97,7 +97,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-2000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-2000.jsonl"
     },
     {
       "tag": "data4k-s0",
@@ -111,7 +111,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-4000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-4000.jsonl"
     },
     {
       "tag": "data8k-s0",
@@ -125,7 +125,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-8000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-8000.jsonl"
     },
     {
       "tag": "baseline-s1",
@@ -139,7 +139,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "depth4-s1",
@@ -153,7 +153,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "depth8-s1",
@@ -167,7 +167,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "width1024-s1",
@@ -181,7 +181,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "middle5-s1",
@@ -195,7 +195,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "weighted3-s1",
@@ -209,7 +209,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "data2k-s1",
@@ -223,7 +223,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-2000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-2000.jsonl"
     },
     {
       "tag": "data4k-s1",
@@ -237,7 +237,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-4000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-4000.jsonl"
     },
     {
       "tag": "data8k-s1",
@@ -251,7 +251,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-8000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-8000.jsonl"
     },
     {
       "tag": "baseline-s2",
@@ -265,7 +265,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "depth4-s2",
@@ -279,7 +279,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "depth8-s2",
@@ -293,7 +293,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "width1024-s2",
@@ -307,7 +307,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "middle5-s2",
@@ -321,7 +321,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "weighted3-s2",
@@ -335,7 +335,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-16000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-16000.jsonl"
     },
     {
       "tag": "data2k-s2",
@@ -349,7 +349,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-2000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-2000.jsonl"
     },
     {
       "tag": "data4k-s2",
@@ -363,7 +363,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-4000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-4000.jsonl"
     },
     {
       "tag": "data8k-s2",
@@ -377,7 +377,7 @@
       "batch": 16,
       "patience": 3,
       "brier": 0.1,
-      "train_subset": "/home/xfh/data/jev-v3-fast/data-fast-20261014/train-8000.jsonl"
+      "train_subset": "jev-v3-fast/data-fast-20261014/train-8000.jsonl"
     }
   ],
   "evaluation": "fixed dev-2000/test-2000/ood-2000/calibration-2000; official parent groups preserved",

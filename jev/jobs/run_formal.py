@@ -1,3 +1,7 @@
+import os as _os
+JEV_DATA = _os.environ.get('JEV_DATA', _os.path.expanduser('~/jev-data'))
+STRATA = _os.environ.get('STRATA_ROOT', _os.path.expanduser('~/strata'))
+JEV_PY = _os.environ.get('JEV_PY', 'python3')
 """Frozen, serial extraction -> first-seed ablations. Run in a bounded unit.
 
 Workflow code lives outside the extractor's frozen root Python set. No silent
@@ -23,9 +27,9 @@ from fingerprint_model import verify_manifest
 SOURCES = [('train16k', 'train-16000.jsonl', 16000), ('dev2k', 'dev-2000.jsonl', 1996), ('test2k', 'test-2000.jsonl', 1999), ('ood2k', 'ood-2000.jsonl', 1991), ('cal2k', 'calibration-2000.jsonl', 1732)]
 TAGS = ['baseline-s0', 'data2k-s0', 'data4k-s0', 'data8k-s0', 'depth4-s0', 'depth8-s0',
         'middle5-s0', 'weighted3-s0', 'width1024-s0']
-BACKBONE = {'server_sha256': '/home/xfh/strata/v0.1.41/serve/server.py',
-            'engine_sha256': '/home/xfh/strata/v0.1.41/engine-cuda12/strata',
-            'model_config_sha256': '/home/xfh/strata/v0.1.41/strata-iq3_s.json'}
+BACKBONE = {'server_sha256': STRATA + '/v0.1.41/serve/server.py',
+            'engine_sha256': STRATA + '/v0.1.41/engine-cuda12/strata',
+            'model_config_sha256': STRATA + '/v0.1.41/strata-iq3_s.json'}
 
 def now():
     return datetime.datetime.now(datetime.timezone.utc).isoformat()
@@ -42,7 +46,10 @@ def preflight():
     matrix = json.loads((ROOT / 'experiments.json').read_text())
     runs = {r['tag']: r for r in matrix['runs']}
     for tag in TAGS:
-        if not Path(runs[tag]['train_subset']).is_absolute() or not Path(runs[tag]['train_subset']).is_file():
+        _sp = Path(runs[tag]['train_subset'])
+        if not _sp.is_absolute():
+            _sp = Path(JEV_DATA) / _sp
+        if not _sp.is_file():
             raise ValueError('invalid remote train subset path: ' + tag)
     return accepted, plan
 

@@ -1,3 +1,7 @@
+import os as _os
+JEV_DATA = _os.environ.get('JEV_DATA', _os.path.expanduser('~/jev-data'))
+STRATA = _os.environ.get('STRATA_ROOT', _os.path.expanduser('~/strata'))
+JEV_PY = _os.environ.get('JEV_PY', 'python3')
 """GPU3 head that answers from the CURRENT live pair, without the old certificate.
 
 `adaptive-head-v1/adapter.py:LiveHead` refuses to open unless the runtime matches its
@@ -19,10 +23,10 @@ from pathlib import Path
 import numpy as np
 import torch
 
-ROOT = Path('/home/xfh/data/strata-upgrade-20261016')
+ROOT = Path(JEV_DATA + '/strata-upgrade-20261016')
 AD = ROOT / 'adaptive-head-v1'
-V3 = Path('/home/xfh/data/jev-v3-fast')
-V4 = Path('/home/xfh/data/jev-v4-gpu')
+V3 = Path(JEV_DATA + '/jev-v3-fast')
+V4 = Path(JEV_DATA + '/jev-v4-gpu')
 RUN = V4 / 'runs/middle5-s1'
 HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE), str(ROOT), str(V4), str(V3), str(AD)]

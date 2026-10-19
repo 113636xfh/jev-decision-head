@@ -1,7 +1,11 @@
+import os as _os
+JEV_DATA = _os.environ.get('JEV_DATA', _os.path.expanduser('~/jev-data'))
+STRATA = _os.environ.get('STRATA_ROOT', _os.path.expanduser('~/strata'))
+JEV_PY = _os.environ.get('JEV_PY', 'python3')
 """Validate saved predictions against frozen gold, without model inference."""
 import collections, json, math, sys
 from pathlib import Path
-ROOT=Path('/home/xfh/data/jev-v3-fast');sys.path.insert(0,str(ROOT))
+ROOT=Path(JEV_DATA + '/jev-v3-fast');sys.path.insert(0,str(ROOT))
 from common import atomic_json,digest
 TAGS=('data8k-s0','depth4-s0')
 ref={}

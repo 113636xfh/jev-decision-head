@@ -1,3 +1,7 @@
+import os as _os
+JEV_DATA = _os.environ.get('JEV_DATA', _os.path.expanduser('~/jev-data'))
+STRATA = _os.environ.get('STRATA_ROOT', _os.path.expanduser('~/strata'))
+JEV_PY = _os.environ.get('JEV_PY', 'python3')
 """JevBench public 231 re-measured with the frozen head on the CURRENT (abliterated) backbone.
 
 Same benchmark revision, same frozen prompt builder, same scorer, same head and normalization as
@@ -22,8 +26,8 @@ import numpy as np
 import torch
 
 HERE = Path(__file__).resolve().parent
-BENCH = Path('/home/xfh/data/strata-upgrade-20261016/jevbench-current-head-20261017')
-V3 = Path('/home/xfh/data/jev-v3-fast')
+BENCH = Path(JEV_DATA + '/strata-upgrade-20261016/jevbench-current-head-20261017')
+V3 = Path(JEV_DATA + '/jev-v3-fast')
 sys.path[:0] = [str(HERE), str(BENCH)]
 
 import identity as IDENT                                             # noqa: E402

@@ -1,3 +1,7 @@
+import os as _os
+JEV_DATA = _os.environ.get('JEV_DATA', _os.path.expanduser('~/jev-data'))
+STRATA = _os.environ.get('STRATA_ROOT', _os.path.expanduser('~/strata'))
+JEV_PY = _os.environ.get('JEV_PY', 'python3')
 """Resume the exact frozen workflow with a bounded HTTP transport override.
 
 Only extractor subprocess arguments gain --timeout; source, data, feature and
@@ -6,7 +10,7 @@ workflow manifests remain unchanged. All original guards/retries are retained.
 import argparse, datetime, importlib.util, json, subprocess, sys
 from pathlib import Path
 
-ROOT=Path('/home/xfh/data/jev-v3-fast')
+ROOT=Path(JEV_DATA + '/jev-v3-fast')
 UNIT='jev-v3-fast-recovery-s0-20261015.service'
 
 def main():

@@ -1,3 +1,7 @@
+import os as _os
+JEV_DATA = _os.environ.get('JEV_DATA', _os.path.expanduser('~/jev-data'))
+STRATA = _os.environ.get('STRATA_ROOT', _os.path.expanduser('~/strata'))
+JEV_PY = _os.environ.get('JEV_PY', 'python3')
 """Adapters around the frozen v2 pipeline; independent gold is never overwritten."""
 import argparse, json, math, os, sys, urllib.request
 from pathlib import Path
@@ -129,7 +133,7 @@ if __name__=='__main__':
     p=sub.add_parser('teacher');p.add_argument('--items',required=True);p.add_argument('--out',required=True)
     p.add_argument('--base',default='http://127.0.0.1:8100');p.add_argument('--model',required=True)
     p.add_argument('--max-tokens',type=int,default=2048);p.add_argument('--timeout',type=float,default=180)
-    p.add_argument('--model-identity',required=True);p.add_argument('--model-config',default='/home/xfh/strata/v0.1.41/strata-iq3_s.json')
+    p.add_argument('--model-identity',required=True);p.add_argument('--model-config',default=STRATA + '/v0.1.41/strata-iq3_s.json')
     args=ap.parse_args()
     if args.mode=='prepare':prepare_file(args.items,args.out)
     else:
