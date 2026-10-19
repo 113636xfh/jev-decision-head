@@ -1,0 +1,13 @@
+{
+  "policy": {
+    "min_confidence": 0.8,
+    "min_margin": 0.05,
+    "max_normalized_entropy": 0.4,
+    "force_decode": false
+  },
+  "dev_head_coverage": 0.4223446893787575,
+  "dev_selective_accuracy": 0.9549228944246738,
+  "accepted": 843,
+  "dev_predictions_sha256": "aec1e01d428557a222c73b168529e97265afb5b344c78821f1bbace79d54f766",
+  "selection": "dev only; empirical operating point, not a correctness guarantee"
+}

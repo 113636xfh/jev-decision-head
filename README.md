@@ -179,8 +179,11 @@ cost stays at the millisecond level.
   dimension) z-score is required; it is fitted on train data only and shipped with the head.
 - **Router (example policy).** Confidence / margin / normalised entropy decide whether to
   accept the head's answer. Thresholds are chosen on an independent dev split only; if no
-  operating point is feasible, everything falls back. On dev, `conf ≥ 0.85` accepts 44.6% of
-  items at 94.8% accuracy; `conf ≥ 0.95` accepts 31.8% at 98.3%.
+  operating point is feasible, everything falls back. The shipped
+  `policies/dev-thresholds.json` was produced by `jev/tune_policy.py` from the dev predictions
+  in `baselines/` alone: `min_confidence 0.80`, `min_margin 0.05`,
+  `max_normalised_entropy 0.40` → 42.2% coverage at 95.5% accuracy on dev. On dev alone,
+  `conf ≥ 0.85` accepts 44.6% of items at 94.8% accuracy; `conf ≥ 0.95` accepts 31.8% at 98.3%.
 
 ![Figure 6 — risk and coverage](docs/fig/risk-coverage.png)
 *Figure 6. Accuracy on the accepted subset as a function of coverage, head answering directly.*
@@ -242,8 +245,8 @@ python -m jev.predict --identity runtime-identity.json \
   --state '{"ticket": "..."}' --question "route" \
   --options '["billing","account","other"]'
 
-# 4. or use the router (thresholds from dev only)
-python -m jev.cascade --identity runtime-identity.json --policy dev-thresholds.json
+# 4. or use the router (thresholds from dev only; the shipped file is policies/dev-thresholds.json)
+python -m jev.cascade --identity runtime-identity.json --policy policies/dev-thresholds.json
 ```
 
 Without a compatibility certificate matching your pair, the loader refuses to run rather than
