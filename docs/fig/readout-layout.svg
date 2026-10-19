@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="620" viewBox="0 0 1240 620"><rect width="1240" height="620" fill="#ffffff"/>
+<text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" fill="#111111" text-anchor="start">What one feature vector is made of</text>
+<rect x="40" y="80" width="300" height="150" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
+<text x="190.0" y="104" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">Prompt layout</text>
+<text x="190.0" y="124" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">question stem</text>
+<text x="190.0" y="143" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">option 1 … option K</text>
+<text x="190.0" y="162" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">final decision position</text>
+<rect x="40" y="270" width="300" height="150" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
+<text x="190.0" y="294" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">Spans (3 kinds)</text>
+<text x="190.0" y="314" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">stem</text>
+<text x="190.0" y="333" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">each option</text>
+<text x="190.0" y="352" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">decision position</text>
+<rect x="40" y="460" width="300" height="110" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
+<text x="190.0" y="484" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">Pooling (2 modes)</text>
+<text x="190.0" y="504" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">last position</text>
+<text x="190.0" y="523" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">span mean</text>
+<rect x="420" y="80" width="300" height="300" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
+<text x="570.0" y="104" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">Backbone taps (6)</text>
+<text x="570.0" y="124" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">layer 15</text>
+<text x="570.0" y="143" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">layer 23</text>
+<text x="570.0" y="162" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">layer 29</text>
+<text x="570.0" y="181" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">layer 35</text>
+<text x="570.0" y="200" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">layer 41</text>
+<text x="570.0" y="219" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">last layer</text>
+<text x="570.0" y="238" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle"></text>
+<text x="570.0" y="257" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">4 residual streams × 2560</text>
+<rect x="800" y="120" width="380" height="220" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
+<text x="990.0" y="144" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">One item = one fixed-size vector</text>
+<text x="990.0" y="164" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">6 layers × 2 poolings × 4 streams</text>
+<text x="990.0" y="183" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">per span, concatenated</text>
+<text x="990.0" y="202" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">stored as FP16</text>
+<text x="990.0" y="221" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">per-record sha256 in the manifest</text>
+<rect x="800" y="380" width="380" height="110" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
+<text x="990.0" y="404" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">Normalisation</text>
+<text x="990.0" y="424" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">z-score per (pool, layer, dim)</text>
+<text x="990.0" y="443" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">fitted on train split only</text>
+<line x1="340" y1="155" x2="420" y2="155" stroke="#111111" stroke-width="1.8"/>
+<line x1="420" y1="155" x2="412.9" y2="158.8" stroke="#111111" stroke-width="1.8"/>
+<line x1="420" y1="155" x2="412.9" y2="151.2" stroke="#111111" stroke-width="1.8"/>
+<line x1="340" y1="345" x2="420" y2="300" stroke="#111111" stroke-width="1.8"/>
+<line x1="420" y1="300" x2="415.7" y2="306.7" stroke="#111111" stroke-width="1.8"/>
+<line x1="420" y1="300" x2="412.0" y2="300.2" stroke="#111111" stroke-width="1.8"/>
+<line x1="340" y1="515" x2="420" y2="340" stroke="#111111" stroke-width="1.8"/>
+<line x1="420" y1="340" x2="420.5" y2="348.0" stroke="#111111" stroke-width="1.8"/>
+<line x1="420" y1="340" x2="413.6" y2="344.9" stroke="#111111" stroke-width="1.8"/>
+<line x1="720" y1="230" x2="800" y2="230" stroke="#111111" stroke-width="1.8"/>
+<line x1="800" y1="230" x2="792.9" y2="233.8" stroke="#111111" stroke-width="1.8"/>
+<line x1="800" y1="230" x2="792.9" y2="226.2" stroke="#111111" stroke-width="1.8"/>
+<line x1="990" y1="340" x2="990" y2="380" stroke="#111111" stroke-width="1.8"/>
+<line x1="990" y1="380" x2="986.2" y2="372.9" stroke="#111111" stroke-width="1.8"/>
+<line x1="990" y1="380" x2="993.8" y2="372.9" stroke="#111111" stroke-width="1.8"/>
+<text x="40" y="600" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#5a6472" text-anchor="start">Changing the layer set, the span set or the pooling changes the meaning of the weights: they are recorded in the archive manifest and checked by the loader.</text>
+</svg>

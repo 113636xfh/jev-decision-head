@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="470" viewBox="0 0 1160 470"><rect width="1160" height="470" fill="#ffffff"/>
+<text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" fill="#111111" text-anchor="start">A bigger head did not help: 2 / 4 / 8 blocks</text>
+<text x="275.0" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">2</text>
+<text x="430.0" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">4</text>
+<text x="740.0" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">8</text>
+<line x1="120" y1="360" x2="740" y2="360" stroke="#111111" stroke-width="1.4"/>
+<line x1="120" y1="360" x2="120" y2="80" stroke="#111111" stroke-width="1.4"/>
+<text x="430.0" y="404" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#111111" text-anchor="middle">head depth (blocks)</text>
+<text x="68" y="220.0" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#111111" text-anchor="middle" transform="rotate(-90 68 220.0)">dev NLL  (lower is better)</text>
+<line x1="120" y1="360.0" x2="740" y2="360.0" stroke="#d8dee6" stroke-width="1"/>
+<text x="110" y="364.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.64</text>
+<line x1="120" y1="266.6666666666666" x2="740" y2="266.6666666666666" stroke="#d8dee6" stroke-width="1"/>
+<text x="110" y="270.6666666666666" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.66</text>
+<line x1="120" y1="173.33333333333314" x2="740" y2="173.33333333333314" stroke="#d8dee6" stroke-width="1"/>
+<text x="110" y="177.33333333333314" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.68</text>
+<line x1="120" y1="80.00000000000023" x2="740" y2="80.00000000000023" stroke="#d8dee6" stroke-width="1"/>
+<text x="110" y="84.00000000000023" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.70</text>
+<rect x="230.0" y="302.60000000000014" width="90" height="57.39999999999989" rx="3" fill="#1f6feb" stroke="#1f6feb" stroke-width="0"/>
+<text x="275.0" y="294.60000000000014" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#111111" text-anchor="middle">0.6523</text>
+<rect x="385.0" y="229.3333333333332" width="90" height="130.6666666666668" rx="3" fill="#1f6feb" stroke="#1f6feb" stroke-width="0"/>
+<text x="430.0" y="221.3333333333332" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#111111" text-anchor="middle">0.6680</text>
+<rect x="695.0" y="187.33333333333317" width="90" height="172.66666666666683" rx="3" fill="#1f6feb" stroke="#1f6feb" stroke-width="0"/>
+<text x="740.0" y="179.33333333333317" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#111111" text-anchor="middle">0.6770</text>
+<text x="150" y="210" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="start">width 1024 (2 blocks): dev NLL 0.6739, test 75.09%</text>
+<rect x="790" y="110" width="330" height="250" rx="8" fill="#f6f8fa" stroke="#5a6472" stroke-width="1.2"/>
+<text x="810" y="140" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="start">test accuracy (1,999)</text>
+<text x="810" y="190" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#111111" text-anchor="start">2 blocks</text>
+<rect x="930" y="175" width="151" height="20" rx="3" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
+<text x="1089" y="190" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">75.99%</text>
+<text x="810" y="230" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#111111" text-anchor="start">4 blocks</text>
+<rect x="930" y="215" width="152" height="20" rx="3" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
+<text x="1090" y="230" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">76.34%</text>
+<text x="810" y="270" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#111111" text-anchor="start">8 blocks</text>
+<rect x="930" y="255" width="151" height="20" rx="3" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
+<text x="1089" y="270" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">75.89%</text>
+<text x="810" y="320" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="start">Differences are inside seed noise;</text>
+<text x="810" y="340" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="start">2 blocks has the best dev NLL.</text>
+<text x="40" y="440" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#5a6472" text-anchor="start">Same split, seed, layer set and budget; one variable changed per run. Architecture was never selected on test.</text>
+</svg>

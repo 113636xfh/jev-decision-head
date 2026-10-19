@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="470" viewBox="0 0 1160 470"><rect width="1160" height="470" fill="#ffffff"/>
+<text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" fill="#111111" text-anchor="start">Where the time goes: the head is milliseconds, the prompt is seconds</text>
+<rect x="150.0" y="312.3131133837089" width="116.66666666666666" height="47.686886616291105" rx="3" fill="#1f6feb" stroke="#1f6feb" stroke-width="0"/>
+<text x="208.33333333333331" y="302.3131133837089" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#111111" text-anchor="middle">4.8 ms</text>
+<text x="208.33333333333331" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="600" fill="#111111" text-anchor="middle">head only</text>
+<rect x="336.66666666666663" y="131.79500284104478" width="116.66666666666666" height="228.20499715895522" rx="3" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
+<text x="394.99999999999994" y="121.79500284104478" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#111111" text-anchor="middle">1.82 s</text>
+<text x="394.99999999999994" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="600" fill="#111111" text-anchor="middle">channel p50</text>
+<rect x="523.3333333333333" y="90.41191558966472" width="116.66666666666666" height="269.5880844103353" rx="3" fill="#0f766e" stroke="#0f766e" stroke-width="0"/>
+<text x="581.6666666666666" y="80.41191558966472" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#111111" text-anchor="middle">7.10 s</text>
+<text x="581.6666666666666" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="600" fill="#111111" text-anchor="middle">channel p95</text>
+<line x1="120" y1="360" x2="680" y2="360" stroke="#111111" stroke-width="1.4"/>
+<text x="120" y="92" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#111111" text-anchor="start">per decision, bar height on a log scale (1 ms - 10 s)</text>
+<rect x="740" y="110" width="380" height="250" rx="8" fill="#f6f8fa" stroke="#5a6472" stroke-width="1.2"/>
+<text x="760" y="140" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="start">Channel latency by tier (p50)</text>
+<text x="760" y="191" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#111111" text-anchor="start">original</text>
+<rect x="880" y="175" width="78" height="22" rx="3" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
+<text x="966" y="191" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">1.52 s</text>
+<text x="760" y="237" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#111111" text-anchor="start">easy</text>
+<rect x="880" y="221" width="80" height="22" rx="3" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
+<text x="968" y="237" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">1.56 s</text>
+<text x="760" y="283" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#111111" text-anchor="start">hard</text>
+<rect x="880" y="267" width="156" height="22" rx="3" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
+<text x="1044" y="283" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">3.04 s</text>
+<text x="760" y="330" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="start">231 public items, 149,519 prompt tokens,</text>
+<text x="760" y="350" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="start">645 s wall clock, one resident process</text>
+<text x="40" y="440" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#5a6472" text-anchor="start">Essentially all of the channel cost is reading the prompt once. A readout request does not reuse the prefix cache by design (~0.1 s more than a plain chat request at equal length).</text>
+</svg>

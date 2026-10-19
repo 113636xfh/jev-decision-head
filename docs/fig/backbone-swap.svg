@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="470" viewBox="0 0 1160 470"><rect width="1160" height="470" fill="#ffffff"/>
+<text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" fill="#111111" text-anchor="start">The head belongs to one backbone build</text>
+<line x1="110" y1="-983.3333333333335" x2="810" y2="-983.3333333333335" stroke="#d8dee6" stroke-width="1"/>
+<text x="100" y="-979.3333333333335" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.7</text>
+<line x1="110" y1="-1080.0" x2="810" y2="-1080.0" stroke="#d8dee6" stroke-width="1"/>
+<text x="100" y="-1076.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.75</text>
+<line x1="110" y1="-1176.6666666666667" x2="810" y2="-1176.6666666666667" stroke="#d8dee6" stroke-width="1"/>
+<text x="100" y="-1172.6666666666667" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.8</text>
+<line x1="110" y1="-1273.3333333333335" x2="810" y2="-1273.3333333333335" stroke="#d8dee6" stroke-width="1"/>
+<text x="100" y="-1269.3333333333335" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.85</text>
+<line x1="110" y1="370" x2="810" y2="370" stroke="#111111" stroke-width="1.4"/>
+<line x1="110" y1="370" x2="110" y2="80" stroke="#111111" stroke-width="1.4"/>
+<text x="460.0" y="414" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#111111" text-anchor="middle">split</text>
+<text x="58" y="225.0" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#111111" text-anchor="middle" transform="rotate(-90 58 225.0)">accuracy</text>
+<text x="100" y="374.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.70</text>
+<text x="100" y="277.33333333333326" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.75</text>
+<text x="100" y="180.6666666666665" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.80</text>
+<text x="100" y="83.99999999999994" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.85</text>
+<rect x="132.4" y="282.03333333333313" width="44.800000000000004" height="87.96666666666687" rx="2" fill="#1f6feb" stroke="#1f6feb" stroke-width="0"/>
+<text x="154.8" y="275.03333333333313" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#5a6472" text-anchor="middle">74.55</text>
+<rect x="182.8" y="296.53333333333325" width="44.800000000000004" height="73.46666666666674" rx="2" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
+<text x="205.20000000000002" y="289.53333333333325" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#5a6472" text-anchor="middle">73.80</text>
+<text x="180.0" y="392" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="600" fill="#111111" text-anchor="middle">dev</text>
+<rect x="272.4" y="245.49333333333328" width="44.800000000000004" height="124.5066666666667" rx="2" fill="#1f6feb" stroke="#1f6feb" stroke-width="0"/>
+<text x="294.79999999999995" y="238.49333333333328" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#5a6472" text-anchor="middle">76.44</text>
+<rect x="322.8" y="274.49333333333334" width="44.800000000000004" height="95.50666666666667" rx="2" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
+<text x="345.2" y="267.49333333333334" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#5a6472" text-anchor="middle">74.94</text>
+<text x="320.0" y="392" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="600" fill="#111111" text-anchor="middle">test</text>
+<rect x="412.40000000000003" y="103.58666666666659" width="44.800000000000004" height="266.4133333333334" rx="2" fill="#1f6feb" stroke="#1f6feb" stroke-width="0"/>
+<text x="434.8" y="96.58666666666659" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#5a6472" text-anchor="middle">83.78</text>
+<rect x="462.8" y="110.35333333333313" width="44.800000000000004" height="259.6466666666669" rx="2" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
+<text x="485.2" y="103.35333333333313" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#5a6472" text-anchor="middle">83.43</text>
+<text x="460.0" y="392" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="600" fill="#111111" text-anchor="middle">ood</text>
+<rect x="552.4000000000001" y="226.54666666666657" width="44.800000000000004" height="143.45333333333343" rx="2" fill="#1f6feb" stroke="#1f6feb" stroke-width="0"/>
+<text x="574.8000000000001" y="219.54666666666657" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#5a6472" text-anchor="middle">77.42</text>
+<rect x="602.8" y="253.22666666666663" width="44.800000000000004" height="116.77333333333335" rx="2" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
+<text x="625.1999999999999" y="246.22666666666663" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#5a6472" text-anchor="middle">76.04</text>
+<text x="600.0" y="392" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="600" fill="#111111" text-anchor="middle">cal</text>
+<rect x="692.4" y="214.1733333333333" width="44.800000000000004" height="155.8266666666667" rx="2" fill="#1f6feb" stroke="#1f6feb" stroke-width="0"/>
+<text x="714.8" y="207.1733333333333" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#5a6472" text-anchor="middle">78.06</text>
+<rect x="742.8000000000001" y="233.11999999999983" width="44.800000000000004" height="136.88000000000017" rx="2" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
+<text x="765.2" y="226.11999999999983" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#5a6472" text-anchor="middle">77.08</text>
+<text x="740.0" y="392" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="600" fill="#111111" text-anchor="middle">all 7,718</text>
+<rect x="120" y="98" width="265" height="62" rx="4" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<line x1="128" y1="114" x2="154" y2="114" stroke="#1f6feb" stroke-width="2.6"/>
+<text x="162" y="119" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">trained build</text>
+<line x1="128" y1="136" x2="154" y2="136" stroke="#c2410c" stroke-width="2.6"/>
+<text x="162" y="141" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">second build of the same model</text>
+<rect x="850" y="110" width="270" height="250" rx="8" fill="#f6f8fa" stroke="#5a6472" stroke-width="1.2"/>
+<text x="870" y="140" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="start">What changed</text>
+<text x="870" y="172" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">head: identical</text>
+<text x="870" y="195" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">features: identical</text>
+<text x="870" y="218" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">input tokens: identical</text>
+<text x="870" y="241" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">backbone weights: different</text>
+<text x="870" y="264" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="start"></text>
+<text x="870" y="287" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">8.94% of items changed</text>
+<text x="870" y="310" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">their answer</text>
+<text x="870" y="333" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">merged -0.98 pt, p ~ 0.0016</text>
+<text x="40" y="452" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#5a6472" text-anchor="start">Same frozen head, same archived features, same tokens; only the backbone build differs. Per-family effects do not extrapolate across splits.</text>
+</svg>

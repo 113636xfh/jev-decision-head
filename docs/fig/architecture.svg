@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="640" viewBox="0 0 1240 640"><rect width="1240" height="640" fill="#ffffff"/>
+<text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" fill="#111111" text-anchor="start">One resident backbone, two interfaces</text>
+<rect x="40" y="96" width="210" height="96" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
+<text x="145.0" y="120" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">Caller request</text>
+<text x="145.0" y="140" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">state (text / JSON)</text>
+<text x="145.0" y="159" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">declared answer space L</text>
+<rect x="300" y="76" width="300" height="136" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
+<text x="450.0" y="100" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">Strata backbone (one process)</text>
+<text x="450.0" y="120" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">prompt read once</text>
+<text x="450.0" y="139" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">generation continues as usual</text>
+<text x="450.0" y="158" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">IQ3_S GGUF, 48 layers</text>
+<rect x="660" y="60" width="210" height="168" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
+<text x="765.0" y="84" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">Multi-layer readout</text>
+<text x="765.0" y="104" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">taps: 15 / 23 / 29 / 35</text>
+<text x="765.0" y="123" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">/ 41 / last</text>
+<text x="765.0" y="142" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">spans: stem, each option,</text>
+<text x="765.0" y="161" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">decision position</text>
+<text x="765.0" y="180" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">pool: last + span mean</text>
+<rect x="910" y="76" width="290" height="136" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
+<text x="1055.0" y="100" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">Decision head (13.19 M)</text>
+<text x="1055.0" y="120" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">shared projection</text>
+<text x="1055.0" y="139" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">candidate-set encoder</text>
+<text x="1055.0" y="158" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">one score per option</text>
+<rect x="910" y="268" width="290" height="84" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
+<text x="1055.0" y="292" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">p(. | s, q) over L</text>
+<text x="1055.0" y="312" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">distribution, not text</text>
+<text x="1055.0" y="331" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">calibration is a first-class output</text>
+<rect x="560" y="268" width="280" height="84" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
+<text x="700.0" y="292" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">Generation interface</text>
+<text x="700.0" y="312" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">tokens, sampling, chat</text>
+<text x="700.0" y="331" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">same weights, same slot</text>
+<rect x="40" y="404" width="1160" height="190" rx="8" fill="#ffffff" stroke="#5a6472" stroke-width="1.4" stroke-dasharray="6 5"/>
+<text x="60" y="432" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#5a6472" text-anchor="start">Caller-side policy (not part of the head)</text>
+<rect x="70" y="452" width="250" height="108" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
+<text x="195.0" y="476" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">accept</text>
+<text x="195.0" y="496" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">threshold / margin /</text>
+<text x="195.0" y="515" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">normalised entropy on dev</text>
+<rect x="370" y="452" width="250" height="108" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
+<text x="495.0" y="476" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">fall back</text>
+<text x="495.0" y="496" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">ask the same backbone</text>
+<text x="495.0" y="515" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">to generate an answer</text>
+<rect x="670" y="452" width="250" height="108" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
+<text x="795.0" y="476" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">ask a human</text>
+<text x="795.0" y="496" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">or refuse, when the</text>
+<text x="795.0" y="515" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">operating point is infeasible</text>
+<rect x="970" y="452" width="200" height="108" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
+<text x="1070.0" y="476" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">log</text>
+<text x="1070.0" y="496" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">keep failures in the</text>
+<text x="1070.0" y="515" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">denominator</text>
+<line x1="250" y1="144" x2="300" y2="144" stroke="#111111" stroke-width="1.8"/>
+<line x1="300" y1="144" x2="292.9" y2="147.8" stroke="#111111" stroke-width="1.8"/>
+<line x1="300" y1="144" x2="292.9" y2="140.2" stroke="#111111" stroke-width="1.8"/>
+<line x1="600" y1="144" x2="660" y2="144" stroke="#111111" stroke-width="1.8"/>
+<line x1="660" y1="144" x2="652.9" y2="147.8" stroke="#111111" stroke-width="1.8"/>
+<line x1="660" y1="144" x2="652.9" y2="140.2" stroke="#111111" stroke-width="1.8"/>
+<line x1="870" y1="144" x2="910" y2="144" stroke="#111111" stroke-width="1.8"/>
+<line x1="910" y1="144" x2="902.9" y2="147.8" stroke="#111111" stroke-width="1.8"/>
+<line x1="910" y1="144" x2="902.9" y2="140.2" stroke="#111111" stroke-width="1.8"/>
+<line x1="1055" y1="212" x2="1055" y2="268" stroke="#111111" stroke-width="1.8"/>
+<line x1="1055" y1="268" x2="1051.2" y2="260.9" stroke="#111111" stroke-width="1.8"/>
+<line x1="1055" y1="268" x2="1058.8" y2="260.9" stroke="#111111" stroke-width="1.8"/>
+<line x1="600" y1="212" x2="600" y2="268" stroke="#111111" stroke-width="1.8"/>
+<line x1="600" y1="268" x2="596.2" y2="260.9" stroke="#111111" stroke-width="1.8"/>
+<line x1="600" y1="268" x2="603.8" y2="260.9" stroke="#111111" stroke-width="1.8"/>
+<line x1="1055" y1="352" x2="1055" y2="404" stroke="#111111" stroke-width="1.8"/>
+<line x1="1055" y1="404" x2="1051.2" y2="396.9" stroke="#111111" stroke-width="1.8"/>
+<line x1="1055" y1="404" x2="1058.8" y2="396.9" stroke="#111111" stroke-width="1.8"/>
+<line x1="195" y1="192" x2="195" y2="404" stroke="#111111" stroke-width="1.8"/>
+<line x1="195" y1="404" x2="191.2" y2="396.9" stroke="#111111" stroke-width="1.8"/>
+<line x1="195" y1="404" x2="198.8" y2="396.9" stroke="#111111" stroke-width="1.8"/>
+<line x1="195" y1="404" x2="195" y2="452" stroke="#111111" stroke-width="1.8"/>
+<line x1="195" y1="452" x2="191.2" y2="444.9" stroke="#111111" stroke-width="1.8"/>
+<line x1="195" y1="452" x2="198.8" y2="444.9" stroke="#111111" stroke-width="1.8"/>
+<text x="40" y="610" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#5a6472" text-anchor="start">The dashed box is a policy we ship as a worked example; the head itself only returns a distribution.</text>
+</svg>

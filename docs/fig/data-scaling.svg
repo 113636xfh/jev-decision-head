@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="470" viewBox="0 0 1160 470"><rect width="1160" height="470" fill="#ffffff"/>
+<text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" fill="#111111" text-anchor="start">More labelled items kept paying: 2k / 4k / 8k / 16k train</text>
+<text x="207.5" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">2000</text>
+<text x="295.0" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">4000</text>
+<text x="470.0" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">8000</text>
+<text x="820.0" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">16000</text>
+<line x1="120" y1="360" x2="820" y2="360" stroke="#111111" stroke-width="1.4"/>
+<line x1="120" y1="360" x2="120" y2="80" stroke="#111111" stroke-width="1.4"/>
+<text x="470.0" y="404" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#111111" text-anchor="middle">train items</text>
+<text x="68" y="220.0" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#111111" text-anchor="middle" transform="rotate(-90 68 220.0)">accuracy</text>
+<line x1="120" y1="360.0" x2="820" y2="360.0" stroke="#d8dee6" stroke-width="1"/>
+<text x="110" y="364.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.65</text>
+<line x1="120" y1="220.0000000000002" x2="820" y2="220.0000000000002" stroke="#d8dee6" stroke-width="1"/>
+<text x="110" y="224.0000000000002" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.70</text>
+<line x1="120" y1="80.00000000000006" x2="820" y2="80.00000000000006" stroke="#d8dee6" stroke-width="1"/>
+<text x="110" y="84.00000000000006" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.75</text>
+<path d="M207.5,318.6 L295.0,288.9 L470.0,221.7 L820.0,165.7" fill="none" stroke="#1f6feb" stroke-width="2.6"/>
+<circle cx="207.5" cy="318.6" r="4" fill="#1f6feb"/>
+<circle cx="295.0" cy="288.9" r="4" fill="#1f6feb"/>
+<circle cx="470.0" cy="221.7" r="4" fill="#1f6feb"/>
+<circle cx="820.0" cy="165.7" r="4" fill="#1f6feb"/>
+<path d="M207.5,268.2 L295.0,213.3 L470.0,161.5 L820.0,52.3" fill="none" stroke="#c2410c" stroke-width="2.6"/>
+<circle cx="207.5" cy="268.2" r="4" fill="#c2410c"/>
+<circle cx="295.0" cy="213.3" r="4" fill="#c2410c"/>
+<circle cx="470.0" cy="161.5" r="4" fill="#c2410c"/>
+<circle cx="820.0" cy="52.3" r="4" fill="#c2410c"/>
+<rect x="132" y="98" width="150" height="62" rx="4" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<line x1="140" y1="114" x2="166" y2="114" stroke="#1f6feb" stroke-width="2.6"/>
+<text x="174" y="119" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">dev (1,996)</text>
+<line x1="140" y1="136" x2="166" y2="136" stroke="#c2410c" stroke-width="2.6"/>
+<text x="174" y="141" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">test (1,999)</text>
+<text x="40" y="440" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#5a6472" text-anchor="start">Same head, same protocol; only the number of labelled train items changes. dev is used for checkpoint selection, test only for reporting.</text>
+</svg>

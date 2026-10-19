@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="470" viewBox="0 0 1240 470"><rect width="1240" height="470" fill="#ffffff"/>
+<text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" fill="#111111" text-anchor="start">Reliability: the head is close to calibrated, and a backbone swap makes it worse</text>
+<line x1="90" y1="380.0" x2="420" y2="380.0" stroke="#d8dee6" stroke-width="1"/>
+<text x="80" y="384.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0</text>
+<line x1="90" y1="305.0" x2="420" y2="305.0" stroke="#d8dee6" stroke-width="1"/>
+<text x="80" y="309.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.25</text>
+<line x1="90" y1="230.0" x2="420" y2="230.0" stroke="#d8dee6" stroke-width="1"/>
+<text x="80" y="234.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.5</text>
+<line x1="90" y1="155.0" x2="420" y2="155.0" stroke="#d8dee6" stroke-width="1"/>
+<text x="80" y="159.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.75</text>
+<line x1="90" y1="80.0" x2="420" y2="80.0" stroke="#d8dee6" stroke-width="1"/>
+<text x="80" y="84.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">1</text>
+<text x="90.0" y="402" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">0</text>
+<text x="172.5" y="402" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">0.25</text>
+<text x="255.0" y="402" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">0.5</text>
+<text x="337.5" y="402" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">0.75</text>
+<text x="420.0" y="402" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">1</text>
+<line x1="90" y1="380" x2="420" y2="380" stroke="#111111" stroke-width="1.4"/>
+<line x1="90" y1="380" x2="90" y2="80" stroke="#111111" stroke-width="1.4"/>
+<text x="255.0" y="424" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#111111" text-anchor="middle">predicted probability</text>
+<text x="38" y="230.0" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#111111" text-anchor="middle" transform="rotate(-90 38 230.0)">observed accuracy</text>
+<line x1="90" y1="380" x2="420" y2="80" stroke="#5a6472" stroke-width="1.2" stroke-dasharray="5 4"/>
+<path d="M182.7,274.1 L209.5,282.6 L240.5,260.0 L271.0,219.1 L304.2,193.8 L337.6,169.7 L370.1,134.8 L413.1,90.5" fill="none" stroke="#1f6feb" stroke-width="2.6"/>
+<path d="M182.3,355.0 L206.3,303.9 L238.9,258.3 L271.9,228.3 L303.9,185.2 L337.6,170.4 L370.6,146.7 L413.0,92.3" fill="none" stroke="#c2410c" stroke-width="2.6" stroke-dasharray="7 4"/>
+<rect x="98" y="98" width="232" height="62" rx="4" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<line x1="106" y1="114" x2="132" y2="114" stroke="#1f6feb" stroke-width="2.6"/>
+<text x="140" y="119" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">trained build (ECE 0.0266)</text>
+<line x1="106" y1="136" x2="132" y2="136" stroke="#c2410c" stroke-width="2.6" stroke-dasharray="7 4"/>
+<text x="140" y="141" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">second build (ECE 0.0366)</text>
+<text x="90" y="70" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#111111" text-anchor="start">dev split, 1,996 items, per item</text>
+<line x1="620" y1="380.0" x2="1180" y2="380.0" stroke="#d8dee6" stroke-width="1"/>
+<text x="610" y="384.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0</text>
+<line x1="620" y1="320.0" x2="1180" y2="320.0" stroke="#d8dee6" stroke-width="1"/>
+<text x="610" y="324.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.01</text>
+<line x1="620" y1="260.0" x2="1180" y2="260.0" stroke="#d8dee6" stroke-width="1"/>
+<text x="610" y="264.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.02</text>
+<line x1="620" y1="200.0" x2="1180" y2="200.0" stroke="#d8dee6" stroke-width="1"/>
+<text x="610" y="204.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.03</text>
+<line x1="620" y1="140.00000000000003" x2="1180" y2="140.00000000000003" stroke="#d8dee6" stroke-width="1"/>
+<text x="610" y="144.00000000000003" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.04</text>
+<line x1="620" y1="80.0" x2="1180" y2="80.0" stroke="#d8dee6" stroke-width="1"/>
+<text x="610" y="84.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.05</text>
+<line x1="620" y1="380" x2="1180" y2="380" stroke="#111111" stroke-width="1.4"/>
+<line x1="620" y1="380" x2="620" y2="80" stroke="#111111" stroke-width="1.4"/>
+<text x="900.0" y="424" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#111111" text-anchor="middle">split</text>
+<text x="568" y="230.0" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#111111" text-anchor="middle" transform="rotate(-90 568 230.0)">expected calibration error</text>
+<rect x="642.4" y="220.40000000000003" width="44.800000000000004" height="159.59999999999997" rx="2" fill="#1f6feb" stroke="#1f6feb" stroke-width="0"/>
+<text x="664.8" y="212.40000000000003" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#111111" text-anchor="middle">0.0266</text>
+<rect x="692.8" y="160.4" width="44.800000000000004" height="219.6" rx="2" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
+<text x="715.1999999999999" y="152.4" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#111111" text-anchor="middle">0.0366</text>
+<text x="690.0" y="402" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="600" fill="#111111" text-anchor="middle">dev</text>
+<rect x="782.4" y="212.00000000000003" width="44.800000000000004" height="167.99999999999997" rx="2" fill="#1f6feb" stroke="#1f6feb" stroke-width="0"/>
+<text x="804.8" y="204.00000000000003" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#111111" text-anchor="middle">0.0280</text>
+<rect x="832.8" y="132.8" width="44.800000000000004" height="247.2" rx="2" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
+<text x="855.1999999999999" y="124.80000000000001" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#111111" text-anchor="middle">0.0412</text>
+<text x="830.0" y="402" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="600" fill="#111111" text-anchor="middle">test</text>
+<rect x="922.4000000000001" y="142.39999999999998" width="44.800000000000004" height="237.60000000000002" rx="2" fill="#1f6feb" stroke="#1f6feb" stroke-width="0"/>
+<text x="944.8000000000001" y="134.39999999999998" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#111111" text-anchor="middle">0.0396</text>
+<rect x="972.8" y="120.20000000000005" width="44.800000000000004" height="259.79999999999995" rx="2" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
+<text x="995.1999999999999" y="112.20000000000005" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#111111" text-anchor="middle">0.0433</text>
+<text x="970.0" y="402" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="600" fill="#111111" text-anchor="middle">ood</text>
+<rect x="1062.4" y="214.4" width="44.800000000000004" height="165.6" rx="2" fill="#1f6feb" stroke="#1f6feb" stroke-width="0"/>
+<text x="1084.8000000000002" y="206.4" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#111111" text-anchor="middle">0.0276</text>
+<rect x="1112.8" y="139.4" width="44.800000000000004" height="240.6" rx="2" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
+<text x="1135.2" y="131.4" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#111111" text-anchor="middle">0.0401</text>
+<text x="1110.0" y="402" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="600" fill="#111111" text-anchor="middle">cal</text>
+<rect x="630" y="98" width="190" height="62" rx="4" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<line x1="638" y1="114" x2="664" y2="114" stroke="#1f6feb" stroke-width="2.6"/>
+<text x="672" y="119" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">trained build</text>
+<line x1="638" y1="136" x2="664" y2="136" stroke="#c2410c" stroke-width="2.6"/>
+<text x="672" y="141" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">second build</text>
+<text x="620" y="70" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#111111" text-anchor="start">ECE by split (aggregate, same head and features)</text>
+<text x="40" y="452" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#5a6472" text-anchor="start">Left: reliability diagram computed from per-item predictions of the same frozen head on both builds. Right: ECE from the same replay. Both are held-out splits.</text>
+</svg>
