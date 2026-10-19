@@ -94,7 +94,7 @@ def fig_architecture():
     s.box(300, 76, 300, 136, 'Strata backbone (one process)',
           ['prompt read once', 'generation continues as usual', 'IQ3_S GGUF, 48 layers'])
     s.box(660, 60, 210, 168, 'Multi-layer readout',
-          ['taps: 15 / 23 / 29 / 35', '/ 41 / last', 'spans: stem, each option,', 'decision position',
+          ['taps: 23 / 29 / 35 / 41', '/ last', 'spans: stem, each option,', 'decision position',
            'pool: last + span mean'])
     s.box(910, 76, 290, 136, 'Decision head (13.19 M)',
           ['shared projection', 'candidate-set encoder', 'one score per option'])
@@ -125,8 +125,10 @@ def fig_readout_layout():
     s.box(40, 80, 300, 150, 'Prompt layout', ['question stem', 'option 1 … option K', 'final decision position'])
     s.box(40, 270, 300, 150, 'Spans (3 kinds)', ['stem', 'each option', 'decision position'])
     s.box(40, 460, 300, 110, 'Pooling (2 modes)', ['last position', 'span mean'])
-    s.box(420, 80, 300, 300, 'Backbone taps (6)', ['layer 15', 'layer 23', 'layer 29', 'layer 35',
-                                                   'layer 41', 'last layer', '', '4 residual streams × 2560'])
+    s.box(420, 80, 300, 300, 'Backbone taps (this head: 5)', ['layer 23', 'layer 29', 'layer 35',
+                                                              'layer 41', 'last layer',
+                                                              'archive also stores layer 15',
+                                                              '', '4 residual streams × 2560'])
     s.box(800, 120, 380, 220, 'One item = one fixed-size vector',
           ['6 layers × 2 poolings × 4 streams', 'per span, concatenated', 'stored as FP16',
            'per-record sha256 in the manifest'])

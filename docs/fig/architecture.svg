@@ -11,8 +11,8 @@
 <text x="450.0" y="158" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">IQ3_S GGUF, 48 layers</text>
 <rect x="660" y="60" width="210" height="168" rx="8" fill="#f6f8fa" stroke="#111111" stroke-width="1.4"/>
 <text x="765.0" y="84" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="middle">Multi-layer readout</text>
-<text x="765.0" y="104" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">taps: 15 / 23 / 29 / 35</text>
-<text x="765.0" y="123" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">/ 41 / last</text>
+<text x="765.0" y="104" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">taps: 23 / 29 / 35 / 41</text>
+<text x="765.0" y="123" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">/ last</text>
 <text x="765.0" y="142" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">spans: stem, each option,</text>
 <text x="765.0" y="161" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">decision position</text>
 <text x="765.0" y="180" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="middle">pool: last + span mean</text>

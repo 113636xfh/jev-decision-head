@@ -1,0 +1,22 @@
+# Notice: what is licensed, and what is not
+
+The MIT licence in `LICENSE` covers **this repository's own artefacts**: the code in `jev/`,
+the Strata patches in `patches/`, the figures and their generator in `docs/fig/`, and the
+trained decision-head weights in `weights/`.
+
+It does **not** cover, and this repository does **not** re-distribute, the following. Each item
+is only referenced by name, link or hash.
+
+| Item | Status here | Source / licence position |
+|---|---|---|
+| Backbone weights `Qwen3.8-Flash-Next-GSQ-RCO` (IQ3_S GGUF, 2 shards) | not included | third-party release; re-distribution rights not confirmed, so we do not mirror it |
+| Strata itself | not included | upstream project; our patches are derivative work of upstream sources and follow the upstream licence until (and if) they are merged upstream |
+| JevBench items (public 231) | not included | fetched by `jev/eval_benchmark.py` from the benchmark's own distribution; scored with the benchmark's own scorer |
+| `pngwn/typed-decisions-v2`, `pngwn/typed-decisions-v2-system-one` | not included | Hugging Face datasets under their own terms; our splits are derived indexes over them, shipped as manifests (ids, group ids, hashes) only |
+| HotpotQA, MMLU-Pro | not included | upstream datasets under their own terms, reached through the dataset cards above |
+| Feature archives (hidden-state readouts) | not included | derived from backbone activations over third-party items; we publish the protocol, the manifest and the hashes instead |
+| Internal control tasks behind the OOD split | not included | internal data; only aggregate metrics are published |
+
+Per-item prediction files that are included (`baselines/`) contain identifiers, gold labels,
+predictions and probabilities only — no item text, and no state text from any third-party
+dataset.

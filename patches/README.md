@@ -60,8 +60,9 @@ tokens (`certs/live-readout-compatibility-r2-bitwise.json`).
 layers can be read from one forward pass, with the request schema validated
 (`verify.*`) and the API surface exposed in `server.py`.
 
-**Why.** The feature protocol reads six backbone layers (15/23/29/35/41/last). Reading them in
-six separate passes would multiply the prefill cost; taps make it one pass.
+**Why.** The feature protocol archives six backbone layers and this head reads five of them
+(23/29/35/41/last). Reading them in separate passes would multiply the prefill cost; taps make
+it one pass.
 
 **Acceptance.** Batched-prefill readout at 402/512/950 tokens runs 1.62× / 2.32× / 2.87×
 faster than the serial small-window path (107 tok/s) used before.

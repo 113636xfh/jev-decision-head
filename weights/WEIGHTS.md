@@ -16,8 +16,8 @@ shipped in `jev/`:
 
 - backbone: `Qwen3.8-Flash-Next-GSQ-RCO`, used as released — no fine-tuning, no LoRA, no
   gradient into it;
-- readout layers `15, 23, 29, 35, 41, last`, pooling `last` + `span mean`, 4 residual streams
-  (4 × 2560 per tap);
+- readout layers **23, 29, 35, 41, last** (the archive protocol stores 15 as well; this head
+  reads five of the six), pooling `last` + `span mean`, 4 residual streams (4 × 2560 per tap);
 - spans: question stem, every candidate, final decision position;
 - `compute_backend`: the batched-prefill GPU path (features from a different backend are not
   interchangeable — see `REPRODUCE.md`).
