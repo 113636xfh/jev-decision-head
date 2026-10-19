@@ -229,12 +229,13 @@ feature protocol); the capability bit is reported only under `batch_groups ≤ 2
 ```bash
 export JEV_DATA=$HOME/jev-data          # archives, split subsets, evaluation records
 export STRATA_ROOT=$HOME/strata         # patched Strata tree
+export CUDA_VISIBLE_DEVICES=3           # the harness GPU; never the serving GPUs
 
 # 1. build Strata with the patches, then start it with the shipped config
 git apply patches/*.patch && ./start.sh
 
 # 2. record the runtime identity (required, not optional)
-python -m jev.identity --endpoint http://127.0.0.1:8100 --out runtime-identity.json
+python -m jev.identity --base http://127.0.0.1:8100 --out runtime-identity.json
 
 # 3. score one item with the shipped head
 python -m jev.predict --identity runtime-identity.json \
@@ -247,6 +248,18 @@ python -m jev.cascade --identity runtime-identity.json --policy dev-thresholds.j
 
 Without a compatibility certificate matching your pair, the loader refuses to run rather than
 silently scoring with the wrong features.
+
+**This path is tested, not aspirational.** Replaying 20 dev items through the code in this
+repository reproduced the accepted 2026-10-15 baseline exactly — 20 compared, 0 gold
+mismatches, 0 prediction mismatches (`evidence/smoke-20-dev-20261020/smoke20-check.json`, with
+the runtime identity that produced it). Reproduce with:
+
+```bash
+python -m jev.eval_replay --split dev --limit 20 --out rows-smoke20 \
+        --identity runtime-identity.json --confirm-window
+python -m jev.check_baseline --rows rows-smoke20.jsonl \
+        --accepted baselines/middle5-s1.dev-predictions.jsonl
+```
 
 ## 7. Training your own
 

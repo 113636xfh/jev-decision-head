@@ -1,0 +1,35 @@
+{
+  "split": "dev",
+  "finished": true,
+  "deadline": null,
+  "elapsed_s": 64.55742304888554,
+  "identity_sha256": "7b43b2c64087bb8719d783e7fb1a515bce601efdc28f7125e9c16fa334fe36fa",
+  "metrics": {
+    "planned": 20,
+    "recorded": 20,
+    "valid": 20,
+    "errors": 0,
+    "correct_archived_features": 13,
+    "correct_live_features": 15,
+    "accuracy_archived": 0.65,
+    "accuracy_live": 0.75,
+    "flips": 3,
+    "flip_rate": 0.15,
+    "vectors": 13619200,
+    "vectors_fp16_byte_equal": 11557,
+    "items_all_vectors_equal": 0,
+    "max_logit_delta_p50_p95_max": [
+      1.3250478506088257,
+      2.087682318687439,
+      2.291848659515381
+    ],
+    "api_ms_p50_p95": [
+      2910.127116367221,
+      5100.608588964678
+    ],
+    "coverage_at_0.85": 0.5,
+    "accepted_subset_accuracy": 0.8,
+    "ece_raw": 0.1892749957366857,
+    "ece_archived": 0.2241976167325325
+  }
+}

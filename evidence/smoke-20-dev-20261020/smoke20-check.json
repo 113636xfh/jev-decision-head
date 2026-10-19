@@ -1,0 +1,11 @@
+{
+  "accepted_file": "baselines/middle5-s1.dev-predictions.jsonl",
+  "accepted_rows": 1996,
+  "rows_file": "rows-smoke20.jsonl",
+  "rows_ok": 20,
+  "compared": 20,
+  "gold_mismatches": 0,
+  "prediction_mismatches": 0,
+  "passed": true,
+  "details": []
+}

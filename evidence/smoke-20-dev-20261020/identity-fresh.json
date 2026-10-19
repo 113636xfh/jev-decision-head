@@ -1,0 +1,113 @@
+{
+  "schema": "jev-abliterated-live-identity-v1",
+  "captured_utc": "2026-10-19T19:11:04Z",
+  "base": "http://127.0.0.1:8100",
+  "server_pid": 456363,
+  "engine_pids": [
+    456408
+  ],
+  "vision_pids": [
+    456379
+  ],
+  "engine_exe_sha256": [
+    "c1d3070c7c289fcb09875cb909ce9a5fd3270a5f5fc1b548a75df4bc773a3b7b"
+  ],
+  "runtime_files": {
+    "serve/server.py": "d85622eb988638e089c07d6692b09f09f516a17c74d20c6540f6b874c6f9b65d",
+    "engine-cuda12/strata": "c1d3070c7c289fcb09875cb909ce9a5fd3270a5f5fc1b548a75df4bc773a3b7b",
+    "engine-cuda12/strata-vision": "914d5da3650755c3711265a9c437e57d6058958afa145e40d4a70a66c4ddc63b"
+  },
+  "running_config": {
+    "path": "<JEV_ROOT>/strata/v0.1.44.1/strata-iq3_s-esp.json",
+    "sha256": "0ba271cde5b8e9a80037fd34776e80e3154bf0bfab2879420b40f6f198389d25",
+    "model_name": "qwen3.8-flash-next-iq3_s",
+    "pack": "/strata/data/packs/iq3_s",
+    "native_gguf": "/strata/data/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
+    "tokenizer_dir": "/strata/data/packs/iq3_s/tokenizer"
+  },
+  "tokenizer_sha256": {
+    "chat_template.jinja": "12827f24b742ea4e80cdc12dbcf9622227056b9f797252a3149263d4f9aaadce",
+    "merges.txt": "4ba698529766c7a2f5052083ea10cdf2485577f5237a332ee291054eb11e3332",
+    "tokenizer.json": "c0bd435efbc6c3b28964b47999afe16c4ad268c7c7c4e8cb3af410796a6f30bf",
+    "token_type.json": "5088c8c298fc06af8382ddb3b76c888703ac2634e82263b97eedcc2ad202738b",
+    "vocab.json": "4ba64f0332abcfb0b600b7df1537d1e836e68009d5fb7cdb77339738dc6365c4"
+  },
+  "health": {
+    "status": "ok",
+    "max_context": 262144,
+    "model": "qwen3.8-flash-next-iq3_s",
+    "images": true,
+    "api_key": false,
+    "image_generation": false,
+    "loaded": true,
+    "service": "strata"
+  },
+  "engine_metrics": {
+    "version": "0.1.44.1",
+    "jev_slot_readout": 1,
+    "batch_slots": 4,
+    "batch_groups": 2,
+    "max_context": 262144,
+    "kv_resident": 32768,
+    "expert_slots": 15569,
+    "expert_slots_primary": 5326,
+    "model": "qwen3.8-flash-next-iq3_s"
+  },
+  "load_samples": [
+    {
+      "state": "idle",
+      "running": 0,
+      "queued": 0,
+      "phase": null
+    },
+    {
+      "state": "idle",
+      "running": 0,
+      "queued": 0,
+      "phase": null
+    },
+    {
+      "state": "idle",
+      "running": 0,
+      "queued": 0,
+      "phase": null
+    }
+  ],
+  "gpu_snapshot": [
+    "0, 0 %, 14947 MiB",
+    "1, 0 %, 15333 MiB",
+    "2, 0 %, 15561 MiB",
+    "3, 0 %, 0 MiB"
+  ],
+  "head_files": {
+    "best.pt": "8d3f60094cc79bdbee2b66837963c8f9f094819a97fc6d774d24fbcbbb674d2b",
+    "norm.npz": "b00ddad2c2b0ddc0ae0c9dfc50fcc1ec16de1f9f21683a13698aadca2e9ab2b2",
+    "manifest.json": "5d23d7db39855584b87abb2517fa9226acbfa5d13805b4ea6a1fc1d8fd58db95"
+  },
+  "readout_builder_sha256": "b6c2a66a890574bec5cff2b4436afd2ac8882b41cf9e6e71e385203048f8d901",
+  "taps": "15,23,29,35,41,-1",
+  "pools": "last,mean",
+  "policy": {
+    "threshold": 0.85,
+    "temperature": 1.1525501023241218,
+    "guard_band": 0.0
+  },
+  "old_certificate": {
+    "path": "<JEV_ROOT>/data/strata-upgrade-20261016/adaptive-head-v1/compatibility.json",
+    "sha256": "37236f092d5e0b01d242ad755f3dbf3934083240d0b2658a3f45121c81ea7634",
+    "binds": {
+      "server_sha256": "3ebd690b5a977939447f8b8f5c5d619edb9a9ba69a7860293ff6f1805803bbbf",
+      "engine_sha256": "ce7559e09c26a53313d283e1da8b3773c28f1a51e93d700124ee7633965522d2",
+      "vision_sha256": "914d5da3650755c3711265a9c437e57d6058958afa145e40d4a70a66c4ddc63b",
+      "model_config_sha256": "b6b687b8ce1e68b19d5bc8e6d4ca11099a3211559e3769a783a5d761bacc1464"
+    },
+    "covers_live_pair": false
+  },
+  "watched_files": [
+    "<JEV_ROOT>/strata/v0.1.44.1/serve/server.py",
+    "<JEV_ROOT>/strata/v0.1.44.1/strata-iq3_s-esp.json",
+    "<JEV_ROOT>/strata/v0.1.44.1/engine-cuda12/strata",
+    "<JEV_ROOT>/data/jev-v4-gpu/runs/middle5-s1/best.pt",
+    "<JEV_ROOT>/data/jev-v4-gpu/runs/middle5-s1/norm.npz"
+  ]
+}
