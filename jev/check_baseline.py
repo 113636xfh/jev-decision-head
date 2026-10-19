@@ -21,7 +21,7 @@ RUN = Path(JEV_DATA + '/jev-v4-gpu/runs/middle5-s1')
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--rows', required=True, help='rows-*.jsonl produced by eval_head_abliterated.py')
+    parser.add_argument('--rows', required=True, help='rows-*.jsonl produced by eval_replay.py')
     parser.add_argument('--accepted', default=str(RUN / 'dev-predictions.jsonl'))
     parser.add_argument('--out', default='')
     args = parser.parse_args()

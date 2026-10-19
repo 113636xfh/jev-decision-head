@@ -19,7 +19,7 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 import identity as IDENT                                             # noqa: E402
-from head_abliterated import UncertifiedLiveHead, V3                 # noqa: E402
+from head_loader import UncertifiedLiveHead, V3                 # noqa: E402
 from common import volunteer_for_oom                                 # noqa: E402
 from gpu_data import LAYERS                                          # noqa: E402
 

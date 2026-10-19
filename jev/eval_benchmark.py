@@ -11,7 +11,7 @@ instead of the certified ce7559e0 / 3ebd690b / b6b687b8.
 
 Honest scope note: here `latent_ids` come from the LIVE tokenizer pack, so this measurement is
 end-to-end (live tokenizer + live backbone + frozen head).  The archive-replay harness
-(`eval_head_abliterated.py`) sends the archived ids and therefore isolates the backbone alone.
+(`eval_replay.py`) sends the archived ids and therefore isolates the backbone alone.
 
 No decode fallback and no threshold: head-only accuracy.
 """
@@ -31,7 +31,7 @@ V3 = Path(JEV_DATA + '/jev-v3-fast')
 sys.path[:0] = [str(HERE), str(BENCH)]
 
 import identity as IDENT                                             # noqa: E402
-from head_abliterated import UncertifiedLiveHead                     # noqa: E402
+from head_loader import UncertifiedLiveHead                     # noqa: E402
 from common import canonical, volunteer_for_oom, digest              # noqa: E402
 from run_jevbench import (build_item, criteria_for, softmax,          # noqa: E402
                           subset_metrics, OFFICIAL)

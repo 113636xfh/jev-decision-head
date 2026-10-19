@@ -29,7 +29,7 @@ HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE)]
 
 import identity as IDENT                                             # noqa: E402
-from head_abliterated import UncertifiedLiveHead, RUN, V3            # noqa: E402
+from head_loader import UncertifiedLiveHead, RUN, V3            # noqa: E402
 from common import volunteer_for_oom, digest                         # noqa: E402
 from gpu_data import LAYERS                                          # noqa: E402
 

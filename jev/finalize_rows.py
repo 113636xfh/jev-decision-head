@@ -1,6 +1,6 @@
 """Rewrite a stage summary from its rows file, without touching the engine or the rows.
 
-Why this exists: `eval_head_abliterated.py` counted the archive root's `manifest.json` as a record,
+Why this exists: `eval_replay.py` counted the archive root's `manifest.json` as a record,
 so both archive-replay stages raised KeyError AFTER measuring every real item, leaving
 `finished: false` and `planned` one too high in the per-stage summary.  The rows themselves are
 complete (verified uid-by-uid against the archive), so the fix is to recompute the summary from the
@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 import identity as IDENT                                    # noqa: E402
-from eval_head_abliterated import ARCHIVES, summarize       # noqa: E402
+from eval_replay import ARCHIVES, summarize       # noqa: E402
 
 
 def main():

@@ -24,8 +24,8 @@ STAGES = [
                             '--out', 'jevbench/criterion_as_option']),
     ('jevbench-label', ['run_jevbench_abliterated.py', '--mode', 'label_as_option',
                         '--out', 'jevbench/label_as_option']),
-    ('dev', ['eval_head_abliterated.py', '--split', 'dev']),
-    ('test', ['eval_head_abliterated.py', '--split', 'test']),
+    ('dev', ['eval_replay.py', '--split', 'dev']),
+    ('test', ['eval_replay.py', '--split', 'test']),
 ]
 
 
