@@ -1,0 +1,382 @@
+{
+  "history": [
+    {
+      "epoch": 1,
+      "train": {
+        "nll": 0.7195367709100247,
+        "brier": 0.4086743818372488,
+        "mean_preclip_grad_norm": 3.473729481101036
+      },
+      "dev": {
+        "n": 1996,
+        "correct": 1439,
+        "accuracy": 0.7209418837675351,
+        "nll": 0.6401762856032424,
+        "brier": 0.3528714024112793,
+        "families": {
+          "doom_basic": [
+            15,
+            36
+          ],
+          "evidence": [
+            359,
+            441
+          ],
+          "natural_language_inference": [
+            355,
+            495
+          ],
+          "policy": [
+            481,
+            705
+          ],
+          "routing": [
+            83,
+            121
+          ],
+          "rubric": [
+            146,
+            198
+          ]
+        }
+      },
+      "seconds": 141.5463822700549
+    },
+    {
+      "epoch": 2,
+      "train": {
+        "nll": 0.6410141261816025,
+        "brier": 0.3643398746997118,
+        "mean_preclip_grad_norm": 2.8805915445685386
+      },
+      "dev": {
+        "n": 1996,
+        "correct": 1432,
+        "accuracy": 0.717434869739479,
+        "nll": 0.7162534054032786,
+        "brier": 0.37149174687618725,
+        "families": {
+          "doom_basic": [
+            22,
+            36
+          ],
+          "evidence": [
+            368,
+            441
+          ],
+          "natural_language_inference": [
+            361,
+            495
+          ],
+          "policy": [
+            461,
+            705
+          ],
+          "routing": [
+            82,
+            121
+          ],
+          "rubric": [
+            138,
+            198
+          ]
+        }
+      },
+      "seconds": 140.7639183739666
+    },
+    {
+      "epoch": 3,
+      "train": {
+        "nll": 0.6104038347452879,
+        "brier": 0.34970656468719247,
+        "mean_preclip_grad_norm": 2.8443708110451698
+      },
+      "dev": {
+        "n": 1996,
+        "correct": 1456,
+        "accuracy": 0.7294589178356713,
+        "nll": 0.646424592616324,
+        "brier": 0.3504800527750371,
+        "families": {
+          "doom_basic": [
+            23,
+            36
+          ],
+          "evidence": [
+            368,
+            441
+          ],
+          "natural_language_inference": [
+            355,
+            495
+          ],
+          "policy": [
+            483,
+            705
+          ],
+          "routing": [
+            88,
+            121
+          ],
+          "rubric": [
+            139,
+            198
+          ]
+        }
+      },
+      "seconds": 138.70639104396105
+    },
+    {
+      "epoch": 4,
+      "train": {
+        "nll": 0.593234227642417,
+        "brier": 0.33848347536101936,
+        "mean_preclip_grad_norm": 2.9416845926046373
+      },
+      "dev": {
+        "n": 1996,
+        "correct": 1472,
+        "accuracy": 0.7374749498997996,
+        "nll": 0.6208799076462557,
+        "brier": 0.3399780828632668,
+        "families": {
+          "doom_basic": [
+            18,
+            36
+          ],
+          "evidence": [
+            378,
+            441
+          ],
+          "natural_language_inference": [
+            364,
+            495
+          ],
+          "policy": [
+            485,
+            705
+          ],
+          "routing": [
+            85,
+            121
+          ],
+          "rubric": [
+            142,
+            198
+          ]
+        }
+      },
+      "seconds": 138.6631485549733
+    },
+    {
+      "epoch": 5,
+      "train": {
+        "nll": 0.5715733094513417,
+        "brier": 0.3277226361259818,
+        "mean_preclip_grad_norm": 3.1096797907352447
+      },
+      "dev": {
+        "n": 1996,
+        "correct": 1488,
+        "accuracy": 0.7454909819639278,
+        "nll": 0.6062303625032276,
+        "brier": 0.33553766935526247,
+        "families": {
+          "doom_basic": [
+            20,
+            36
+          ],
+          "evidence": [
+            378,
+            441
+          ],
+          "natural_language_inference": [
+            367,
+            495
+          ],
+          "policy": [
+            489,
+            705
+          ],
+          "routing": [
+            91,
+            121
+          ],
+          "rubric": [
+            143,
+            198
+          ]
+        }
+      },
+      "seconds": 138.5314862410305
+    },
+    {
+      "epoch": 6,
+      "train": {
+        "nll": 0.5538152588754892,
+        "brier": 0.3185822902843356,
+        "mean_preclip_grad_norm": 3.4218039619922638
+      },
+      "dev": {
+        "n": 1996,
+        "correct": 1477,
+        "accuracy": 0.7399799599198397,
+        "nll": 0.7484363526523949,
+        "brier": 0.3699083271509182,
+        "families": {
+          "doom_basic": [
+            19,
+            36
+          ],
+          "evidence": [
+            372,
+            441
+          ],
+          "natural_language_inference": [
+            364,
+            495
+          ],
+          "policy": [
+            487,
+            705
+          ],
+          "routing": [
+            88,
+            121
+          ],
+          "rubric": [
+            147,
+            198
+          ]
+        }
+      },
+      "seconds": 133.20654189097695
+    },
+    {
+      "epoch": 7,
+      "train": {
+        "nll": 0.5351059160754085,
+        "brier": 0.3069352554641664,
+        "mean_preclip_grad_norm": 3.60206349003315
+      },
+      "dev": {
+        "n": 1996,
+        "correct": 1452,
+        "accuracy": 0.7274549098196392,
+        "nll": 0.760624807798313,
+        "brier": 0.3826815811450591,
+        "families": {
+          "doom_basic": [
+            18,
+            36
+          ],
+          "evidence": [
+            366,
+            441
+          ],
+          "natural_language_inference": [
+            361,
+            495
+          ],
+          "policy": [
+            478,
+            705
+          ],
+          "routing": [
+            85,
+            121
+          ],
+          "rubric": [
+            144,
+            198
+          ]
+        }
+      },
+      "seconds": 136.97915525210556
+    },
+    {
+      "epoch": 8,
+      "train": {
+        "nll": 0.5093489625453949,
+        "brier": 0.2939220815189183,
+        "mean_preclip_grad_norm": 3.9442087373137475
+      },
+      "dev": {
+        "n": 1996,
+        "correct": 1462,
+        "accuracy": 0.7324649298597194,
+        "nll": 0.7220051404469476,
+        "brier": 0.36783783463294617,
+        "families": {
+          "doom_basic": [
+            21,
+            36
+          ],
+          "evidence": [
+            365,
+            441
+          ],
+          "natural_language_inference": [
+            366,
+            495
+          ],
+          "policy": [
+            483,
+            705
+          ],
+          "routing": [
+            82,
+            121
+          ],
+          "rubric": [
+            145,
+            198
+          ]
+        }
+      },
+      "seconds": 138.92441114690155
+    }
+  ],
+  "parameters": 13194368,
+  "final": {
+    "dev": {
+      "n": 1996,
+      "correct": 1488,
+      "accuracy": 0.7454909819639278,
+      "nll": 0.6062303625032276,
+      "brier": 0.33553766935526247,
+      "families": {
+        "doom_basic": [
+          20,
+          36
+        ],
+        "evidence": [
+          378,
+          441
+        ],
+        "natural_language_inference": [
+          367,
+          495
+        ],
+        "policy": [
+          489,
+          705
+        ],
+        "routing": [
+          91,
+          121
+        ],
+        "rubric": [
+          143,
+          198
+        ]
+      }
+    }
+  },
+  "peak_allocated_mib": 584.1591796875,
+  "files": {
+    "best.pt": "8d3f60094cc79bdbee2b66837963c8f9f094819a97fc6d774d24fbcbbb674d2b",
+    "norm.npz": "b00ddad2c2b0ddc0ae0c9dfc50fcc1ec16de1f9f21683a13698aadca2e9ab2b2",
+    "dev-predictions.jsonl": "7e76aa9a6a3df0754b7e6e55cb5c1d1d690b08d896d9d249556ec25cb74b9db2"
+  }
+}

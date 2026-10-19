@@ -1,0 +1,104 @@
+{
+  "args": {
+    "cache": "<JEV_ROOT>/data/jev-v4-gpu/cache",
+    "out": "<JEV_ROOT>/data/jev-v4-gpu/runs/middle5-s1",
+    "fusion": "concat",
+    "lr": 0.0001,
+    "seed": 1,
+    "epochs": 8,
+    "patience": 3
+  },
+  "layers": [
+    23,
+    29,
+    35,
+    41,
+    -1
+  ],
+  "blocks": 2,
+  "d": 512,
+  "dropout": 0.1,
+  "brier": 0.1,
+  "batch": 16,
+  "task_weighting": false,
+  "backbone_gradients": false,
+  "mixed_precision_training": false,
+  "cache_manifest_sha256": "db9e494f8f0abda082c4a808ad0062f5517eeb2582d39dfd80c2b31e2b89d5ad",
+  "extraction": {
+    "prompt_version": "lossless-state-final-assistant-token-v2",
+    "layers": [
+      15,
+      23,
+      29,
+      35,
+      41,
+      -1
+    ],
+    "pools": [
+      "span_last",
+      "span_mean"
+    ],
+    "tokenizer": {
+      "chat_template.jinja": "12827f24b742ea4e80cdc12dbcf9622227056b9f797252a3149263d4f9aaadce",
+      "token_type.json": "5088c8c298fc06af8382ddb3b76c888703ac2634e82263b97eedcc2ad202738b",
+      "tokenizer.json": "c0bd435efbc6c3b28964b47999afe16c4ad268c7c7c4e8cb3af410796a6f30bf",
+      "vocab.json": "4ba64f0332abcfb0b600b7df1537d1e836e68009d5fb7cdb77339738dc6365c4",
+      "merges.txt": "4ba698529766c7a2f5052083ea10cdf2485577f5237a332ee291054eb11e3332"
+    },
+    "server_sha256": "32368d78a5c76f7fc427bc2553eeeca73f2580d18e51ec22c1b7bce9061debf2",
+    "engine_sha256": "44f993830eb22f2448d7fc5f8db82ded860a66ebcf4767061dd455e0262364d0",
+    "model_config_sha256": "5e7a3152f4b226a8d6ac67b383e87bee292fb434c920edb7d01ec745cf214723",
+    "model_artifacts": {
+      "mode": "full-sha256",
+      "model_config_sha256": "5e7a3152f4b226a8d6ac67b383e87bee292fb434c920edb7d01ec745cf214723",
+      "files": {
+        "<JEV_ROOT>/strata/v0.1.41/data/expert-profile.bin": {
+          "sha256": "8f59b4aa8873209dff11c11e37bcda9529a1335b724a1afeea37bf6388975baf",
+          "bytes": 196632,
+          "mtime_ns": 1791455139000000000
+        },
+        "/strata/data/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf": {
+          "sha256": "4c1eb2ceb4915e1192f4f386021897bde56a97f40a0bb78bb86465e0f7d2aca3",
+          "bytes": 54817524224,
+          "mtime_ns": 1791050873210157404
+        },
+        "/strata/data/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00002-of-00002.gguf": {
+          "sha256": "316b46f3a2dbd68c900f43136ab9449f9dcc3725dfd8c794847c204bc161e113",
+          "bytes": 28800138432,
+          "mtime_ns": 1791050105912884098
+        },
+        "/strata/data/packs/iq3_s/dense.bin": {
+          "sha256": "d2af3d8331e5c7a1985d1d589747230f9d56719a6d33c7cddc9ee6b81cde6b13",
+          "bytes": 1538035200,
+          "mtime_ns": 1791059905714710800
+        },
+        "/strata/data/packs/iq3_s/index.txt": {
+          "sha256": "b2a014878c3b61d6a6f915e194055a5e68ede34f9465dd1cb13249d902f008ac",
+          "bytes": 93685,
+          "mtime_ns": 1791059905719710893
+        }
+      },
+      "rebound_from_sha256": "b374aed84a63a904e409d3b10a2074e3f0d68a64fce45a0b877828adc0af9a2f",
+      "rebind_reason": "same full weight hashes; installed fixed adaptive-cache configuration"
+    },
+    "hc": 4,
+    "n_embd": 2560,
+    "compute_backend": "batched-prefill-one-shot-r2"
+  },
+  "normalization_sha256": "b00ddad2c2b0ddc0ae0c9dfc50fcc1ec16de1f9f21683a13698aadca2e9ab2b2",
+  "reference_manifest_sha256": "a22b85cdb4d5df49d708e942e72eda6c458ed5199e34c2da9d7c0ebf1dc11bf0",
+  "code": {
+    "gpu_data.py": "58a729774a86951fe4ef44a51323b31752211c7eb403c08d45279a7633f6b2a9",
+    "calibrate_head.py": "fa00381bfc9062079b96973ceebc8c4270274091ad4bf38395829fde9cb67427",
+    "verify_pipeline.py": "9d8e6bc3d36058dd39e8884836edfa867bf90669822e3a013069113222c75c46",
+    "test_conditional.py": "3535e4cf55eda5d5226e1f2ad867a573e874e5abcf8eb87f636f82fce3af9402",
+    "evaluate_selected_gpu.py": "5b2ff7f09348b02e28dc5a89247a5d2b1085f919e22f08d0e8b37cb8c813b206",
+    "build_cache.py": "551bbaa69d505e36eeacf07e8d49a84e972cf86b32abb640177948eb209f7075",
+    "verify_raw_eval.py": "49865688154578d22e258863a31bd8b04e35fd4d6f7e589e14fbeea926a10d1e",
+    "conditional_head.py": "427e07bbbb1922cefec20c78f3964ef9725524a7ccbb15a5698a52d643230681",
+    "run_pipeline.py": "6831c8769ece1d1e884ef0ae0346493a17fff1cdb31b07c58f537ddda8fc8759",
+    "train_gpu.py": "dd65a5bae4137d92d6a84c86a002ef61c88a7138e30f7f57c2eb2bbb5ecdba85"
+  },
+  "selection": "dev NLL only; no test/OOD read; FP32 head math unchanged",
+  "data_path": "normalized FP16 byte-equal cache; pinned async prefetch, GPU padding/casting/metrics"
+}
