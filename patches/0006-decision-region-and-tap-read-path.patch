@@ -1,0 +1,360 @@
+# 0006: a decision KV region, and two tap read-path fixes
+#
+# Apply from the tree root:  patch -p1 < 0006-decision-region-and-tap-read-path.patch
+# (paths are a/... b/... against /home/xfh/strata/v0.1.41)
+#
+# 1. The decision region.  --decision-cache-mib / --decision-cache-slots add a SECOND parked-conversation
+#    cache.  A request that passes `cache_region=decision` parks into and restores from that instance alone.
+#    The live session remembers the region it came from, so a conversation the decode side produced is always
+#    parked back into the normal region - an extraction arriving in the middle of a chat cannot push that
+#    chat's snapshot into the region the extractions evict.  The decision region's parked conversations are
+#    deliberately not counted by --kv-grow, so a throwaway prompt never holds VRAM the decode side could use.
+#    Acceptance (tmp_scripts/strata_ro/cache_iso_test.py): 20 decision requests overran the region and evicted
+#    it 19 times while the normal region's eviction counter stayed 0, and the normal conversation was still
+#    restorable afterwards (867 tokens restored).
+#
+# 2. windows_ok(): a tap request (latt / latspans) takes the hooked verify-window path.  The batched read_part
+#    path and the pipelined loop have no tap hooks, so a prompt that did not happen to fit one short segment
+#    (--short-read, 64 by default) came back with NO rows at all: a 95-token prompt returned 0 segments while
+#    a 59-token one returned all of them.
+#
+# 3. A tap request always reads from token 0.  Tap rows exist only for the tokens this request itself pushed
+#    through the windows, so a prefix restored from the parked cache, continued from the live session or copied
+#    from a batch slot returns no rows for the spans it covered (measured: asking the same prompt twice returned
+--- a/src/program/generate.cpp	2026-10-11 03:04:33.741481440 +0800
++++ b/src/program/generate.cpp	2026-10-11 05:31:50.449806360 +0800
+@@ -592,6 +592,13 @@
+     int64_t conversation_cache_mib = 0; // opt-in host RAM for independent conversations
+     int conversation_cache_slots = 4;
+     int64_t conversation_cache_min_free_mib = 2560;
++    /// --serve (patch 0006): host RAM for the DECISION region.  A request that asks for it (cache_region=decision)
++    /// parks into and restores from this cache alone, so a run of extractions evicts its own old snapshots and never
++    /// a conversation the decode side is serving.  Both directions are closed: a decision request restores only from
++    /// the decision region, and a conversation that the decode side produced is always parked into the normal region
++    /// (the live session remembers which region it came from).  0 = no separate region (the old shared behaviour).
++    int64_t decision_cache_mib = 0;
++    int decision_cache_slots = 4;
+     /// --serve SAVE: disk space a session file must leave free where it is written (MiB; 0 = no check)
+     int64_t session_min_free_mib = 4096;
+     /// --serve: also keep a checkpoint every N freshly read prompt tokens (0 = only at the last turn boundary)
+@@ -736,6 +743,9 @@
+                  "  --conversation-cache-slots N  --serve: at most N parked conversations (default 4)\n"
+                  "  --conversation-cache-min-free-mib N  --serve: physical RAM floor when parking or restoring a\n"
+                  "                       session file (default 2560)\n"
++                 "  --decision-cache-mib N  --serve (patch 0006): separate RAM budget for requests that pass\n"
++                 "                       cache_region=decision (default 0 = mixed into --conversation-cache-mib)\n"
++                 "  --decision-cache-slots N  --serve: at most N parked decision conversations (default 4)\n"
+                  "  --session-min-free-mib N  --serve: disk space a SAVE must leave free (default 4096; 0 = no check)\n"
+                  "  --vram-elastic       --serve (#533, opt-in, NVIDIA): the expert cache in segments (--vram-segment-mib,\n"
+                  "                       default 512), so the command `VRAM <reserve_mib>` (the server's POST /v1/vram) can\n"
+@@ -1816,11 +1826,13 @@
+         else if (a == "--vision") o.vision = true;
+         else if (a == "--prompt-cache") o.prompt_cache = std::max(0, std::atoi(next("--prompt-cache")));
+         else if (a == "--conversation-cache-mib" || a == "--conversation-cache-slots" ||
+-                 a == "--conversation-cache-min-free-mib" || a == "--session-min-free-mib") {
++                 a == "--conversation-cache-min-free-mib" || a == "--session-min-free-mib" ||
++                 a == "--decision-cache-mib" || a == "--decision-cache-slots") {
+             const std::string value = next(a.c_str());
+             int64_t number = 0;
+             const auto result = std::from_chars(value.data(), value.data() + value.size(), number);
+-            const int64_t limit = a == "--conversation-cache-slots" ? INT32_MAX : INT64_MAX / (1024 * 1024);
++            const int64_t limit = (a == "--conversation-cache-slots" || a == "--decision-cache-slots")
++                                      ? INT32_MAX : INT64_MAX / (1024 * 1024);
+             if (result.ec != std::errc{} || result.ptr != value.data() + value.size() || number < 0 || number > limit) {
+                 std::fprintf(stderr, "%s needs a nonnegative integer within range\n", a.c_str());
+                 return 2;
+@@ -1828,6 +1840,8 @@
+             if (a == "--conversation-cache-mib") o.conversation_cache_mib = number;
+             else if (a == "--conversation-cache-min-free-mib") o.conversation_cache_min_free_mib = number;
+             else if (a == "--session-min-free-mib") o.session_min_free_mib = number;
++            else if (a == "--decision-cache-mib") o.decision_cache_mib = number;
++            else if (a == "--decision-cache-slots") o.decision_cache_slots = (int) number;
+             else o.conversation_cache_slots = (int) number;
+         }
+         else if (a == "--prompt-cache-tail") o.prompt_cache_tail = true;
+@@ -1970,6 +1984,11 @@
+     if (o.serve && o.conversation_cache_mib > 0 && (o.prompt_cache == 0 || o.conversation_cache_slots == 0))
+         std::fprintf(stderr, "strata serve: warning: conversation caching is disabled by %s\n",
+                      o.prompt_cache == 0 ? "--prompt-cache 0" : "--conversation-cache-slots 0");
++    if (o.serve && o.decision_cache_mib > 0 && (o.prompt_cache == 0 || o.decision_cache_slots == 0)) {
++        std::fprintf(stderr, "strata serve: warning: the decision cache region is disabled by %s\n",
++                     o.prompt_cache == 0 ? "--prompt-cache 0" : "--decision-cache-slots 0");
++        o.decision_cache_mib = 0;
++    }
+     // parking with --layer-split saves every stage (SavedConversation::stage_images)
+     // Layer split (multi-GPU): the later stages run layers [K_i, K_i+1) on their own GPUs (--split-device, default
+     // the next visible ones); "auto" places the K from each GPU's free VRAM once the weights are in (below).  KV
+@@ -7020,6 +7039,25 @@
+         strata::core::ConversationCache conversations(
+             o.prompt_cache > 0 ? (size_t) o.conversation_cache_mib * 1024 * 1024 : 0,
+             (size_t) o.conversation_cache_slots);
++        // patch 0006: the DECISION region - the same cache class, a second instance with its own budget and slots.
++        // A request whose keys carry cache_region=decision parks into and restores from this instance alone.  The
++        // live session tracks the region it came from (live_decision, set once the request has established its
++        // state), so a conversation the decode side produced is NEVER parked here: an extraction arriving in the
++        // middle of a chat would otherwise push that chat's snapshot into the region the extractions evict.
++        strata::core::ConversationCache decisions(
++            o.prompt_cache > 0 ? (size_t) o.decision_cache_mib * 1024 * 1024 : 0,
++            (size_t) o.decision_cache_slots);
++        bool req_decision = false;    // this request's region (cache_region=decision); reset with the request keys
++        bool live_decision = false;   // the region the session the engine holds right now came from
++        // The park path belongs to the OUTGOING session (live_decision); a restore belongs to the INCOMING request.
++        auto region = [&]() -> strata::core::ConversationCache& { return req_decision ? decisions : conversations; };
++        auto live_region = [&]() -> strata::core::ConversationCache& {
++            return live_decision ? decisions : conversations;
++        };
++        // " (decision)" in the log keeps these lines out of the server's conversation-cache monitor regex, which
++        // tracks the decode side's own cache.
++        auto region_tag = [&] { return req_decision ? " (decision)" : ""; };
++        auto live_tag = [&] { return live_decision ? " (decision)" : ""; };
+         // Disk sessions: what a session file is bound to.  The model fingerprint samples every model input this
+         // engine loaded, by role (conversation_file.hpp), once; the config fingerprint covers the RESOLVED settings
+         // that change what the saved bytes mean - the rope (K is cached post-RoPE), the loaded control vector, the
+@@ -7097,12 +7135,15 @@
+         // Save only on a switch/rewind, not on each continuing request. No graph
+         // addresses change: all parked images live in ordinary host vectors.
+         auto park_current_body = [&](size_t held) -> bool {
+-            if (!conversations.enabled() || !live_ok || live.empty()) return true;
++            // patch 0006: the outgoing session parks into the region it came from (live_region()), not the region of
++            // the request that just arrived - that is what keeps an extraction from displacing a live chat.
++            auto& cc = live_region();
++            if (!cc.enabled() || !live_ok || live.empty()) return true;
+             // #342: before make_room evicts oldest-first, the copies of this conversation a turn back go (they hold
+             // nothing the outgoing chain does not, apart from the tail this conversation rewrote)
+-            if (const size_t dropped = conversations.drop_superseded(live, live_imgs, checks, cvec_cached))
+-                std::fprintf(stderr, "strata serve: conversation cache: dropped %zu superseded cop%s of this "
+-                             "conversation; parked=%zu\n", dropped, dropped == 1 ? "y" : "ies", conversations.size());
++            if (const size_t dropped = cc.drop_superseded(live, live_imgs, checks, cvec_cached))
++                std::fprintf(stderr, "strata serve: conversation cache%s: dropped %zu superseded cop%s of this "
++                             "conversation; parked=%zu\n", live_tag(), dropped, dropped == 1 ? "y" : "ies", cc.size());
+             // A layer split parks one image per stage: the first stage's (with the draft layer's K/V) and one per
+             // later stage (without it - the draft ring is saved once).  The checkpoints are MOVED apart into their
+             // stage parts for the capture and put back together whichever way this ends (no running state copied).
+@@ -7118,7 +7159,7 @@
+                 ~MergeBack() { if (on && !strata::core::conversation_checkpoints_merge(std::move(cs), checks)) checks.clear(); }
+             } merge_back{cs, checks, n_st > 0};
+             const strata::core::ConversationView view{live, live_imgs, n_st > 0 ? cs.stage0 : checks, cvec_cached};
+-            auto reuse = conversations.take_reuse();
++            auto reuse = cc.take_reuse();
+             std::vector<strata::core::ConversationKvReuse> stage_reuse = std::move(reuse.stages);
+             stage_reuse.resize(n_st);
+             reuse.stages.clear();
+@@ -7168,9 +7209,9 @@
+             // estimate must stay uncapped: it counts the retained buffers'
+             // capacity and directories, and put() charges that same true size -
+             // a capped figure would under-evict and overfill the budget.
+-            if (!conversations.make_room(estimate, held)) {
+-                std::fprintf(stderr, "strata serve: conversation cache: skip parking (snapshot %zu MiB exceeds available budget)\n",
+-                             estimate >> 20);
++            if (!cc.make_room(estimate, held)) {
++                std::fprintf(stderr, "strata serve: conversation cache%s: skip parking (snapshot %zu MiB exceeds available budget)\n",
++                             live_tag(), estimate >> 20);
+                 return true;
+             }
+             const auto t0 = Clock::now();
+@@ -7192,18 +7233,17 @@
+                     return strata::core::conversation_memory_admit(
+                         strata::core::conversation_available_memory(), additional, floor);
+                 };
+-                while (!admit() && conversations.size() > 0 && evicted < conversations.slots() &&
+-                       conversations.evict_oldest())
++                while (!admit() && cc.size() > 0 && evicted < cc.slots() && cc.evict_oldest())
+                     ++evicted;
+                 if (!admit()) {
+-                    std::fprintf(stderr, "strata serve: conversation cache: skip parking (physical RAM admission; need %zu MiB plus %lld MiB floor; evicted %zu, %zu still parked, or telemetry unavailable)\n",
+-                                 additional >> 20, (long long) o.conversation_cache_min_free_mib,
+-                                 evicted, conversations.size());
++                    std::fprintf(stderr, "strata serve: conversation cache%s: skip parking (physical RAM admission; need %zu MiB plus %lld MiB floor; evicted %zu, %zu still parked, or telemetry unavailable)\n",
++                                 live_tag(), additional >> 20, (long long) o.conversation_cache_min_free_mib,
++                                 evicted, cc.size());
+                     return true;
+                 }
+                 if (evicted)
+-                    std::fprintf(stderr, "strata serve: conversation cache: evicted %zu parked conversation%s to admit this snapshot (%zu MiB plus %lld MiB floor)\n",
+-                                 evicted, evicted == 1 ? "" : "s", additional >> 20,
++                    std::fprintf(stderr, "strata serve: conversation cache%s: evicted %zu parked conversation%s to admit this snapshot (%zu MiB plus %lld MiB floor)\n",
++                                 live_tag(), evicted, evicted == 1 ? "" : "s", additional >> 20,
+                                  (long long) o.conversation_cache_min_free_mib);
+                 strata::core::SavedConversation image;
+                 size_t reused_bytes = 0;
+@@ -7225,11 +7265,11 @@
+                     return true;
+                 }
+                 const size_t snapshot_bytes = image.bytes();
+-                const bool stored = conversations.put(std::move(image), held);
+-                std::fprintf(stderr, "strata serve: conversation cache: %s %zu tokens in %.1f ms; parked=%zu bytes=%zu evictions=%zu snapshot_bytes=%zu reused_kv_bytes=%zu\n",
+-                             stored ? "parked" : "skipped", live.size(),
++                const bool stored = cc.put(std::move(image), held);
++                std::fprintf(stderr, "strata serve: conversation cache%s: %s %zu tokens in %.1f ms; parked=%zu bytes=%zu evictions=%zu snapshot_bytes=%zu reused_kv_bytes=%zu\n",
++                             live_tag(), stored ? "parked" : "skipped", live.size(),
+                              std::chrono::duration<double, std::milli>(Clock::now() - t0).count(),
+-                             conversations.size(), conversations.bytes(), conversations.evictions(), snapshot_bytes, reused_bytes);
++                             cc.size(), cc.bytes(), cc.evictions(), snapshot_bytes, reused_bytes);
+             } catch (const std::bad_alloc&) {
+                 // The active state has not been touched. Continue with normal
+                 // prompt processing rather than killing a serving process.
+@@ -9198,6 +9238,8 @@
+                         continue;
+                     }
+                     conversations.take_reuse();   // retained K/V described the outgoing session
++                    decisions.take_reuse();
++                    live_decision = false;        // a session file is the decode side's
+                     live_ok = false;
+                     // host -> device in synchronous copies of the whole state: one bounded allowance
+                     blocking("transfer", bytes);
+@@ -9252,6 +9294,7 @@
+             // a parked conversation holding it stays parked) and a later request that resumes from it does not park the
+             // branch it leaves: N queries cost one prefix, not N.  Absent = as before.
+             int64_t req_pin = 0;
++            req_decision = false;   // patch 0006: cache_region=decision below; the region is a per-request choice
+             // tuning keys (setup's calibration measures settings without restarting the engine): the PCIe share of
+             // the missed experts and the draft-probability floor, for this request only
+             double req_pcie_frac = o.pcie_frac, req_spec_min_p = o.spec_min_p;
+@@ -9270,6 +9313,8 @@
+                     if (key == "cvec") req_cvec = std::atoi(tok.c_str() + eq + 1);
+                     else if (key == "ckpt") req_ckpt = std::atoi(tok.c_str() + eq + 1) != 0;
+                     else if (key == "pin") req_pin = std::max<long long>(0, std::atoll(tok.c_str() + eq + 1));
++                    // patch 0006: cache_region=decision - park into and restore from the decision region alone
++                    else if (key == "cache_region") req_decision = tok.compare(eq + 1, std::string::npos, "decision") == 0;
+                     else if (key == "temperature") req_temperature = fv;
+                     else if (key == "top_p") req_top_p = fv;
+                     else if (key == "top_k") req_top_k = std::atoi(tok.c_str() + eq + 1);
+@@ -9531,9 +9576,27 @@
+                             slot_ck = &c;
+                         }
+                 }
+-            const auto parked = conversations.best(ids, req_imgs, want_cvec);
++            const auto parked = region().best(ids, req_imgs, want_cvec);
+             std::optional<strata::core::SavedConversation> incoming;
+-            if (parked.tokens > std::max(resume, slot_tokens)) incoming.emplace(conversations.take(parked.index));
++            if (parked.tokens > std::max(resume, slot_tokens)) incoming.emplace(region().take(parked.index));
++            // patch 0006: a tap request must READ its prompt.  The tap rows exist only for the tokens this request
++            // itself pushed through the verify windows, so a prefix restored from the parked cache, continued from
++            // the live session or copied from a batch slot comes back with NO rows for the spans it covered
++            // (measured: the second of two identical prompts returned the decide span alone, the only span in the
++            // sampling window).  A request that carries `latt` therefore always starts at 0.
++            if (!lat_taps.empty() && (resume > 0 || slot_tokens > 0 || incoming.has_value())) {
++                std::fprintf(stderr, "strata serve: latent taps: reading the prompt from token 0 (%lld tokens were "
++                             "reusable, but the taps need the rows this request reads itself)\n",
++                             (long long) std::max<int64_t>(resume, slot_tokens));
++                resume = 0;
++                from_live = false;
++                slot_source = -1;
++                slot_tokens = 0;
++                if (incoming) {
++                    region().put(std::move(*incoming));   // hand it back: this request will not use it
++                    incoming.reset();
++                }
++            }
+             if (incoming) slot_source = -1;
+             // Reject the entire image before parking/overwriting the outgoing
+             // state. Invalid entries can safely fall back to its existing prefix.
+@@ -9666,13 +9729,13 @@
+                 if (std::getenv("STRATA_SNAPSHOT_FULL_CAPTURE") == nullptr) {
+                     std::vector<std::vector<strata::core::ConversationKv>> stage_kv;   // every stage's, for its next park
+                     for (auto& si : incoming->stage_images) stage_kv.push_back(std::move(si.kv));
+-                    conversations.retain(std::move(incoming->kv), int64_t(live.size()), std::move(stage_kv));
++                    region().retain(std::move(incoming->kv), int64_t(live.size()), std::move(stage_kv));
+                 }
+                 incoming.reset(); // Running-state/checkpoint copies are no longer needed.
+-                std::fprintf(stderr, "strata serve: conversation cache: restored %lld tokens (%s) in %.1f ms; parked=%zu bytes=%zu\n",
+-                             (long long) resume, from_live ? "live" : "checkpoint",
++                std::fprintf(stderr, "strata serve: conversation cache%s: restored %lld tokens (%s) in %.1f ms; parked=%zu bytes=%zu\n",
++                             region_tag(), (long long) resume, from_live ? "live" : "checkpoint",
+                              std::chrono::duration<double, std::milli>(Clock::now() - t0).count(),
+-                             conversations.size(), conversations.bytes());
++                             region().size(), region().bytes());
+             }
+             if (want_cvec != cvec_cached) {
+                 live_ok = false;
+@@ -9685,6 +9748,7 @@
+             checks.erase(std::remove_if(checks.begin(), checks.end(), [&](const ConvCheckpoint& c) {
+                              return (int64_t) c.ids.size() > resume || !starts_with(c.ids, c.imgs);
+                          }), checks.end());
++            live_decision = req_decision;   // patch 0006: the session the engine now holds belongs to this region
+             live_ok = false;   // until this request has finished, the session is in between
+             // the elastic K/V: the outgoing session is parked and this request rewrites every cell from `resume` on,
+             // so cells past this prompt's are no longer anyone's - far more than it needs go back to the cache
+@@ -9692,6 +9756,8 @@
+                 kv_quiesce();
+                 // STRATA_KV_GROW_HOLD=1 (opt-in): keep the K/V as long as the longest parked conversation; default: trim to this request alone, as 0.1.40
+                 static const bool hold_on = [] { const char* v = std::getenv("STRATA_KV_GROW_HOLD"); return v != nullptr && std::atoi(v) != 0; }();
++                // patch 0006: the decision region's parked conversations are deliberately NOT counted here - they are
++                // throwaway one-off prompts, and holding VRAM for them would take it from the decode side.
+                 if (!kvg_trim(n + 256, hold_on ? conversations.longest_tokens() + 256 : 0)) {
+                     std::printf("ERR the K/V could not give its VRAM back to the expert cache\n");
+                     std::fflush(stdout);
+@@ -9747,7 +9813,7 @@
+             tr("request", n, geni ? 1 : 0);
+             if (use_mtp) mtp.set_prompt_len(n);
+             const int64_t read_from = reread_to > 0 ? 0 : resume;
+-            conversations.limit_reuse(read_from);
++            region().limit_reuse(read_from);
+             pp_total = n;
+             pp_from = read_from;
+             pp_reached = read_from;
+@@ -9772,6 +9838,17 @@
+             static const bool no_short = std::getenv("STRATA_CKPT_REREAD") != nullptr;
+             int64_t req_short_read = o.short_read;   // STRATA_PIPELINE_SWITCH may set it per request (short_read=)
+             auto windows_ok = [&](int64_t a, int64_t b) -> bool {
++                // patch 0006: a tap request (latt / latspans) MUST go through the verify windows - the batched
++                // read_part path and the pipelined loop have no tap hooks, so a prompt that does not happen to fit
++                // one short segment used to come back with NO rows at all (measured: a 95-token prompt returned 0
++                // segments while a 59-token one returned all of them).  The bound keeps a pathological segment out
++                // of the serial loop; a picture row still needs the batched path.
++                if (!lat_taps.empty() && !no_short && b - a <= 4096) {
++                    if (sp.embd_rows != nullptr)
++                        for (int64_t i = a; i < b; ++i)
++                            if (sp.embd_rows[i] != nullptr) return false;
++                    return true;
++                }
+                 if (no_short || b - a > req_short_read) return false;
+                 if (sp.embd_rows != nullptr)
+                     for (int64_t i = a; i < b; ++i)
+@@ -9895,7 +9972,9 @@
+             // tokens [a, b) through the windows: commit all of them, then give the draft layer their residuals
+             auto read_windows = [&](int64_t a, int64_t b, std::string& e) -> bool {
+                 // (STRATA_LOGPOS reads every window's logits: the serial loop)
+-                if (pipe && pl_pw >= 1 && std::getenv("STRATA_LOGPOS") == nullptr) return read_windows_pl(a, b, e);
++                // patch 0006: the pipelined loop has no tap hooks either, so a tap request takes the serial loop
++                if (pipe && pl_pw >= 1 && lat_taps.empty() && std::getenv("STRATA_LOGPOS") == nullptr)
++                    return read_windows_pl(a, b, e);
+                 strata::core::progress_at("reading the prompt (verify windows), from token", a);   // #217: not "batched"
+                 // every token is committed and the picks are discarded: no head sampling (see set_head_sampling)
+                 struct NoHeadSampling {
+--- a/serve/server.py
++++ b/serve/server.py
+@@ -1005,6 +1005,12 @@
+                     keys += f" latk={lk}"
+             else:
+                 keys += f" latk={lk}" if isinstance(lk, str) and lk and " " not in lk else " latk=last,turn,mean32"
++        # patch 0006: the region a request parks its session into.  `cache_region=decision` uses the decision cache
++        # region alone (its own budget and slots), so an extraction run's snapshots evict each other and never a
++        # conversation the decode side is serving.  Absent or any other value = the shared conversation cache.
++        cr = sampling.get("cache_region")
++        if isinstance(cr, str) and cr and " " not in cr:
++            keys += f" cache_region={cr}"
+         return keys + StrataEngine.projection_key(sampling)
+ 
+     @staticmethod
+@@ -5206,6 +5212,10 @@
+               "latent_pool":  "last,mean"         (patch 0005) - return the POOLED rows per span (two per span per
+                                                   layer: the span's last row and its mean) instead of every row.
+                                                   Absent: the raw rows of each span
++              "cache_region": "decision"|"shared"  (patch 0006) - which parked-conversation region this request
++                                                  uses.  The default HERE is "decision": this endpoint is the
++                                                  decision read-out, so its snapshots stay out of the decode side's
++                                                  conversation cache.
+             and the answer carries one base64 blob per segment:
+               {"model":..., "hc":4, "n_embd":2560, "tokens_sampled":N, "version":1|2|3,
+                "segments":[{"kind":"last"|"turn"|"mean"|"tap"|"span_last"|"span_mean"|"span_rows",
+@@ -5272,7 +5282,8 @@
+             t0 = time.time()
+             with tempfile.TemporaryDirectory() as d:
+                 path = os.path.join(d, "lat.bin")                 # no spaces: the header splits on them
+-                samp = {"latent_path": path}
++                # patch 0006: park this session into the decision region (override with "cache_region": "shared")
++                samp = {"latent_path": path, "cache_region": req.get("cache_region") or "decision"}
+                 if taps:
+                     # the taps are what this request is for; the final-residual kinds are added only when asked,
+                     # so that a plain tap read-out does not pay for them (and vice versa)
