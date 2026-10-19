@@ -116,4 +116,4 @@ python docs/fig/make_figs.py && node render-figs.js
 | File | before | after | why |
 |---|---|---|---|
 | `jev/experiments.json` | `d6a9ba964d9f…` | `42b611cd3438…` | subset paths made relative to `$JEV_DATA` (no server-absolute paths in a public repository) |
-| provenance JSON files | see `PROVENANCE.md` | see `PROVENANCE.md` | `/home/xfh` → `<JEV_ROOT>` redaction; original digests recorded there |
+| provenance JSON files | see `PROVENANCE.md` | see `PROVENANCE.md` | server-absolute-path redaction (`/home/<user>` → `<JEV_ROOT>`); original digests recorded there |

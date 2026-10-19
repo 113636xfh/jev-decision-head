@@ -3,7 +3,7 @@
 These are the files that make the numbers in `README.md` checkable. They are small on purpose.
 
 **Redaction rule.** Every absolute server path in these JSON files was replaced
-(`/home/xfh` → `<JEV_ROOT>`, user → `<user>`); nothing else was changed. The sha256 of the
+(server-absolute paths: `/home/<user>` → `<JEV_ROOT>`); nothing else was changed. The sha256 of the
 **original** file is given so that anyone with access to the original can confirm it; the
 sha256 of the redacted copy shipped here is given so the copy in this repository is itself
 pinned.

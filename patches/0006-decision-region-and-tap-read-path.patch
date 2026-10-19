@@ -1,7 +1,7 @@
 # 0006: a decision KV region, and two tap read-path fixes
 #
 # Apply from the tree root:  patch -p1 < 0006-decision-region-and-tap-read-path.patch
-# (paths are a/... b/... against /home/xfh/strata/v0.1.41)
+# (paths are a/... b/... against a Strata 0.1.41 source tree)
 #
 # 1. The decision region.  --decision-cache-mib / --decision-cache-slots add a SECOND parked-conversation
 #    cache.  A request that passes `cache_region=decision` parks into and restores from that instance alone.
