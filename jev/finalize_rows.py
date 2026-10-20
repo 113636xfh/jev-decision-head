@@ -10,8 +10,8 @@ import argparse
 import json
 from pathlib import Path
 
-import identity as IDENT                                    # noqa: E402
-from eval_replay import ARCHIVES, summarize       # noqa: E402
+from . import identity as IDENT                                    # noqa: E402
+from .eval_replay import ARCHIVES, summarize       # noqa: E402
 
 
 def main():

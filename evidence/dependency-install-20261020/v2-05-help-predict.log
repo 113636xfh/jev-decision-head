@@ -1,0 +1,51 @@
+argv: ["<ENV_ROOT>\\Scripts\\python.exe", "-m", "jev.predict", "--help"]
+usage: predict.py [-h] --identity IDENTITY [--base BASE] [--weights WEIGHTS]
+                  [--certs CERTS] [--allow-uncertified]
+                  [--tokenizer-dir TOKENIZER_DIR] [--device DEVICE]
+                  [--route {head,cascade}] [--model MODEL]
+                  [--max-tokens MAX_TOKENS] [--items ITEMS] [--state STATE]
+                  [--question QUESTION] [--options OPTIONS [OPTIONS ...]]
+                  [--criteria CRITERIA [CRITERIA ...]]
+                  [--cached-shards CACHED_SHARDS [CACHED_SHARDS ...]]
+                  [--policy POLICY] [--min-confidence MIN_CONFIDENCE]
+                  [--min-margin MIN_MARGIN]
+                  [--max-normalized-entropy MAX_NORMALIZED_ENTROPY]
+                  [--model-identity MODEL_IDENTITY]
+                  [--model-config MODEL_CONFIG] --out OUT
+
+Decision CLI: head-only or head-then-decode cascade, live or from cached archives.
+
+options:
+  -h, --help            show this help message and exit
+  --identity IDENTITY   identity JSON recorded on the serving host
+  --base BASE
+  --weights WEIGHTS     directory with best.pt and norm.npz
+  --certs CERTS         published certificate directory
+  --allow-uncertified   explicitly run a backbone with no matching
+                        certificate; results are stamped uncertified
+  --tokenizer-dir TOKENIZER_DIR
+                        served model tokenizer directory (tokenizer.json +
+                        chat_template.jinja)
+  --device DEVICE
+  --route {head,cascade}
+  --model MODEL         served model name for the decode fallback (default:
+                        from identity)
+  --max-tokens MAX_TOKENS
+  --items ITEMS         JSONL of prepared decision items
+  --state STATE         single item: state (JSON or free text)
+  --question QUESTION   single item: question
+  --options OPTIONS [OPTIONS ...]
+                        single item: option texts
+  --criteria CRITERIA [CRITERIA ...]
+                        single item: OPTION=description pairs
+  --cached-shards CACHED_SHARDS [CACHED_SHARDS ...]
+                        replay archived feature shards instead of live readout
+  --policy POLICY       policy JSON selected on dev only
+  --min-confidence MIN_CONFIDENCE
+  --min-margin MIN_MARGIN
+  --max-normalized-entropy MAX_NORMALIZED_ENTROPY
+  --model-identity MODEL_IDENTITY
+                        optional backbone artifact identity for a strict check
+  --model-config MODEL_CONFIG
+                        optional backbone config used by the serving host
+  --out OUT

@@ -3,8 +3,8 @@ import argparse,json,os,sys
 from pathlib import Path
 import numpy as np
 import torch
-from domain import digest,identity,validate_distribution,atomic_json
-import train as trainer
+from .domain import digest,identity,validate_distribution,atomic_json
+from . import train as trainer
 
 def overlay(records,teachers,alpha):
     result=[];used=set()

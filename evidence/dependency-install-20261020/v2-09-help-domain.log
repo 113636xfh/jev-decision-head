@@ -1,0 +1,8 @@
+argv: ["<ENV_ROOT>\\Scripts\\python.exe", "-m", "jev.domain", "--help"]
+usage: domain.py [-h] {prepare,teacher} ...
+
+positional arguments:
+  {prepare,teacher}
+
+options:
+  -h, --help         show this help message and exit

@@ -1,0 +1,19 @@
+argv: ["<ENV_ROOT>\\Scripts\\python.exe", "-m", "jev.eval_replay", "--help"]
+usage: eval_replay.py [-h] --split {cal,dev,ood,test} --out OUT
+                      [--limit LIMIT] [--stride STRIDE] [--estimate-only]
+                      [--confirm-window] [--exclusive] [--deadline DEADLINE]
+                      [--identity IDENTITY] [--base BASE]
+
+options:
+  -h, --help            show this help message and exit
+  --split {cal,dev,ood,test}
+  --out OUT
+  --limit LIMIT
+  --stride STRIDE
+  --estimate-only
+  --confirm-window      required: acknowledges the live engine serves this
+                        sweep
+  --exclusive
+  --deadline DEADLINE
+  --identity IDENTITY
+  --base BASE

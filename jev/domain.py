@@ -7,8 +7,8 @@ import argparse, json, math, os, sys, urllib.request
 from pathlib import Path
 ROOT=Path(os.path.abspath(__file__)).parent
 sys.path.insert(0,str(ROOT.parent/'jev-v2'))
-from common import SCHEMA, atomic_json, canonical, digest, identity
-from fingerprint_model import verify_manifest
+from .common import SCHEMA, atomic_json, canonical, digest, identity
+from .fingerprint_model import verify_manifest
 
 def prepare(raw):
     if not isinstance(raw.get('question'),str) or not raw['question'].strip():raise ValueError('nonempty question required')
@@ -56,7 +56,8 @@ class DecodeClient:
         self.base=base.rstrip('/');self.model=model;self.max_tokens=max_tokens;self.timeout=timeout
     def __call__(self,item):
         payload={'model':self.model,'messages':[{'role':'user','content':teacher_prompt(item)}],
-                 'max_tokens':self.max_tokens,'temperature':0}
+                 'max_tokens':self.max_tokens,'temperature':0,
+                 'chat_template_kwargs':{'enable_thinking':False}}
         headers={'Content-Type':'application/json'}
         key=os.environ.get('JEV_API_KEY')
         if key:headers['Authorization']='Bearer '+key
@@ -133,7 +134,7 @@ if __name__=='__main__':
     p=sub.add_parser('teacher');p.add_argument('--items',required=True);p.add_argument('--out',required=True)
     p.add_argument('--base',default='http://127.0.0.1:8100');p.add_argument('--model',required=True)
     p.add_argument('--max-tokens',type=int,default=2048);p.add_argument('--timeout',type=float,default=180)
-    p.add_argument('--model-identity',required=True);p.add_argument('--model-config',default=STRATA + '/v0.1.41/strata-iq3_s.json')
+    p.add_argument('--model-identity',required=True);p.add_argument('--model-config',required=True,help='running Strata config to hash and compare')
     args=ap.parse_args()
     if args.mode=='prepare':prepare_file(args.items,args.out)
     else:

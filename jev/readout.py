@@ -2,7 +2,7 @@
 import base64
 import math
 import struct
-from common import PROMPT_VERSION
+from .common import PROMPT_VERSION
 
 def layers_of(text, n_layers=48):
     if not isinstance(text, str) or not text:

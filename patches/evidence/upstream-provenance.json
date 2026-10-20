@@ -1,0 +1,73 @@
+{
+  "schema": "small-decider-patch-source-provenance-v1",
+  "upstream_repository": "https://github.com/Niko1221/Strata.git",
+  "tag": "v0.1.44.1",
+  "annotated_tag_object": "9791ea335ba2001c87b5f783146d6eb08fdd9e5e",
+  "commit": "296b59d2f73c8f04a805df29c2fa97655adace78",
+  "tree": "063c7282837ecfe9fccad829ff7d7873400f6777",
+  "ggml_pin_declared_by_upstream": "3cf03257f219afbe7334045ff7c6a06ac68c627d",
+  "archive_sha256": "d526036a0109e57cde4ba5638341dfcdf7a27567828914731a004e634dc93cbf",
+  "cached_archive_git_blobs_verified": 3177,
+  "bat_worktree_EOL_restored_to_git_LF": [
+    "BENCH.bat",
+    "SETUP.bat",
+    "START-HERE.bat",
+    "UPDATE.bat",
+    "bench/results/2026-10-03-community-r9700-windows/run-iq2_xs-default.bat",
+    "bench/results/2026-10-03-community-r9700-windows/run-iq2_xs-fused.bat",
+    "bench/results/2026-10-03-community-r9700-windows/run-iq2_xs-plebatch0.bat",
+    "bench/results/2026-10-09-community-rtx-5080-w7-2475x-ud-iq4xs-786k/build.bat",
+    "bench/results/2026-10-09-community-rtx-5080-w7-2475x-ud-iq4xs-786k/run-chat.bat",
+    "tools/hip/build_windows.bat"
+  ],
+  "exact_original_commit_reconstructed": true,
+  "reconstruction_note": "all upstream blobs/trees and original commit bytes independently hash-matched; no synthetic/new commit created; original timezone +0200 recovered from the commit SHA",
+  "independent_git_fetch": {
+    "returncode": 0,
+    "requested_commit": "296b59d2f73c8f04a805df29c2fa97655adace78",
+    "observed_HEAD": "296b59d2f73c8f04a805df29c2fa97655adace78",
+    "observed_tree": "063c7282837ecfe9fccad829ff7d7873400f6777",
+    "clean_apply_validation": "validation-local.json"
+  },
+  "final_target_source_hashes": [
+    {
+      "path": "include/strata/core/verify.hpp",
+      "base_sha256": "12a7a1ca0323e2721cec2a91a11d2e32e0d3802db38b67494dbf9c2278d3d736",
+      "patched_sha256": "8534e025c4410c2ab8957ec8f3e31fdbef0eace3cfa634694a898917014973fa",
+      "base_git_blob": "a9dc19dbd6c3c327b74fc26fb1be18007e9d3884"
+    },
+    {
+      "path": "include/strata/prefill/prefill.hpp",
+      "base_sha256": "ef21f001d507daae7756d6e25fe9a728c716f67cb93c21667d1fccc0c5d3cc2c",
+      "patched_sha256": "a0a2f98a448864c1c161b77e583fdb6956c957183ce2462905cc85da8c26392e",
+      "base_git_blob": "b4f100df04e373f62f0b3824ae2485d24188bd08"
+    },
+    {
+      "path": "serve/server.py",
+      "base_sha256": "6c45c639e28a873b854606719d9ce2bb2e0df666f105164e78e2735878b9aa8f",
+      "patched_sha256": "d85622eb988638e089c07d6692b09f09f516a17c74d20c6540f6b874c6f9b65d",
+      "base_git_blob": "5ca7f4e4dabe6bd97f0f3aad30f720c9d8c186b1"
+    },
+    {
+      "path": "src/core/verify.cpp",
+      "base_sha256": "16f400260d1f0fcbe635d13575b0cd5bcd63463be691d5d69e8fe9981862d4cd",
+      "patched_sha256": "63b9135f36427ca93703b192bbb40534351b489cb6e8f2a34910f238ef2cec97",
+      "base_git_blob": "a8791cc671471fac92ba75f51a583b54b992a229"
+    },
+    {
+      "path": "src/prefill/prefill.cpp",
+      "base_sha256": "29f4caa7b2f50563b3437481a261ff88c0bc78cf9ed15ef9d1d6f4086120078d",
+      "patched_sha256": "08b9c6da71e031084e1b22bf5eee090bfd705515ecb64dbd1842ac3d42cc10ec",
+      "base_git_blob": "2fa71c7ce670720a5457f905f2df74ddedb3496a"
+    },
+    {
+      "path": "src/program/generate.cpp",
+      "base_sha256": "fd85d08db152867dfe9a36afaee584b643bd26ddd70d791f9ef95ca47ab940c7",
+      "patched_sha256": "13776c9aaee4388072345cfd865a4e22864395f5faa5f4eaf76294b4601dde8f",
+      "base_git_blob": "ba00f94d75121b8d4c7cbfdafd8daeb8d12e0be5"
+    }
+  ],
+  "certificate_status": "UNCERTIFIED",
+  "production_source_reads_only": true,
+  "production_modified": false
+}

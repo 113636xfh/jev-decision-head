@@ -1,0 +1,5 @@
+home = <ENV_ROOT>/base-python
+include-system-site-packages = false
+version = 3.12.10
+executable = <ENV_ROOT>/base-python\python.exe
+command = <ENV_ROOT>/base-python\python.exe -m venv <ENV_ROOT>

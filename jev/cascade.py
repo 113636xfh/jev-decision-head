@@ -1,7 +1,7 @@
 """Head first; uncertain or invalid predictions fall back to the SAME backbone's decode."""
 import math
 from dataclasses import dataclass
-from domain import validate_distribution
+from .domain import validate_distribution
 
 @dataclass(frozen=True)
 class Policy:
@@ -51,3 +51,17 @@ def summarize(rows):
     labeled_valid=sum(r['route']!='failed' and r.get('independent_gold') is not None for r in rows)
     totals['conditional_accuracy']=totals['correct']/labeled_valid if labeled_valid else None
     return totals
+
+
+def main():
+    """CLI entry: head first, decode fallback on the same backbone.
+
+    Shares every flag with `python -m jev.predict` (run `--help` there for the list);
+    the only difference is that the default route here is the cascade.
+    """
+    from .predict import main as run
+    run(default_route='cascade')
+
+
+if __name__ == '__main__':
+    main()

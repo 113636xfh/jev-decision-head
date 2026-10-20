@@ -9,8 +9,8 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
-import identity as IDENT                                    # noqa: E402
-from eval_replay import ARCHIVES                  # noqa: E402
+from . import identity as IDENT                                    # noqa: E402
+from .eval_replay import ARCHIVES                  # noqa: E402
 
 
 def main():

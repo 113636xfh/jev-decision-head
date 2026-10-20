@@ -1,0 +1,2 @@
+argv: ["<ENV_ROOT>\\Scripts\\python.exe", "-m", "pip", "list", "--format=json"]
+[{"name": "pip", "version": "25.0.1"}]

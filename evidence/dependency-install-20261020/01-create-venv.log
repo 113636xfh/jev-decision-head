@@ -1,0 +1,1 @@
+argv: ["<ENV_ROOT>/base-python\\python.exe", "-m", "venv", "<ENV_ROOT>"]

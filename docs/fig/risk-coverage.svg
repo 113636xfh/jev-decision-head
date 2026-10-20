@@ -1,44 +1,45 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="470" viewBox="0 0 1160 470"><rect width="1160" height="470" fill="#ffffff"/>
-<text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" fill="#111111" text-anchor="start">Risk - coverage: what you give up when you only accept confident answers</text>
-<line x1="100" y1="230.0" x2="1000" y2="230.0" stroke="#d8dee6" stroke-width="1"/>
-<text x="90" y="234.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.5</text>
-<line x1="100" y1="200.0" x2="1000" y2="200.0" stroke="#d8dee6" stroke-width="1"/>
-<text x="90" y="204.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.6</text>
-<line x1="100" y1="170.0" x2="1000" y2="170.0" stroke="#d8dee6" stroke-width="1"/>
-<text x="90" y="174.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.7</text>
-<line x1="100" y1="140.0" x2="1000" y2="140.0" stroke="#d8dee6" stroke-width="1"/>
-<text x="90" y="144.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.8</text>
-<line x1="100" y1="110.0" x2="1000" y2="110.0" stroke="#d8dee6" stroke-width="1"/>
-<text x="90" y="114.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.9</text>
-<line x1="100" y1="80.0" x2="1000" y2="80.0" stroke="#d8dee6" stroke-width="1"/>
-<text x="90" y="84.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">1</text>
-<text x="100.0" y="402" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">0</text>
-<text x="280.0" y="402" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">0.2</text>
-<text x="460.0" y="402" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">0.4</text>
-<text x="640.0" y="402" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">0.6</text>
-<text x="820.0" y="402" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">0.8</text>
-<text x="1000.0" y="402" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">1</text>
-<line x1="100" y1="380" x2="1000" y2="380" stroke="#111111" stroke-width="1.4"/>
-<line x1="100" y1="380" x2="100" y2="80" stroke="#111111" stroke-width="1.4"/>
-<text x="550.0" y="424" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#111111" text-anchor="middle">coverage</text>
-<text x="48" y="230.0" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#111111" text-anchor="middle" transform="rotate(-90 48 230.0)">accuracy on the accepted subset</text>
-<path d="M100.0,80.0 L117.5,80.0 L135.2,80.0 L152.7,80.0 L170.4,80.0 L187.9,80.0 L205.5,80.0 L223.1,81.1 L240.7,81.0 L258.3,80.8 L275.9,82.3 L293.4,82.1 L311.0,83.2 L328.6,83.0 L346.1,83.8 L363.8,84.1 L381.3,85.3 L399.0,85.4 L416.5,87.7 L434.1,88.9 L451.7,90.4 L469.3,92.4 L486.9,95.4 L504.5,96.1 L522.0,97.6 L539.6,99.7 L557.2,101.3 L574.8,101.9 L592.4,104.2 L609.9,106.5 L627.6,108.7 L645.1,111.3 L662.8,113.9 L680.3,116.6 L697.9,118.7 L715.5,119.1 L733.1,120.8 L750.6,124.1 L768.2,126.6 L785.8,128.1 L803.4,130.6 L821.0,132.2 L838.5,135.1 L856.2,137.2 L873.7,140.0 L891.4,140.7 L908.9,143.2 L926.5,146.1 L944.1,148.4 L961.7,150.7 L979.3,153.4 L996.9,155.7" fill="none" stroke="#1f6feb" stroke-width="2.6"/>
-<path d="M100.0,80.0 L117.5,80.0 L135.2,80.0 L152.7,80.0 L170.4,81.9 L187.9,81.5 L205.5,81.3 L223.1,81.1 L240.7,81.0 L258.3,80.8 L275.9,80.8 L293.4,80.7 L311.0,82.6 L328.6,83.5 L346.1,84.4 L363.8,85.1 L381.3,86.2 L399.0,87.2 L416.5,89.4 L434.1,90.1 L451.7,92.3 L469.3,94.3 L486.9,96.4 L504.5,99.1 L522.0,100.2 L539.6,102.1 L557.2,104.6 L574.8,106.5 L592.4,108.9 L609.9,109.7 L627.6,113.3 L645.1,115.0 L662.8,116.8 L680.3,118.9 L697.9,120.9 L715.5,121.6 L733.1,123.0 L750.6,125.1 L768.2,127.2 L785.8,129.5 L803.4,131.5 L821.0,132.9 L838.5,134.6 L856.2,137.2 L873.7,140.3 L891.4,142.7 L908.9,144.6 L926.5,146.8 L944.1,148.8 L961.7,151.7 L979.3,154.5 L996.9,158.0" fill="none" stroke="#c2410c" stroke-width="2.6" stroke-dasharray="7 4"/>
-<line x1="501.31" y1="380" x2="501.31" y2="80" stroke="#9aa4b0" stroke-width="1.1" stroke-dasharray="4 4"/>
-<text x="501.31" y="368" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="600" fill="#5a6472" text-anchor="middle">0.85</text>
-<line x1="447.66999999999996" y1="380" x2="447.66999999999996" y2="80" stroke="#9aa4b0" stroke-width="1.1" stroke-dasharray="4 4"/>
-<text x="447.66999999999996" y="368" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="600" fill="#5a6472" text-anchor="middle">0.90</text>
-<line x1="386.29" y1="380" x2="386.29" y2="80" stroke="#9aa4b0" stroke-width="1.1" stroke-dasharray="4 4"/>
-<text x="386.29" y="368" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="600" fill="#5a6472" text-anchor="middle">0.95</text>
-<rect x="124" y="204" width="330" height="96" rx="6" fill="#ffffff" stroke="#d8dee6" stroke-width="1"/>
-<text x="140" y="228" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="700" fill="#111111" text-anchor="start">operating points chosen on dev:</text>
-<text x="140" y="252" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="start">conf >= 0.85   coverage 44.6%   accuracy 94.8%</text>
-<text x="140" y="274" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="start">conf >= 0.90   coverage 38.6%   accuracy 96.5%</text>
-<text x="140" y="296" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="start">conf >= 0.95   coverage 31.8%   accuracy 98.3%</text>
-<rect x="112" y="104" width="215" height="62" rx="4" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
-<line x1="120" y1="120" x2="146" y2="120" stroke="#1f6feb" stroke-width="2.6"/>
-<text x="154" y="125" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">trained build (dev)</text>
-<line x1="120" y1="142" x2="146" y2="142" stroke="#c2410c" stroke-width="2.6" stroke-dasharray="7 4"/>
-<text x="154" y="147" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">second build (dev)</text>
-<text x="40" y="452" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#5a6472" text-anchor="start">Curves: dev split, 1,996 items, head answering directly (no fallback). Dashed lines: the operating points chosen on dev. Thresholds are never tuned on test.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="740" viewBox="0 0 1280 740" role="img">
+<title>Confidence trades coverage for accuracy</title><desc>Dev-only operating points; the head answers directly, without generation fallback.</desc>
+<rect x="0" y="0" width="1280" height="740" rx="0" fill="#ffffff" stroke="none" stroke-width="1.3"/>
+<rect x="48" y="34" width="40" height="30" rx="7" fill="#fdeacc" stroke="none" stroke-width="1.3"/>
+<text x="68" y="55" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="700" fill="#9a4d00">06</text>
+<text x="104" y="57" font-family="Arial, Helvetica, sans-serif" font-size="15" text-anchor="start" font-weight="700" fill="#5a6a80">JEV DECISION HEAD</text>
+<text x="48" y="108" font-family="Arial, Helvetica, sans-serif" font-size="28" text-anchor="start" font-weight="700" fill="#1a202c">Confidence trades coverage for accuracy</text>
+<text x="48" y="140" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="400" fill="#5a6a80">Dev-only operating points; the head answers directly, without generation fallback.</text>
+<line x1="104" y1="559.0" x2="804" y2="559.0" stroke="#e8edf3" stroke-width="1"/>
+<text x="90" y="565.0" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="end" font-weight="400" fill="#5a6a80">70%</text>
+<line x1="104" y1="450.61290322580635" x2="804" y2="450.61290322580635" stroke="#e8edf3" stroke-width="1"/>
+<text x="90" y="456.61290322580635" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="end" font-weight="400" fill="#5a6a80">80%</text>
+<line x1="104" y1="342.2258064516129" x2="804" y2="342.2258064516129" stroke="#e8edf3" stroke-width="1"/>
+<text x="90" y="348.2258064516129" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="end" font-weight="400" fill="#5a6a80">90%</text>
+<line x1="104" y1="233.8387096774194" x2="804" y2="233.8387096774194" stroke="#e8edf3" stroke-width="1"/>
+<text x="90" y="239.8387096774194" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="end" font-weight="400" fill="#5a6a80">100%</text>
+<text x="104.0" y="587" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="400" fill="#5a6a80">0%</text>
+<text x="244.0" y="587" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="400" fill="#5a6a80">20%</text>
+<text x="384.0" y="587" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="400" fill="#5a6a80">40%</text>
+<text x="524.0" y="587" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="400" fill="#5a6a80">60%</text>
+<text x="664.0" y="587" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="400" fill="#5a6a80">80%</text>
+<text x="804.0" y="587" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="400" fill="#5a6a80">100%</text>
+<line x1="104" y1="559" x2="804" y2="559" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M117.65,233.84 L131.37,233.84 L145.02,233.84 L158.74,233.84 L172.39,233.84 L186.04,233.84 L199.76,237.85 L213.41,237.31 L227.13,236.87 L240.78,242.18 L254.43,241.43 L268.15,245.44 L281.80,244.57 L295.45,247.71 L309.17,248.69 L322.82,252.91 L336.54,253.46 L350.19,261.59 L363.84,266.03 L377.56,271.34 L391.21,278.82 L404.93,289.44 L418.58,291.83 L432.23,297.57 L445.95,304.94 L459.60,310.79 L473.32,313.07 L486.97,321.20 L500.62,329.65 L514.34,337.57 L527.99,346.78 L541.71,356.32 L555.36,366.07 L569.01,373.66 L582.73,375.18 L596.38,381.25 L610.03,393.06 L623.75,402.06 L637.40,407.69 L651.12,416.58 L664.77,422.32 L678.42,433.05 L692.14,440.64 L705.79,450.50 L719.51,453.11 L733.16,462.21 L746.81,472.72 L760.53,481.07 L774.18,489.09 L787.90,498.95 L801.55,507.41" fill="none" stroke="#6480a0" stroke-width="3" stroke-linejoin="round"/>
+<path d="M117.65,233.84 L131.37,233.84 L145.02,233.84 L158.74,240.78 L172.39,239.37 L186.04,238.50 L199.76,237.85 L213.41,237.31 L227.13,236.87 L240.78,236.66 L254.43,236.33 L268.15,243.05 L281.80,246.63 L295.45,249.77 L309.17,252.37 L322.82,256.38 L336.54,259.96 L350.19,267.76 L363.84,270.37 L377.56,278.28 L391.21,285.43 L404.93,293.23 L418.58,302.66 L432.23,306.78 L445.95,313.83 L459.60,322.61 L473.32,329.54 L486.97,338.11 L500.62,341.14 L514.34,354.26 L527.99,360.22 L541.71,366.72 L555.36,374.53 L569.01,381.79 L582.73,383.95 L596.38,389.05 L610.03,396.85 L623.75,404.22 L637.40,412.68 L651.12,420.05 L664.77,425.03 L678.42,430.99 L692.14,440.64 L705.79,451.70 L719.51,460.48 L733.16,467.09 L746.81,475.11 L760.53,482.26 L774.18,492.99 L787.90,502.86 L801.55,515.54" fill="none" stroke="#e8850c" stroke-width="3" stroke-linejoin="round" stroke-dasharray="7 5"/>
+<text x="104" y="196" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="start" font-weight="400" fill="#5a6a80">Accuracy on the accepted subset</text>
+<text x="454" y="619" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="400" fill="#5a6a80">Coverage: share of items answered by the head</text>
+<line x1="126" y1="450" x2="154" y2="450" stroke="#6480a0" stroke-width="3"/>
+<text x="164" y="455" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="start" font-weight="400" fill="#5a6a80">Archived features</text>
+<line x1="126" y1="479" x2="154" y2="479" stroke="#e8850c" stroke-width="3" stroke-dasharray="6 4"/>
+<text x="164" y="484" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="start" font-weight="400" fill="#5a6a80">Second-build readout</text>
+<rect x="850" y="190" width="382" height="402" rx="12" fill="#f7f9fb" stroke="none" stroke-width="1.3"/>
+<text x="878" y="228" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="start" font-weight="700" fill="#5a6a80">EXAMPLE THRESHOLDS</text>
+<text x="878" y="275" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="start" font-weight="700" fill="#1a202c">Confidence &gt;= 0.85</text>
+<text x="878" y="306" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="400" fill="#5a6a80">44.6% coverage</text>
+<text x="878" y="332" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="400" fill="#5a6a80">94.8% accepted accuracy</text>
+<text x="878" y="373" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="start" font-weight="700" fill="#1a202c">Confidence &gt;= 0.90</text>
+<text x="878" y="404" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="400" fill="#5a6a80">38.6% coverage</text>
+<text x="878" y="430" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="400" fill="#5a6a80">96.5% accepted accuracy</text>
+<text x="878" y="471" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="start" font-weight="700" fill="#1a202c">Confidence &gt;= 0.95</text>
+<text x="878" y="502" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="400" fill="#5a6a80">31.8% coverage</text>
+<text x="878" y="528" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="400" fill="#5a6a80">98.3% accepted accuracy</text>
+<line x1="48" y1="659" x2="1232" y2="659" stroke="#dce3eb" stroke-width="1.5"/>
+<text x="48" y="686" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="start" font-weight="400" fill="#5a6a80">All curves and thresholds shown here use dev (1,996 items); they are not a held-out deployment guarantee.</text>
 </svg>

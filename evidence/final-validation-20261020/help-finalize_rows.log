@@ -1,0 +1,9 @@
+usage: finalize_rows.py [-h] --split {cal,dev,ood,test} --rows ROWS --summary
+                        SUMMARY [--identity IDENTITY]
+
+options:
+  -h, --help            show this help message and exit
+  --split {cal,dev,ood,test}
+  --rows ROWS
+  --summary SUMMARY
+  --identity IDENTITY

@@ -1,0 +1,17 @@
+argv: ["<ENV_ROOT>\\Scripts\\python.exe", "-m", "jev.run_all", "--help"]
+usage: run_all.py [-h] [--confirm-window] [--deadline DEADLINE] [--exclusive]
+                  [--identity IDENTITY] [--base BASE] [--skip-instrument]
+                  [--limit LIMIT] [--out-prefix OUT_PREFIX]
+
+options:
+  -h, --help            show this help message and exit
+  --confirm-window
+  --deadline DEADLINE
+  --exclusive           use the exclusive readout path (default: shared-slots)
+  --identity IDENTITY
+  --base BASE
+  --skip-instrument
+  --limit LIMIT         items per stage (smoke test); 0 = the full stage
+  --out-prefix OUT_PREFIX
+                        write stage outputs under this directory instead of
+                        the sweep root

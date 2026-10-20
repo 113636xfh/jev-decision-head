@@ -1,5 +1,10 @@
 # Jev Decision Head
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Python](https://img.shields.io/badge/python-3.12%20tested-blue)
+![selfcheck](https://img.shields.io/badge/selfcheck-passed-brightgreen)
+![backbone](https://img.shields.io/badge/backbone-Qwen3.8--Flash--Next--GSQ--RCO-orange)
+
 A lightweight Jev-style decision head, plus the Strata patches that let one resident Strata
 process serve **both** LLM generation and Jev-style typed decisions from a single set of
 weights. This repository ships the trained decision-head weights, the Strata interface
@@ -22,10 +27,23 @@ On the 231 publicly released JevBench items this head answers **198/231 (85.71%)
 running inside the same resident model process that serves chat — no second model, no second
 copy of the hardware ([§2](#2-accuracy)).
 
+**Try it in 30 seconds — no server, no GPU, no training workspace** (verified in a clean
+CPU-only environment):
+
+```bash
+python -m pip install -r requirements-cpu.txt
+python -m jev.selfcheck
+```
+
 ![Figure 1 — one backbone, two interfaces](docs/fig/architecture.png)
-*Figure 1. The prompt is read once by the resident backbone. Generation continues as usual;
-in parallel, readouts from five backbone layers feed a 13.19 M-parameter head that returns a
-probability for each declared option.*
+*Figure 1. One resident backbone serves generation and decision readouts. A decision uses its
+own forward pass, reading five backbone layers into a 13.19 M-parameter head; it does not
+reuse the hidden states of a previous chat request for free.*
+
+**Contents:** [1. Why this design](#1-why-this-design) · [2. Accuracy](#2-accuracy) ·
+[3. Speed](#3-speed) · [4. How it works](#4-how-it-works) · [5. Strata patches](#5-strata-patches) ·
+[6. Quick start](#6-quick-start) · [7. Training your own](#7-training-your-own) ·
+[8. Data and weights](#8-data-and-weights)
 
 ## 1. Why this design
 
@@ -93,12 +111,12 @@ them.
 ### 2.2 Held-out splits (7,718 items)
 
 These splits are derived from public decision datasets —
-[`pngwn/typed-decisions-v2`](https://huggingface.co/datasets/pngwn/typed-decisions-v2) and
-[`pngwn/typed-decisions-v2-system-one`](https://huggingface.co/datasets/pngwn/typed-decisions-v2-system-one),
-whose own upstream sources include [HotpotQA](https://huggingface.co/datasets/hotpotqa/hotpot_qa)
-and [MMLU-Pro](https://huggingface.co/datasets/MrTornado/MMLU-Pro) — plus internal control
-tasks for the OOD split. We do not re-distribute them; the repository ships the split manifests
-(item ids, group ids and hashes) so the same four splits can be rebuilt from the upstream data.
+the `community-hard-mix-v2-redistributable` configuration of
+[ZefanCai/Open-Jev-v1.1](https://huggingface.co/datasets/ZefanCai/Open-Jev-v1.1).
+The repository ships split membership, grouping, targets and hash commitments, not their task text.
+The selected 23,718 members match that public projection; OOD control/workflow categories are
+public-source categories, not additional project-private tasks. Exact lineage and applicable terms:
+[docs/DATA.md](docs/DATA.md) and [NOTICE](NOTICE).
 
 | Split | accuracy | ECE |
 |---|---|---|
@@ -112,8 +130,8 @@ threshold were chosen on dev alone. Note that the benchmark's 85.71% and our tes
 different distributions and splits — they are not comparable and not a progress curve.
 
 ![Figure 2 — reliability](docs/fig/reliability.png)
-*Figure 2. Reliability diagram (dev, per item) and ECE by split for the same frozen head on the
-trained build and on a second build of the same model.*
+*Figure 2. Dev reliability and ECE by split: the same frozen head scores archived features
+and second-build live readouts. Shared feature protocol does not imply identical feature values.*
 
 ### 2.3 Portability: the head belongs to one model build
 
@@ -131,7 +149,9 @@ That is the reason for the identity machinery in §4: a decision head is not por
 model builds for free, and any number you publish has to name the build it came from.
 
 ![Figure 3 — backbone swap](docs/fig/backbone-swap.png)
-*Figure 3. Same head, same features, same tokens; only the backbone build differs.*
+*Figure 3. Fixed head, token IDs, spans and feature protocol; archived-feature baseline versus
+second-build live readouts. Feature values and serving-stack identities differ, so this is not
+a weights-only causal ablation.*
 
 ## 3. Speed
 
@@ -195,7 +215,8 @@ cost stays at the millisecond level.
   number.
 
 ![Figure 7 — head depth](docs/fig/head-depth-ablation.png)
-*Figure 7. Head depth ablation: one variable per run, architecture never selected on test.*
+*Figure 7. Single-seed head-depth ablation (seed 0), with matched input layers, width and
+training-budget policy. Architecture is selected on dev NLL, never on test.*
 
 - **Identity binding.** Every evaluation records the running system's binary/config/weight
   hashes and re-verifies them during the run; if the service changes mid-run, the run refuses
@@ -203,72 +224,130 @@ cost stays at the millisecond level.
 
 ## 5. Strata patches
 
-Five patches against Strata 0.1.44.1 are needed on the serving side; `patches/README.md` gives
-the per-patch technical report (files and functions touched, blast radius, switch, acceptance
-numbers). They are intended as upstream PRs, and until they are merged you apply them from
-`patches/` before starting Strata.
+One consolidated patch against Strata 0.1.44.1 is needed on the serving side:
+`patches/0001-strata-v0.1.44.1-jev-readout.patch`, applied to clean upstream
+`296b59d2f73c8f04a805df29c2fa97655adace78` (tag `v0.1.44.1`). It is not an addition to the
+former five-patch 0.1.41 chain — the retired files and every before/after source hash are
+recorded in `patches/manifest.json`, and `patches/README.md` plus `docs/PATCHES.md` give the
+technical report. Do not apply patches by glob, and do not apply this to an already-customised
+tree.
 
-| Patch | What it changes | Why it is needed |
+What the patch adds:
+
+| Area | What it changes | Why it is needed |
 |---|---|---|
-| `0001-session-kv-retention` | a slot's KV stays resident across pipeline stages instead of being released (`serve/server.py`, `src/program/generate.cpp`) | a decision request and the chat request that produced its context share a slot; without retention every decision re-reads the whole conversation |
-| `0003-latent-readout` | adds the readout request path and the capability bit the client checks (`src/program/generate.cpp`) | the head scores hidden states; generating text and parsing it is slower and loses the distribution |
-| `0004-latent-taps` | one forward pass can be read at several layers, with schema validation (`generate.cpp`, `src/core/verify.cpp/.hpp`, `serve/server.py`) | the protocol reads six layers; six passes would multiply the prefill cost |
-| `0005-latent-spans-and-pooling` | span selection (stem / each option / decision position) and pooling (last, span mean) on the engine side | if engine and training extractor disagree about spans, the weights mean something else |
-| `0006-decision-region-and-tap-read-path` | defines the decision region and fixes the tap read path to it | a readout taken from the wrong position silently produces a different feature |
+| session KV retention | preserves a chat slot's KV across pipeline stages (`serve/server.py`, `src/program/generate.cpp`) | prevents loss of resident chat context; decision readouts still use their own forward pass and do not reuse chat KV |
+| readout path | adds the readout request path and the capability bit the client checks (`src/program/generate.cpp`) | the head scores hidden states; generating text and parsing it is slower and loses the distribution |
+| multi-layer taps | one forward pass can be read at several layers, with schema validation (`generate.cpp`, `src/core/verify.cpp/.hpp`, `serve/server.py`) | the protocol reads six layers; six passes would multiply the prefill cost |
+| spans and pooling | span selection (stem / each option / decision position) and pooling (last, span mean) on the engine side | if engine and training extractor disagree about spans, the weights mean something else |
+| decision region | defines the decision region and fixes the tap read path to it | a readout taken from the wrong position silently produces a different feature |
 
-Measured effect of the readout chain: with taps on the batched-prefill path, 402/512/950-token
-requests run 1.62× / 2.32× / 2.87× faster than the serial small-window path (107 tok/s) used
-before. Readouts are verified byte-for-byte against the archived features for identical tokens
-(`certs/live-readout-compatibility-r2-bitwise.json`), and a request that asks for readouts on a
-server without the capability is rejected rather than silently degraded.
+Build it with one command on the serving host:
 
-**Caveats we publish rather than hide.** Multi-layer readout does not reuse the prefix cache by
-design; feature values depend on expert placement, so a CPU-verified feature set and a GPU
-batched-prefill feature set are **not** interchangeable (`compute_backend` is part of the
-feature protocol); the capability bit is reported only under `batch_groups ≤ 2`.
+```sh
+GGML_DIR=/path/to/audited-pinned-llama.cpp \
+  bash patches/reproduce-build.sh /tmp/strata-repro-NEW
+```
+
+It checks out the pinned commit, applies the patch, verifies the patched bytes against
+`patches/manifest.json`, configures with the deployment's options and builds. Clean patch
+application and compilation are verified (`patches/evidence/validation-{local,linux}.json`).
+A rebuilt binary will not be byte-identical to the ones we ran - build paths and toolchain
+leak into the image - and it does not need to be: the client contract is the readout API
+the patch adds, checked at startup by `python -m jev.identity`.
+
+Historical measured effect: 402/512/950-token batched-prefill requests ran 1.62× / 2.32× /
+2.87× faster than the serial small-window path (107 tok/s).
+
+Multi-layer readout does not reuse the prefix cache. Features depend on expert placement;
+CPU-verified and GPU batched-prefill features are not interchangeable. The capability bit is
+reported only under `batch_groups ≤ 2`; unsupported modes fail rather than silently degrade.
 
 ## 6. Quick start
 
-```bash
-export JEV_DATA=$HOME/jev-data          # archives, split subsets, evaluation records
-export STRATA_ROOT=$HOME/strata         # patched Strata tree
-export CUDA_VISIBLE_DEVICES=3           # the harness GPU; never the serving GPUs
+```
+jev/         client, harnesses, selfcheck (torch + stdlib only)
+weights/     head weights + normalization (SHA-256 pinned in WEIGHTS.md)
+patches/     Strata readout patch, pinned build recipe, validation evidence
+manifests/   split membership, system identities, data lineage, verifiers
+benchmarks/  JevBench public 231 items + frozen upstream scorer
+baselines/   per-item dev baseline for check_baseline.py
+results/     archived-feature held-out metrics
+identity/    runtime identity captures from measurement runs
+policies/    dev-only router thresholds
+evidence/    isolated-install, live smoke and validation records
+docs/        DATA / PATCHES / IDENTITIES detail; docs/fig/ the eight figures
+serve/       example launch script (exact config pinned in REPRODUCE.md §0a)
+tests/       offline contract tests (no server, no GPU)
+```
 
-# 1. build Strata with the patches, then start it with the shipped config
-git apply patches/*.patch && ./start.sh
+```bash
+# 0. dependencies, then an offline self-check that needs no server, no GPU and no
+#    training workspace: it loads the published weights, runs a forward pass, and
+#    checks the geometry, policy and benchmark snapshot
+python -m pip install -r requirements-cpu.txt   # tested CPU dependency profile
+python -m jev.selfcheck
+
+# 1. on the serving host: build the patched engine (see §5; one command,
+#    patches/reproduce-build.sh). serve/launch.example.sh shows the shape of the launch;
+#    our exact launch configuration is pinned in REPRODUCE.md §0a.
 
 # 2. record the runtime identity (required, not optional)
-python -m jev.identity --base http://127.0.0.1:8100 --out runtime-identity.json
+python -m jev.identity --base http://127.0.0.1:8100 --out identity/runtime-identity.json
 
-# 3. score one item with the shipped head
-python -m jev.predict --identity runtime-identity.json \
-  --state '{"ticket": "..."}' --question "route" \
-  --options '["billing","account","other"]'
+# 3. score one item with the shipped head (--tokenizer-dir is the served model's
+#    tokenizer directory: descriptor + vocab.json + merges.txt + token_type.json + chat_template.jinja)
+python -m jev.predict --identity identity/runtime-identity.json \
+  --tokenizer-dir /path/to/served/tokenizer \
+  --state '{"ticket": "T-1", "unpaid_days": 12}' \
+  --question 'Route this ticket to billing?' \
+  --options yes no --out decision.json
 
 # 4. or use the router (thresholds from dev only; the shipped file is policies/dev-thresholds.json)
-python -m jev.cascade --identity runtime-identity.json --policy policies/dev-thresholds.json
+python -m jev.cascade --identity identity/runtime-identity.json \
+  --tokenizer-dir /path/to/served/tokenizer --items items.jsonl --out predictions.jsonl
+
+# 5. keep the identity file from step 2 with every result set: it records exactly
+#    which engine / server / config / tokenizer answered your requests
+python -m jev.predict --identity identity/runtime-identity.json \
+  --tokenizer-dir /path/to/served/tokenizer --state '{...}' --question '...' \
+  --options yes no --out measurement.json
 ```
 
-Without a compatibility certificate matching your pair, the loader refuses to run rather than
-silently scoring with the wrong features.
+The client runs against any patched Strata server. `python -m jev.identity` records which
+engine / server / config / tokenizer answered, and the harnesses refuse to keep going when
+that build changes mid-run. Our exact environment - upstream commit, patch, build recipe,
+model pack and hashes - is pinned in `REPRODUCE.md` §0a.
 
-**This path is tested, not aspirational.** Replaying 20 dev items through the code in this
-repository reproduced the accepted 2026-10-15 baseline exactly — 20 compared, 0 gold
-mismatches, 0 prediction mismatches (`evidence/smoke-20-dev-20261020/smoke20-check.json`, with
-the runtime identity that produced it). Reproduce with:
+**Acceptance status.** Online measurement passed a single-item call, 20 valid head
+distributions, forced generation fallback, and a four-item natural cascade with both
+routes. Token IDs and all spans matched the pinned Strata tokenizer/template on 20 prompts.
+This is interface acceptance, not a new performance estimate.
+
+The original 20-item smoke rows could not be recovered. A separately identified first-20 subset
+was derived from the original full archived-dev results; it agrees with the accepted baseline
+20/20 and is not a recovered live result. Historical live-vs-archive evidence remains 3/20 answer
+flips and 0/20 fully byte-identical vectors. Recompute the derived comparison without a server:
 
 ```bash
-python -m jev.eval_replay --split dev --limit 20 --out rows-smoke20 \
-        --identity runtime-identity.json --confirm-window
-python -m jev.check_baseline --rows rows-smoke20.jsonl \
-        --accepted baselines/middle5-s1.dev-predictions.jsonl
+python -m jev.check_baseline \
+  --rows evidence/smoke-20-dev-20261020/rows-smoke20-derived-archive-v2.jsonl \
+  --expected-count 20
 ```
+
+A clean isolated CPU installation passed dependency resolution, unit tests and selfcheck.
+One earlier selfcheck run in that environment hit an unexplained native crash that later
+passes did not reproduce; the records are in `evidence/dependency-install-20261020/`.
+Full status and evidence: [REPRODUCE.md](REPRODUCE.md).
 
 ## 7. Training your own
 
 ```bash
-python -m jev.extract  --endpoint ... --items data/train.jsonl --out archive/
-python -m jev.train    --archive archive/ --config jev/experiments.json --run middle5-s1
+# extraction runs inside the Strata source tree: it uses the served model's tokenizer stack
+python -m jev.extract --base http://127.0.0.1:8100 --items items.jsonl \
+        --layers 23,29,35,41,-1 --out archive/shard-00000
+python -m jev.train --shards archive/shard-00000 archive/shard-00001 \
+        --out runs/middle5-s1 --layers 23,29,35,41,-1 --seed 1 --epochs 8
 ```
 
 `jev/experiments.json` is the pre-registered experiment matrix: one variable per run, fixed
@@ -280,14 +359,16 @@ Labelled-data volume was the variable that kept paying: with everything else fix
 68.28 / 70.24 / 72.09 / 75.99%.
 
 ![Figure 8 — data scaling](docs/fig/data-scaling.png)
-*Figure 8. Training-scale learning curve, same head and protocol.*
+*Figure 8. Training-scale curve for the three-input-layer, 12.67 M-parameter baseline
+(seed 0), not the released five-input-layer head. Normalisation is re-fit per training subset;
+epoch caps, rather than optimiser-update counts, are matched.*
 
 ## 8. Data and weights
 
 | Item | Where it comes from | Redistributed here |
 |---|---|---|
-| Public benchmark | [JevBench](https://jevbench.dev/) · [methodology](https://benchmarkheaven.com/jev-models/methodology) | no (231 items fetched by the eval script) |
-| Decision datasets behind our splits | [`pngwn/typed-decisions-v2`](https://huggingface.co/datasets/pngwn/typed-decisions-v2) and [`-v2-system-one`](https://huggingface.co/datasets/pngwn/typed-decisions-v2-system-one), whose own upstream pins include [HotpotQA](https://huggingface.co/datasets/hotpotqa/hotpot_qa) and [MMLU-Pro](https://huggingface.co/datasets/MrTornado/MMLU-Pro) | no |
+| Public benchmark | [JevBench](https://jevbench.dev/) · [pinned source](https://github.com/fstandhartinger/jevbench/tree/7625ecb1b075cfe4d09d34141d353325825eea1d) | yes: public 231 tasks and scorer, upstream MIT license; no sealed tasks |
+| Decision datasets behind our splits | `ZefanCai/Open-Jev-v1.1`, `community-hard-mix-v2-redistributable`; see `docs/DATA.md` and `NOTICE` | no task text; membership/targets/hash commitments only |
 | Our splits (dev 1,996 / test 1,999 / OOD, cal) | derived from the above, isolated by parent group and semantics — never by id arithmetic | no; manifest + hashes |
 | Feature archives | produced by `jev.extract` | no; hashes in the archive manifest |
 | Backbone weights | `Qwen3.8-Flash-Next-GSQ-RCO` (the model this head was trained on) | no (re-distribution unconfirmed) |
@@ -295,5 +376,7 @@ Labelled-data volume was the variable that kept paying: with everything else fix
 
 ## 9. Licence
 
-Code, patches and weights: MIT (`LICENSE`). Data, feature archives, backbone weights and
-third-party datasets are not re-distributed — see `NOTICE` and §8.
+Original code and head weights: MIT (`LICENSE`); upstream-derived portions retain their own terms.
+The public-231 benchmark and scorer and the vendored Strata tokenizer retain their upstream MIT
+notices. Training split text, feature archives and backbone weights are not redistributed.
+See `NOTICE` and §8.

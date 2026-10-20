@@ -1,0 +1,21 @@
+{
+  "original_archive_sha256": "c74fff26a6aabcb3a8b233ed5815323520a81e0638f235c0995b462cff72497b",
+  "accepted_file": "<PROJECT_ROOT>\\baselines\\middle5-s1.dev-predictions.jsonl",
+  "accepted_rows": 1996,
+  "rows_file": "evidence/smoke-20-dev-20261020/rows-smoke20-derived-archive-v2.jsonl",
+  "rows_ok": 20,
+  "compared": 20,
+  "gold_mismatches": 0,
+  "prediction_mismatches": 0,
+  "unknown_uids": 0,
+  "incompatible_rows": 0,
+  "missing_accepted_rows": 1976,
+  "expected_count": 20,
+  "require_complete": false,
+  "passed": true,
+  "errors": [],
+  "details": [],
+  "accepted_identity": "published-sha256-lf",
+  "accepted_sha256_lf": "7e76aa9a6a3df0754b7e6e55cb5c1d1d690b08d896d9d249556ec25cb74b9db2",
+  "rows_schema": "replay"
+}

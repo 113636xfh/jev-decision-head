@@ -1,0 +1,10 @@
+usage: tune_policy.py [-h] --dev-predictions DEV_PREDICTIONS --out OUT
+                      [--target-accuracy TARGET_ACCURACY]
+                      [--min-accepted MIN_ACCEPTED]
+
+options:
+  -h, --help            show this help message and exit
+  --dev-predictions DEV_PREDICTIONS
+  --out OUT
+  --target-accuracy TARGET_ACCURACY
+  --min-accepted MIN_ACCEPTED

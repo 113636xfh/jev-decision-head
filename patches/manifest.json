@@ -1,0 +1,229 @@
+{
+  "schema": "small-decider-strata-patch-chain-v1",
+  "upstream": {
+    "repository": "https://github.com/Niko1221/Strata.git",
+    "tag": "v0.1.44.1",
+    "commit": "296b59d2f73c8f04a805df29c2fa97655adace78",
+    "tree": "063c7282837ecfe9fccad829ff7d7873400f6777",
+    "ggml_commit": "3cf03257f219afbe7334045ff7c6a06ac68c627d"
+  },
+  "patches": [
+    {
+      "file": "0001-strata-v0.1.44.1-jev-readout.patch",
+      "sha256": "b7a90f2e651d0b9e0b0e7d1fa49072d42aa3f6e6effcdee08ef2690bc5481a6b",
+      "bytes": 126908
+    }
+  ],
+  "files": [
+    {
+      "path": "include/strata/core/verify.hpp",
+      "base_sha256": "12a7a1ca0323e2721cec2a91a11d2e32e0d3802db38b67494dbf9c2278d3d736",
+      "patched_sha256": "8534e025c4410c2ab8957ec8f3e31fdbef0eace3cfa634694a898917014973fa",
+      "base_git_blob": "a9dc19dbd6c3c327b74fc26fb1be18007e9d3884"
+    },
+    {
+      "path": "include/strata/prefill/prefill.hpp",
+      "base_sha256": "ef21f001d507daae7756d6e25fe9a728c716f67cb93c21667d1fccc0c5d3cc2c",
+      "patched_sha256": "a0a2f98a448864c1c161b77e583fdb6956c957183ce2462905cc85da8c26392e",
+      "base_git_blob": "b4f100df04e373f62f0b3824ae2485d24188bd08"
+    },
+    {
+      "path": "serve/server.py",
+      "base_sha256": "6c45c639e28a873b854606719d9ce2bb2e0df666f105164e78e2735878b9aa8f",
+      "patched_sha256": "d85622eb988638e089c07d6692b09f09f516a17c74d20c6540f6b874c6f9b65d",
+      "base_git_blob": "5ca7f4e4dabe6bd97f0f3aad30f720c9d8c186b1"
+    },
+    {
+      "path": "src/core/verify.cpp",
+      "base_sha256": "16f400260d1f0fcbe635d13575b0cd5bcd63463be691d5d69e8fe9981862d4cd",
+      "patched_sha256": "63b9135f36427ca93703b192bbb40534351b489cb6e8f2a34910f238ef2cec97",
+      "base_git_blob": "a8791cc671471fac92ba75f51a583b54b992a229"
+    },
+    {
+      "path": "src/prefill/prefill.cpp",
+      "base_sha256": "29f4caa7b2f50563b3437481a261ff88c0bc78cf9ed15ef9d1d6f4086120078d",
+      "patched_sha256": "08b9c6da71e031084e1b22bf5eee090bfd705515ecb64dbd1842ac3d42cc10ec",
+      "base_git_blob": "2fa71c7ce670720a5457f905f2df74ddedb3496a"
+    },
+    {
+      "path": "src/program/generate.cpp",
+      "base_sha256": "fd85d08db152867dfe9a36afaee584b643bd26ddd70d791f9ef95ca47ab940c7",
+      "patched_sha256": "13776c9aaee4388072345cfd865a4e22864395f5faa5f4eaf76294b4601dde8f",
+      "base_git_blob": "ba00f94d75121b8d4c7cbfdafd8daeb8d12e0be5"
+    }
+  ],
+  "validation_tools": [
+    {
+      "file": "verify.py",
+      "sha256": "01ae2f945b71666585253634d090b8cbbcbd32cf52fd411d98b9db94a075ce0a"
+    },
+    {
+      "file": "test_contract.py",
+      "sha256": "43e8863e37d940201e764ca295851ac6eafe717ea0cc3ec03b4b7249034d7208"
+    },
+    {
+      "file": "compare_binary.py",
+      "sha256": "2651d77c095fba448d315c9eef59e3a8ae08d18bb2bacd08546108e77339e7ad"
+    },
+    {
+      "file": "reproduce-build.sh",
+      "sha256": "3b5808c889e3ce1c6ca24b4c90bf75a61f4a6297d0317c315769d669f82e44c7"
+    },
+    {
+      "file": "test_build_tools.py",
+      "sha256": "48728dc1809454731a79732e8d0c14ece6dc031cfa5dab5c8d28c3abf7dad36c"
+    },
+    {
+      "file": "audit_builds.py",
+      "sha256": "0fc2de042c7046b0e2a53724ea83467d20c9c6d605a72ee071bb2888c7891dbe"
+    },
+    {
+      "file": "summarize_audit.py",
+      "sha256": "03ab751dd37893b56b906e9866acbc4b40d7b8b897b088087a226f534cb0b732"
+    },
+    {
+      "file": "test_existing_binary.py",
+      "sha256": "c32d28570e12a63f20e594086f63340092429ea0f6358b125ab90252ca76fcbe"
+    }
+  ],
+  "features": [
+    {
+      "name": "latent_base_and_taps",
+      "implementation": [
+        "serve/server.py:_latent",
+        "src/program/generate.cpp:STRLAT1/2/3 writers",
+        "src/core/verify.cpp:Verifier::enable_taps/read_taps",
+        "include/strata/core/verify.hpp"
+      ],
+      "scope": "server-owned temporary output, explicit token IDs, per-layer/per-span last/mean/raw vectors"
+    },
+    {
+      "name": "fast_prefill",
+      "implementation": [
+        "include/strata/prefill/prefill.hpp:on_layer",
+        "src/prefill/prefill.cpp:on_layer callback",
+        "src/program/generate.cpp:lat_fast_active/LatPrefillHooks"
+      ],
+      "scope": "observer on actual batched prompt prefill; explicit verify diagnostic path remains"
+    },
+    {
+      "name": "shared_lease_and_GEN_BGEN_MTP_isolation",
+      "implementation": [
+        "serve/server.py:cooperative_readout/generate_batched/latent_lease",
+        "src/program/generate.cpp:admit_slot guard/pipe_drain/use_mtp"
+      ],
+      "scope": "one latent at a time, supported fast readout shares chat read lease; no BGEN admission; legacy exclusive; request-local MTP disable; callbacks removed by RAII"
+    },
+    {
+      "name": "official_adapt_capability",
+      "implementation": [
+        "src/program/generate.cpp:INFO jev_slot_readout"
+      ],
+      "scope": "batch>0 and batch_groups<=2; no adapt=0/0 prerequisite; capability is not numerical compatibility"
+    },
+    {
+      "name": "unified_auth",
+      "implementation": [
+        "serve/server.py:_post/_authorized"
+      ],
+      "scope": "latent and chat use the same Strata API-key gate; unset key permits both; no diagnostic-only key"
+    },
+    {
+      "name": "input_and_allocation_guards",
+      "implementation": [
+        "serve/server.py:readout_value/_latent/JEV_KEYS",
+        "src/program/generate.cpp:lat_spans_init/per-tap counters",
+        "src/core/verify.cpp:read_taps"
+      ],
+      "scope": "control-character/path/shape/layer-alias/span/pool checks, bounded staging scratch, 1GiB raw-row budget, per-layer coverage, finite/truncated output rejection; not a full security audit"
+    },
+    {
+      "name": "session_KV_retention",
+      "implementation": [
+        "serve/server.py:pick_slot",
+        "src/program/generate.cpp:PGroup.first/pump"
+      ],
+      "scope": "longest common prefix affinity and trimmed leading idle rows with corrected global slot mapping; interior holes at groups>2 remain an upstream limitation"
+    }
+  ],
+  "provenance": {
+    "method": "one consolidated Git-format diff from the exact clean pinned upstream blobs to the final cached six-file implementation; no mixed-version prerequisite patches",
+    "baseline_validation": "3177 cached upstream blobs verified; tree and original commit objects SHA-matched; upstream BAT files normalized to Git LF only for blob reconstruction",
+    "patch_target_validation": "all six target byte hashes recorded; server is the unified-auth + KV-retention implementation, generator includes official-adapt + KV-retention; remaining four are the reviewed fast-prefill/tap sources",
+    "compatibility": "UNCERTIFIED: this is a source/build artifact, not a numerical certificate, deployment receipt, or reproduction of any historical binary/config identity"
+  },
+  "build_recipe": {
+    "backend": "CUDA",
+    "target": "strata",
+    "architecture": "70",
+    "parallel_jobs": 1,
+    "STRATA_NATIVE_EXPERTS": "ON",
+    "STRATA_MMQ_KQUANTS": "OFF",
+    "STRATA_EXPERIMENTAL_SM60": "ON",
+    "GPU_inference": false,
+    "note": "Single complete configure recipe used by verify.py and reproduce-build.sh. Compile-only PASS is not binary equivalence; optional comparison requires entire-file byte identity. No model execution, installation or service restart.",
+    "ggml_tree_sha256": "e674bc38ac37c31c4096f74f0a4fe6f691ac8a07a42e1685a473e2b0111a8298",
+    "ggml_tree_digest_algorithm": "sorted POSIX relative path + NUL + file SHA256 + LF, UTF-8; all regular files under ggml/; see evidence/existing-build-audit-v2-20261020.json.gz",
+    "cmake_definitions": {
+      "CMAKE_BUILD_TYPE": "Release",
+      "STRATA_ENABLE_CUDA": "ON",
+      "STRATA_EXPERIMENTAL_SM60": "ON",
+      "STRATA_BUILD_TESTS": "OFF",
+      "STRATA_BUILD_CONVERSATION_TESTS": "OFF",
+      "STRATA_NATIVE_EXPERTS": "ON",
+      "STRATA_MMQ_KQUANTS": "OFF",
+      "GGML_NATIVE": "ON",
+      "GGML_AVX": "OFF",
+      "GGML_AVX2": "OFF",
+      "GGML_FMA": "OFF",
+      "GGML_F16C": "OFF",
+      "GGML_BMI2": "OFF",
+      "GGML_SSE42": "OFF",
+      "GGML_AVX512": "OFF",
+      "GGML_AVX512_BF16": "OFF",
+      "GGML_AVX512_VBMI": "OFF",
+      "GGML_AVX512_VNNI": "OFF",
+      "GGML_AVX_VNNI": "OFF",
+      "GGML_AMX_TILE": "OFF",
+      "GGML_AMX_INT8": "OFF",
+      "GGML_AMX_BF16": "OFF"
+    }
+  },
+  "supersedes": [
+    {
+      "file": "0001-session-kv-retention.manifest.json",
+      "sha256": "12949742ef07726c93bd8d38f102a090ba69e2eac6236b734ef02a3e548dfbfe"
+    },
+    {
+      "file": "0001-session-kv-retention.patch",
+      "sha256": "95e99a0a02ead4dd648365ed5f3b25f8bfdd9c39241350304e79674322abd130"
+    },
+    {
+      "file": "0003-latent-readout.patch",
+      "sha256": "734b6f33e71388c96fba1a4d4caad0d5ecb938b412727ea4f833930733fff3d0"
+    },
+    {
+      "file": "0004-latent-taps.patch",
+      "sha256": "73e48e00cd7ba5b9ea64a2f7251618ce970865037eb1599492daa678958938c0"
+    },
+    {
+      "file": "0005-latent-spans-and-pooling.patch",
+      "sha256": "55f7864a4fc9f0a09e0441654e48d86dbc70d37751c2b8572a99b8b21364cc58"
+    },
+    {
+      "file": "0006-decision-region-and-tap-read-path.patch",
+      "sha256": "5bb291dac3eda506678c4c0ffeeaa2e5666d984c229992e78ffa58d2ff979b9d"
+    }
+  ],
+  "retirement_reason": "previous mixed custom/0.1.41 chain lacked base routes, fast prefill, isolation, adapt capability and auth; do not apply old patches before or after this patch",
+  "acceptance": {
+    "clean_apply": "see evidence/validation-local.json and evidence/validation-linux.json",
+    "build": "see evidence/build-cuda.json",
+    "native_runtime": "NOT_RUN",
+    "numeric_compatibility": "UNCERTIFIED",
+    "historical_certificates_reused": false,
+    "current_tool_validation": "evidence/validation-strict-tooling-linux-v2-20261020.json; build_status=NOT_RUN is not a new compile",
+    "strict_binary_comparison": "evidence/existing-build-summary-v2-20261020.json; both existing rebuilds FAIL entire-file identity; no CUDA/data equivalence inferred",
+    "retired_comparison_claim": "evidence/reproducible-build-20261020.json is preserved historical evidence only; its normalized-host same-build/equivalence criterion is withdrawn by evidence/strict-build-correction-20261020.json"
+  }
+}

@@ -1,0 +1,34 @@
+argv: ["<ENV_ROOT>\\Scripts\\python.exe", "-m", "unittest", "discover", "-s", "tests", "-v"]
+test_accepted_must_use_baseline_schema (test_check_baseline.BaselineContract.test_accepted_must_use_baseline_schema) ... ok
+test_actual_baseline_self_comparison_all_1996 (test_check_baseline.BaselineContract.test_actual_baseline_self_comparison_all_1996) ... ok
+test_all_unknown_uids_fail (test_check_baseline.BaselineContract.test_all_unknown_uids_fail) ... ok
+test_cli_json_failure_and_success_exit_codes (test_check_baseline.BaselineContract.test_cli_json_failure_and_success_exit_codes) ... ok
+test_custom_reference_is_explicitly_unverified (test_check_baseline.BaselineContract.test_custom_reference_is_explicitly_unverified) ... ok
+test_decode_route_not_archived_head_evidence (test_check_baseline.BaselineContract.test_decode_route_not_archived_head_evidence) ... ok
+test_duplicate_accepted_uid_fails (test_check_baseline.BaselineContract.test_duplicate_accepted_uid_fails) ... ok
+test_duplicate_candidate_uid_fails (test_check_baseline.BaselineContract.test_duplicate_candidate_uid_fails) ... ok
+test_each_supported_schema (test_check_baseline.BaselineContract.test_each_supported_schema) ... ok
+test_every_required_field_is_required (test_check_baseline.BaselineContract.test_every_required_field_is_required) ... ok
+test_explicit_error_metadata_is_rejected (test_check_baseline.BaselineContract.test_explicit_error_metadata_is_rejected) ... ok
+test_gold_and_prediction_mismatches_fail (test_check_baseline.BaselineContract.test_gold_and_prediction_mismatches_fail) ... ok
+test_invalid_input_fails_closed (test_check_baseline.BaselineContract.test_invalid_input_fails_closed) ... ok
+test_no_mixed_schema_file (test_check_baseline.BaselineContract.test_no_mixed_schema_file) ... ok
+test_no_silent_error_row_filter (test_check_baseline.BaselineContract.test_no_silent_error_row_filter) ... ok
+test_output_evidence_is_not_overwritten (test_check_baseline.BaselineContract.test_output_evidence_is_not_overwritten) ... ok
+test_probabilities_and_choice_must_agree (test_check_baseline.BaselineContract.test_probabilities_and_choice_must_agree) ... ok
+test_probabilities_must_be_real_distributions (test_check_baseline.BaselineContract.test_probabilities_must_be_real_distributions) ... ok
+test_published_reference_identity_is_pinned (test_check_baseline.BaselineContract.test_published_reference_identity_is_pinned) ... ok
+test_release_labels_and_geometry (test_check_baseline.BaselineContract.test_release_labels_and_geometry) ... ok
+test_replay_numeric_types_and_ranges (test_check_baseline.BaselineContract.test_replay_numeric_types_and_ranges) ... ok
+test_replay_status_values_fail (test_check_baseline.BaselineContract.test_replay_status_values_fail) ... ok
+test_schema_ambiguity_and_tags (test_check_baseline.BaselineContract.test_schema_ambiguity_and_tags) ... ok
+test_split_and_geometry_must_match (test_check_baseline.BaselineContract.test_split_and_geometry_must_match) ... ok
+test_subset_is_explicit_and_complete_gate_enforced (test_check_baseline.BaselineContract.test_subset_is_explicit_and_complete_gate_enforced) ... ok
+test_unknown_uid_is_not_silently_skipped (test_check_baseline.BaselineContract.test_unknown_uid_is_not_silently_skipped) ... ok
+test_derived_rows_and_provenance_are_bound (test_smoke_archive_evidence.DerivedEvidence.test_derived_rows_and_provenance_are_bound) ... ok
+test_original_archive_projection_when_source_available (test_smoke_archive_evidence.DerivedEvidence.test_original_archive_projection_when_source_available) ... ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 1.733s
+
+OK

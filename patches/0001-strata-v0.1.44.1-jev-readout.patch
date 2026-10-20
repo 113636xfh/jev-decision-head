@@ -1,0 +1,1778 @@
+diff --git a/include/strata/core/verify.hpp b/include/strata/core/verify.hpp
+index a9dc19dbd6c3c327b74fc26fb1be18007e9d3884..24e731904e5db4f09f31e3738e11e5a5151dd97f 100644
+--- a/include/strata/core/verify.hpp
++++ b/include/strata/core/verify.hpp
+@@ -295,6 +295,21 @@
+     /// Token t's residual after the last layer, (hc, n_embd) on the device, valid until the next `run`.
+     const float* final_R(int t) const;
+     const float* final_R_all() const { return next_ ? next_->final_R_all() : R_; }
++
++    // ---- patch 0004: THE LATENT TAPS.  A decision read-out wants the residual stream at several depths, not only
++    // the last one (`--dump-layers` proves the trunk: the judgement-bearing features peak mid-depth, while the last
++    // layer is already specialised for the next token).  `enable_taps` stages the residual after EVERY layer of
++    // every window `run` computes, on the device, with no host round trip inside the captured graph (one D2D
++    // memcpy node per layer, ~16 MiB of VRAM for 48 layers).  A request then names the layers it wants and the
++    // rows it wants them for; nothing is copied to the host unless it asks.  The staging is engine-wide, never
++    // per request, so a graph captured for one request is correct for the next one too.
++    void enable_taps();                     ///< before the first `run`; recursive, allocates, drops stale graphs
++    bool taps_on() const { return next_ ? next_->taps_on() : taps_on_; }
++    /// Read the rows `[row0, row0 + n)` of the LAST window out of the named layers (`-1` = the final residual).
++    /// `dst` is laid out one block per requested layer: `dst[(k * dst_rows + out_row0 + j) * dim]`, dim = hc*n_embd.
++    /// Call after `run` returned - its sync orders the copies.  Safe to call with taps off (leaves `dst` alone).
++    bool read_taps(const std::vector<int32_t>& layers, int64_t row0, int64_t n, int64_t out_row0, int64_t dst_rows,
++                   std::vector<float>& dst);
+ 
+     /// The GPU plan the pool writes each layer (VRAM hits + the PCIe share of the misses); give it to the
+     /// dispatch (`ExpertDispatch::plan`) before the first `run`.
+@@ -412,6 +427,8 @@
+     unsigned* qcnt_ = nullptr;             ///< S26 STRATA_QFUSE: the HC read's q8_1 group counters (n_embd / 32)
+     unsigned long long* slot_off_d_ = nullptr;   ///< E-6: the slot offsets on the device
+     int64_t lb_ = 0, le_ = -1;           ///< set_stage: the layers this verifier runs (-1: to the last)
++    bool taps_on_ = false;               ///< patch 0004: stage every layer's residual (see `enable_taps`)
++    float* tap_dev_ = nullptr;           ///< patch 0004: (n_layers + 1) blocks of kVerifyMaxT rows of hc*n_embd
+     const float* hand_in_ = nullptr;
+     float* hand_out_ = nullptr;
+     Verifier* next_ = nullptr;
+diff --git a/include/strata/prefill/prefill.hpp b/include/strata/prefill/prefill.hpp
+index b4f100df04e373f62f0b3824ae2485d24188bd08..fd9fd105ca5543558ae3da7537949d55336e0213 100644
+--- a/include/strata/prefill/prefill.hpp
++++ b/include/strata/prefill/prefill.hpp
+@@ -139,6 +139,13 @@
+     /// T x hc*n_embd, valid until the next chunk) and the chunk's first position; the MTP draft layer builds its
+     /// K/V from them.  The prefill stream is synchronized before the call.
+     std::function<bool(const float* R_rows, int64_t T, int64_t pos0, std::string& err)> on_chunk;
++
++    /// Optional read-only residual observer after a complete layer's two halves.
++    /// Called on the owning stage/device/thread; R holds T rows at absolute pos0.
++    /// Writes to R/session are forbidden. The callback orders copies on stream
++    /// before R is overwritten. Unset has no synchronization or allocation cost.
++    std::function<bool(const float* R, int64_t layer, int64_t T, int64_t pos0,
++                       void* stream, std::string& err)> on_layer;
+ 
+     /// Layer split: called by every stage when it has read a chunk, with the position reached, while its own state
+     /// is still at that chunk's end (its stream synchronized; the last stage calls it just before `on_chunk`).  An
+diff --git a/serve/server.py b/serve/server.py
+index 5ca7f4e4dabe6bd97f0f3aad30f720c9d8c186b1..101a248d0be65de31225e7d9c7ea88f77ffdd1c9 100644
+--- a/serve/server.py
++++ b/serve/server.py
+@@ -1195,6 +1195,44 @@
+             pn = prefix.get("tokens")
+             if isinstance(pn, int) and not isinstance(pn, bool) and pn > 0:
+                 keys += f" pin={pn}"
++
++        # The Jev interface (patch 0003): a per-request latent read-out.  The engine writes the model's final
++        # residual R to <path> and "latk" says which positions (last | turn | meanN).  patch 0007: every value goes
++        # through readout_value() on its way to the engine's command line.
++        lp = sampling.get("latent_path")
++        if isinstance(lp, str) and lp:
++            keys += f" lat={readout_value('latent_path', lp, path_of=True)}"
++            keys += " latfast=" + ("1" if sampling.get("latent_fast", True) else "0")
++            lk = sampling.get("latent_kinds")
++            # patch 0004: `latent_taps` (e.g. "23,29,35,41", or "-1" for the final residual) asks for the
++            # multi-depth read-out instead, with `latent_span` ("A-B", absolute prompt positions) saying where.
++            lt = sampling.get("latent_taps")
++            if isinstance(lt, str) and lt:
++                keys += f" latt={readout_value('latent_taps', lt)}"
++                # patch 0005: several spans at once, optionally pooled (two rows per span per layer)
++                lss = sampling.get("latent_spans")
++                if isinstance(lss, str) and lss:
++                    keys += f" latspans={readout_value('latent_spans', lss)}"
++                    lpo = sampling.get("latent_pool")
++                    if isinstance(lpo, str) and lpo:
++                        keys += f" latpool={readout_value('latent_pool', lpo)}"
++                else:
++                    ls = sampling.get("latent_span")
++                    if isinstance(ls, str) and ls:
++                        keys += f" latspan={readout_value('latent_span', ls)}"
++                if isinstance(lk, str) and lk:
++                    keys += f" latk={readout_value('latent_kinds', lk)}"
++            else:
++                keys += f" latk={readout_value('latent_kinds', lk)}" if isinstance(lk, str) and lk \
++                    else " latk=last,turn,mean32"
++        # patch 0006: the region a request parks its session into.  `cache_region=decision` uses the decision cache
++        # region alone (its own budget and slots), so an extraction run's snapshots evict each other and never a
++        # conversation the decode side is serving.  Absent or any other value = the shared conversation cache.
++        cr = sampling.get("cache_region")
++        if isinstance(cr, str) and cr:
++            if cr not in ("decision", "shared"):
++                raise ValueError('cache_region is "decision" or "shared"')
++            keys += f" cache_region={cr}"
+         return keys + StrataEngine.projection_key(sampling) + bias_api.engine_key(sampling.get("logit_bias"))
+ 
+     @staticmethod
+@@ -1474,6 +1512,18 @@
+         with self.slot_cv:
+             return any(e[0] * 2 <= plen for e in self.wait_lens)
+ 
++    def cooperative_readout(self, sampling):
++        """Only a capability-advertising supported engine may share slots."""
++        info = self.info or {}
++        return bool(self.batch and int(info.get("jev_slot_readout") or 0) == 1
++                    and 1 <= int(info.get("batch_groups") or 1) <= 2
++                    and (sampling or {}).get("latent_parallel") is True
++                    and (sampling or {}).get("latent_fast") is True
++                    and (sampling or {}).get("latent_path")
++                    and (sampling or {}).get("latent_taps")
++                    and (sampling or {}).get("latent_spans")
++                    and not (sampling or {}).get("latent_kinds"))
++
+     def generate_batched(self, ids, max_new, sampling, cancel, embeddings=None):
+         """--batch.  Alone (no slot busy, nobody waiting): the solo path (GEN, with drafts: the fastest stream)
+         - and when another request arrives meanwhile, this one is STOPped and continues in a batch slot (BGEN with
+@@ -1488,6 +1538,7 @@
+         self.progress, self.progress_ms, self.reused = None, 0, 0
+         born = self.gen                                 # the engine process this request is sent to
+         keys = self.sampling_keys(sampling or {})
++        cooperative = self.cooperative_readout(sampling)
+         out: list[int] = []
+         pending: list[int] = []
+         prompt, left = list(ids), int(max_new)
+@@ -1512,7 +1563,10 @@
+                     holding, born = True, self.gen                  # (the engine it now has the control lines of)
+                 with self.slot_cv:
+                     alone = not any(self.slot_busy) and self.waiting == 0
+-                if alone and left > 1:
++                # Latent requests hold Service.write_lease(). Even max_new=1
++                # must use GEN: BGEN stages rows from batch slots and can read
++                # residuals left by a previous chat, despite the request lock.
++                if cooperative or (alone and (left > 1 or (sampling or {}).get("latent_path"))):
+                     head = f"GENI {left}{keys} {embeddings}" if embeddings else f"GEN {left}{keys}"
+                     self._last_done = None                  # (#879: this request's DONE decides below)
+                     self._send(f"{head} {','.join(str(int(t)) for t in prompt)}")
+@@ -1525,7 +1579,7 @@
+ 
+                     def give_way():   # at a PP line, and between two far apart (the engine takes it at its next boundary)
+                         nonlocal reserved
+-                        if (reserved is None and not out and not embeddings and yields < self.YIELDS_MAX and
++                        if (not cooperative and reserved is None and not out and not embeddings and yields < self.YIELDS_MAX and
+                                 self._shorter_waiting(len(prompt))):
+                             with self.slot_cv:          # the slot the part read will wait in
+                                 reserved = self.pick_slot(prompt)
+@@ -1534,7 +1588,7 @@
+                                     self.slot_claims.add(reserved)
+                             if reserved is not None:
+                                 self._send(f"BYIELD {reserved}")
+-                    for x in self._control(cancel, pending.append, stop_when=others, on_quiet=give_way):
++                    for x in self._control(cancel, pending.append, stop_when=None if cooperative else others, on_quiet=give_way):
+                         while pending:
+                             t = pending.pop(0)
+                             out.append(t)
+@@ -1805,29 +1859,32 @@
+     SLOT_PREFIX_MIN = 512   # a held prefix shorter than this is not worth unbalancing the pipeline's groups
+ 
+     def pick_slot(self, prompt: list[int]) -> int | None:
+-        """A free slot for `prompt` (the caller holds slot_cv): the one whose held tokens are the longest start of the
+-        prompt (the engine then reads only the rest), else an empty one, else the one used longest ago - so the
+-        conversations other slots hold stay for their next turns.  None: every slot is busy."""
++        """A free slot for `prompt` (caller holds slot_cv): prefer the longest common held prefix, even if a tool
++        serializer rewrote its tail. The engine decides which state/checkpoint is actually reusable. Otherwise
++        retain group balancing / empty / least-recent fallback. None: every slot is busy."""
+         free = [b for b in self.slot_order if not self.slot_busy[b]]
+         if not free:
+             return None
++        # kv-retention-v1: affinity precedes pipeline balancing. A tool serializer may rewrite the last few
++        # tokens, so requiring the ENTIRE held sequence to prefix the next prompt loses the correct owner.
++        def held_prefix(b):
++            n = 0
++            for x, y in zip(self.slot_held[b], prompt):
++                if x != y:
++                    break
++                n += 1
++            return n
++        best, overlap = max(((b, held_prefix(b)) for b in free), key=lambda item: item[1])
++        if overlap >= (self.SLOT_PREFIX_MIN if self.slot_groups > 1 else 1):
++            return best
+         gs = getattr(self, "slot_gs", 0)
+         if gs:
+-            # pipelined groups: the engine keeps no pipelined slot as a conversation cache, so nothing is worth keeping
+-            # free for a next turn.  A group's window spans its slots up to its last busy one, so first fill a hole
+-            # below a busy slot of the same group (it costs no extra row), then follow the spreading order
+-            # (reported on #793: least-recently-used picks left leading holes, [_ B], that cost a whole row each)
++            # No useful held prefix: retain the existing hole-filling / spreading fallback.
++            # Paired engine change trims leading idle rows, preserving idle slots in groups of two.
+             def fills_hole(b):
+                 g0 = b - b % gs
+                 return any(self.slot_busy[x] for x in range(b + 1, g0 + gs))
+             return min(free, key=lambda b: (not fills_hole(b), self.slot_order.index(b)))
+-        def held_prefix(b):
+-            h = self.slot_held[b]
+-            return len(h) if h and len(h) < len(prompt) and prompt[:len(h)] == h else 0
+-        best = max(free, key=held_prefix)
+-        # without --batch-groups a held prefix of any length is taken, as before
+-        if held_prefix(best) >= (self.SLOT_PREFIX_MIN if self.slot_groups > 1 else 1):
+-            return best
+         # with --batch-groups: the group with the fewest busy slots first, so the requests spread over the
+         # pipeline's stages (two requests in one group leave the other stage idle); then empty, then least recent
+         busy_in = {}
+@@ -3023,6 +3080,31 @@
+         raise ValueError(f"slot_save_path {path} is not a directory")
+     return path
+ 
++
++def readout_value(name: str, value, *, path_of: bool = False) -> str:
++    """A read-out key's value, as it is about to go on the engine's command line: one token, no whitespace at all.
++
++    patch 0007: the engine splits its GEN header on spaces AND reads one command per LINE, so a value holding a
++    newline is a second command (`lat=x\\nGEN 1 ...` reaches the same stdin) and a tab quietly fails the key's own
++    comparison, dropping the request into the shared conversation cache.  `lat` names a file the ENGINE opens with
++    fopen(,"wb"), so it is confined to the temp directory the read-out handler made."""
++    if not isinstance(value, str) or not value or any(c.isspace() or ord(c) < 32 for c in value):
++        raise ValueError(f"{name} must be one token without whitespace")
++    if path_of:
++        base = os.path.realpath(tempfile.gettempdir())
++        if not os.path.realpath(value).startswith(base + os.sep):
++            raise ValueError(f"{name} must be inside the temp directory {base}")
++    return value
++
++
++# patch 0007: the keys that turn a request into a read-out of the residual stream.  They reach the engine as the
++# GEN line's sampling keys (see StrataEngine.sampling_keys), so they are set only by /v1/latent; a chat request
++# that sends one has it dropped.  `cache_region` belongs here for the same reason: it chooses which parked
++# conversations an evicting request pushes out.
++JEV_KEYS = frozenset({"latent_path", "latent_kinds", "latent_taps", "latent_span", "latent_spans", "latent_pool",
++                      "cache_region"})
++
++
+ class Service:
+     def __init__(self, engine: Engine, tokenizer, template: ChatTemplate, model_name: str = "qwen3.8-flash-next",
+                  vision: Vision | None = None, sampling_defaults: dict | None = None,
+@@ -3040,6 +3122,16 @@
+         self.config_effort = None                     # #1641: the config's "reasoning_effort": the level for requests with none
+         self.keep_awake = None                        # #1727 (opt-in): serve.keepawake.KeepAwake, the config's "prevent_sleep"
+         self.fifo = threading.Lock()
++        # patch 0007: the read/write lease a decision read-out needs.  The engine stages the residual rows of a whole
++        # verify window, and in a --batch window those rows belong to whichever slots hold them, so a tap read-out is
++        # only its own when nothing else is in flight.  Measured on the running engine: alone it repeats bit for bit
++        # (rel_l2 < 1e-6 over three reads), with two chat requests in flight the same tap row drifts by rel_l2 0.18.
++        # Chats therefore take a READ lease (many at once, as --batch intends), a read-out the WRITE lease (alone).
++        self.lease_cv = threading.Condition()
++        self.lease_readers = 0
++        self.lease_writer = False
++        self.lease_waiting = 0
++        self.latent_serial = threading.Lock()
+         self.slot_save_path = None                    # --slot-save-path: /slots/0?action=save|restore (off when None)
+         self.embeddings = threading.local()           # the current request's image embeddings file (GENI)
+         self.api_key = ""                              # when set, /v1/* needs it (Bearer or x-api-key)
+@@ -4062,6 +4154,53 @@
+                   f"{el:.0f} s", flush=True)
+         return now
+ 
++    @contextlib.contextmanager
++    def read_lease(self):
++        """The engine as --batch means it: several requests in flight at once, unless a read-out holds it alone."""
++        with self.lease_cv:
++            while self.lease_writer or self.lease_waiting:
++                self.lease_cv.wait()
++            self.lease_readers += 1
++        try:
++            yield
++        finally:
++            with self.lease_cv:
++                self.lease_readers -= 1
++                if self.lease_readers == 0:
++                    self.lease_cv.notify_all()
++
++    @contextlib.contextmanager
++    def latent_lease(self, cooperative=False):
++        """Serialize readouts; validated fast ones share admission with chats.
++
++        The engine's control mutex still owns GEN. It may coexist with native
++        decoding slots, whose SessionStates are separate from the GEN session.
++        Legacy reads keep the exclusive lease. No new engine/weight copy.
++        """
++        with self.latent_serial:
++            with (self.read_lease() if cooperative else self.write_lease()):
++                yield
++
++    @contextlib.contextmanager
++    def write_lease(self):
++        """The engine to itself, for a tap read-out.  Write-preferring: a steady chat stream cannot starve it."""
++        with self.lease_cv:
++            self.lease_waiting += 1
++            try:
++                while self.lease_writer or self.lease_readers:
++                    self.lease_cv.wait()
++            finally:
++                self.lease_waiting -= 1
++            self.lease_writer = True
++        try:
++            yield
++        finally:
++            # the flag and the wake-up go together UNDER the lock: a reader that has just tested `lease_writer`
++            # holds it, so clearing it outside would leave that reader waiting on a notification already spent.
++            with self.lease_cv:
++                self.lease_writer = False
++                self.lease_cv.notify_all()
++
+     def run(self, ids, thinking, tools, max_new, sampling, cancel, force=None) -> Iterator[tuple[str, object]]:
+         """The request's events (see _run); with "prevent_sleep" in the config, the PC stays awake while it runs or waits."""
+         ka = self.keep_awake
+@@ -4076,6 +4215,15 @@
+     def _run(self, ids, thinking, tools, max_new, sampling, cancel, force=None) -> Iterator[tuple[str, object]]:
+         """Yields ("event", Event) as text arrives, then ("done", {"finish": .., "completion_tokens": ..}).
+         `force` (forced_call): the opening of the call the reply must make - see prepare()."""
++        # patch 0007: the read-out keys are this server's own, never a client's.  `lat` is a path the ENGINE opens
++        # with fopen(,"wb"), so a chat request that carried {"latent_path": "..."} could overwrite any file the
++        # engine's user can write - serve/server.py among them - and a value holding a newline is read by the engine
++        # as a second command line on its stdin.  Only /v1/latent sets these, through its own dict.
++        if sampling and any(k in JEV_KEYS for k in sampling):
++            dropped = sorted(k for k in sampling if k in JEV_KEYS)
++            print(f"[strata] a request asked for the read-out keys {dropped}; they are set only by /v1/latent",
++                  flush=True)
++            sampling = {k: v for k, v in sampling.items() if k not in JEV_KEYS}
+         defaults = {**self.sampling_defaults, **self.shared}   # the config's, then the Chat settings shared with apps
+         if defaults:                   # the request's own fields win (explicit 0 stays greedy)
+             req_values = {k: v for k, v in (sampling or {}).items() if v is not None}
+@@ -4170,6 +4318,8 @@
+                     yield "done", {"finish": "cancel", "completion_tokens": 0, "reused": 0, "timings": None,
+                                    "reasoning_tokens": 0, "reasoning_recoveries": 0}
+                     return
++            else:
++                turn.enter_context(self.read_lease())
+             with turn:
+                 try:
+                     with self.status_lock:
+@@ -5517,6 +5667,10 @@
+                     self._json(code, body)
+                 elif path == "/v1/chat/completions":
+                     self._openai(req)
++                elif path == "/v1/latent":
++                    # Uses the same /v1/* authentication as chat. Numerical
++                    # compatibility with a trained head is checked by its adapter.
++                    self._latent(req)
+                 elif path == "/v1/messages":
+                     self._anthropic(req)
+                 elif path == "/v1/messages/count_tokens":
+@@ -6037,6 +6191,260 @@
+                                           "reasoning.encrypted_content" in include, validator is not None)
+             # the request is also the sampling dict, as on the chat path (temperature, top_p, top_k, seed, ...)
+             return ids, thinking, tools, max_new, asm, validator, req
++
++        def _latent(self, req):
++            """Run the prompt ONCE and return the model's residual stream instead of text (the Jev interface).
++
++            The body is the same as /v1/chat/completions, plus:
++              "latent_kinds": "last,turn,mean32"  (the default) - which positions to read, of the FINAL residual
++              "latent_taps":  "23,29,35,41"       (patch 0004) - instead, the residual after these layers; "-1" is
++                                                  the final one, and the answer comes back as STRLAT2 with one
++                                                  "tap" segment per layer
++              "latent_span":  "A-B"               (patch 0004) - the absolute prompt positions the taps cover
++                                                  (absent: the last prompt position alone)
++              "latent_ids":   [1, 2, ...]         (patch 0005) - the token ids to run, verbatim.  The caller
++                                                  renders the prompt in pieces and tokenizes each piece on its
++                                                  own (as plumbify's render_decision does), so it knows every
++                                                  option's exact span; `messages` is then ignored
++              "latent_spans": [[a, b], ...]       (patch 0005) - several spans at once (question, then each
++                                                  option, in the order the read-out wants them), or "A-B,C-D"
++              "latent_pool":  "last,mean"         (patch 0005) - return the POOLED rows per span (two per span per
++                                                  layer: the span's last row and its mean) instead of every row.
++                                                  Absent: the raw rows of each span
++              "cache_region": "decision"|"shared"  (patch 0006) - which parked-conversation region this request
++                                                  uses.  The default HERE is "decision": this endpoint is the
++                                                  decision read-out, so its snapshots stay out of the decode side's
++                                                  conversation cache.
++            and the answer carries one base64 blob per segment:
++              {"model":..., "hc":4, "n_embd":2560, "tokens_sampled":N, "version":1|2|3,
++               "segments":[{"kind":"last"|"turn"|"mean"|"tap"|"span_last"|"span_mean"|"span_rows",
++                            "layer":L, "span":S, "pos0":N, "rows":N, "data_b64":"..."}],
++               "latency_ms":N}
++            "rows" is the number of positions a segment covers; a "mean"/"span_mean" segment is ONE row already
++            averaged over those positions, and a "tap"/"span_rows" segment is `rows` rows (one per position).
++            "span" is the index into the request's `latent_spans` (-1 when the segment is not a span).
++            patch 0007: "short" lists the spans whose rows do not cover the whole span the caller asked for - a row
++            over fewer positions than labelled - and the read-out runs with the engine to ITSELF, because tap rows
++            staged from a window another request shares are not this request's residuals.
++            """
++            import base64
++            import struct
++            import tempfile
++            import math
++            if "latent_path" in req:
++                raise ValueError("latent_path is server-owned; callers may not set it")
++            # patch 0005: the caller may hand the token ids over itself.  That is what makes the spans exact: it
++            # renders the prompt in pieces (prefix, question, each option, closing) and tokenizes each piece on
++            # its own, exactly as plumbify's render_decision does, so it knows where every option begins - and the
++            # server never re-tokenizes behind its back.  Without `latent_ids` the messages are rendered here.
++            ids_in = req.get("latent_ids")
++            if ids_in is not None:
++                if not isinstance(ids_in, list) or not ids_in or \
++                        not all(isinstance(x, int) and not isinstance(x, bool) and x >= 0 for x in ids_in):
++                    raise ValueError("latent_ids must be a non-empty list of non-negative token ids")
++                ids = [int(x) for x in ids_in]
++                messages = None
++            else:
++                req = svc.with_shared(req, "openai")
++                messages, tools, kw = openai_to_messages(req)
++                self._no_local_images(messages)
++                stop_strings(req)                                 # the same 400 as a request would get
++            kinds = req.get("latent_kinds") or "last,turn,mean32"
++            if not isinstance(kinds, str) or " " in kinds:
++                raise ValueError("latent_kinds must be a comma list without spaces, e.g. last,turn,mean32")
++            taps = req.get("latent_taps")
++            if taps is not None and (not isinstance(taps, str) or not taps or " " in taps):
++                raise ValueError("latent_taps must be a comma list without spaces, e.g. 23,29,35,41 or -1")
++            span = req.get("latent_span")
++            if span is not None and (not isinstance(span, str) or " " in span):
++                raise ValueError("latent_span must be A-B without spaces, e.g. 2000-2200")
++            # patch 0005: several spans, each "A-B" or [a, b], in the read-out's own order (question, then options)
++            spans_in = req.get("latent_spans")
++            spans = None
++            if spans_in is not None:
++                if isinstance(spans_in, str):
++                    spans = spans_in
++                elif isinstance(spans_in, list) and spans_in:
++                    parts = []
++                    for sp in spans_in:
++                        if isinstance(sp, (list, tuple)) and len(sp) == 2 and all(
++                                isinstance(v, int) and not isinstance(v, bool) for v in sp):
++                            parts.append("%d-%d" % (int(sp[0]), int(sp[1])))
++                        elif isinstance(sp, str):
++                            parts.append(sp)
++                        else:
++                            raise ValueError('latent_spans entries must be [a, b] or "A-B"')
++                    spans = ",".join(parts)
++                else:
++                    raise ValueError('latent_spans must be a list of [a, b] or "A-B,C-D"')
++                if not spans or " " in spans:
++                    raise ValueError("latent_spans must not be empty or hold spaces")
++            pool = req.get("latent_pool")
++            if pool is not None and (not isinstance(pool, str) or not pool or " " in pool):
++                raise ValueError('latent_pool must be e.g. "last,mean"')
++            svc.load()
++            if messages is not None:
++                ids = svc.encode_prompt(messages, tools, kw)      # the prompt this server would read
++            # patch 0007: the read-out's own bounds, checked here where a client can be told.  Past its 16th span the
++            # engine silently drops the rest, and a span outside the prompt comes back as FEWER pooled rows without
++            # failing the request - a silent short read would hand a decision head a row averaged over the wrong
++            # positions, which is exactly the kind of taint a 45k-decision dataset cannot afford.
++            bounds = [tuple(int(v) for v in p.split("-")) for p in spans.split(",")] if spans else \
++                ([tuple(int(v) for v in span.split("-"))] if span else [])
++            if bounds:
++                if len(bounds) > 16:
++                    raise ValueError(f"latent_spans: {len(bounds)} spans asked, the engine reads out 16 at once")
++                for a, b in bounds:
++                    if not 0 <= a < b <= len(ids):
++                        raise ValueError(f"latent_spans: {a}-{b} is outside the prompt ({len(ids)} tokens)")
++            if taps:
++                n_layers = int(getattr(svc, "latent_n_layers", 0) or
++                               (getattr(svc.engine, "info", {}) or {}).get("n_layers", 0))
++                if n_layers <= 0:
++                    raise RuntimeError("latent layer geometry is unknown; configure latent_n_layers from model header")
++                resolved = []
++                for t in taps.split(","):
++                    if t != "-1" and not (t.isdigit() and int(t) < n_layers):
++                        raise ValueError(f'latent_taps: "{t}" is not a layer index or -1')
++                    resolved.append(n_layers - 1 if t == "-1" else int(t))
++                if len(set(resolved)) != len(resolved):
++                    raise ValueError("latent_taps contains duplicate layers or final-layer aliases")
++            if pool and (not bounds or not taps or any(p not in ("last", "mean") for p in pool.split(",")) or
++                         len(set(pool.split(","))) != len(pool.split(","))):
++                raise ValueError("latent_pool requires spans/taps and unique last/mean values")
++            # patch 0007: a tap read-out takes the engine to ITSELF.  The engine stages the residual rows of a whole
++            # verify window, and in a --batch window those rows belong to whichever slots hold them, so two requests
++            # in flight read each other's residuals (measured on this engine: alone it repeats bit for bit, with two
++            # chats in flight the same tap row drifts by rel_l2 0.18).  The fifo is held too: svc.unload() only
++            # unloads what it can take the fifo of, and a read-out must not be killed between its last window and
++            # the file it wrote.  Load happens above, since svc.load() takes the fifo itself.
++            cancel = threading.Event()
++            self._watch_client(cancel)                       # #430 #431: a client that hangs up stops the read
++            backend = req.get("latent_backend", "fast")
++            if backend not in ("fast", "verify"):
++                raise ValueError("latent_backend must be fast or verify")
++            parallel = req.get("latent_parallel", True)
++            if not isinstance(parallel, bool):
++                raise ValueError("latent_parallel must be a boolean")
++            eligibility = {"latent_parallel": parallel, "latent_fast": backend == "fast",
++                           "latent_path": True, "latent_taps": taps, "latent_spans": spans,
++                           "latent_kinds": req.get("latent_kinds")}
++            cooperative = bool(hasattr(svc.engine, "cooperative_readout") and
++                               svc.engine.cooperative_readout(eligibility))
++            t0 = time.time()
++            try:
++                with svc.latent_lease(cooperative), svc.fifo:
++                    # (alone on the engine, this request takes the solo GEN path by itself: see _may_go_solo)
++                    with tempfile.TemporaryDirectory() as d:
++                        path = os.path.join(d, "lat.bin")             # no spaces: the header splits on them
++                        # patch 0006: park this session into the decision region (override "cache_region": "shared")
++                        samp = {"latent_path": path, "cache_region": req.get("cache_region") or "decision",
++                                "latent_fast": backend == "fast", "latent_parallel": cooperative, "strata_checkpoint": False}
++                        if taps:
++                            # the taps are what this request is for; the final-residual kinds are added only when
++                            # asked, so that a plain tap read-out does not pay for them (and vice versa)
++                            samp["latent_taps"] = taps
++                            if spans:
++                                samp["latent_spans"] = spans           # patch 0005
++                                if pool:
++                                    samp["latent_pool"] = pool
++                            elif span:
++                                samp["latent_span"] = span
++                            if req.get("latent_kinds"):
++                                samp["latent_kinds"] = kinds
++                        else:
++                            samp["latent_kinds"] = kinds
++                        n = 0
++                        # DRAIN the generator: the engine writes the latent just BEFORE its DONE line, so leaving the
++                        # loop at the first token would read a file that does not exist yet (max_new=1 ends it anyway).
++                        for tok in svc.engine.generate(ids, 1, samp, cancel):
++                            if tok is not None:
++                                n += 1
++                        deadline = time.time() + 10.0
++                        while not os.path.exists(path) and time.time() < deadline:
++                            time.sleep(0.05)
++                        with open(path, "rb") as latent_file:
++                            data = latent_file.read()
++            finally:
++                if self.watch_done is not None:
++                    self.watch_done.set()
++            if len(data) < 24:
++                raise RuntimeError("truncated latent file header")
++            magic, ver, hc, n_embd, n_seg = struct.unpack_from("<8sIIII", data, 0)
++            wide = {b"STRLAT1\x00": 3, b"STRLAT2\x00": 4,      # 0004: the header names the layer
++                    b"STRLAT3\x00": 5}.get(magic)               # 0005: ... and the span as well
++            if wide is None:
++                raise RuntimeError("the engine wrote no latent (bad magic %r)" % (magic,))
++            if hc <= 0 or n_embd <= 0 or n_seg > 4096 or len(data) < 24 + n_seg * wide * 8:
++                raise RuntimeError("invalid latent geometry or segment table")
++            # The engine writes ALL segment headers first, then the data blocks concatenated - reading
++            # header/data interleaved desynchronises on the second segment.
++            off = 24
++            table = []
++            for _ in range(n_seg):
++                vals = struct.unpack_from("<%dq" % wide, data, off)
++                off += 8 * wide
++                if wide == 5:
++                    kind, layer, span, pos0, rows = vals
++                elif wide == 4:
++                    kind, layer, pos0, rows = vals
++                    span = -1
++                else:
++                    kind, pos0, rows = vals
++                    layer = span = -1
++                table.append((kind, layer, span, pos0, rows))
++            segs = []
++            for kind, layer, sp_idx, pos0, rows in table:      # (not `span`: that is the request's own "A-B")
++                if kind not in range(7) or rows <= 0 or pos0 < 0 or pos0 >= len(ids):
++                    raise RuntimeError("invalid latent segment header")
++                # one row: last/turn, a mean over `rows` positions, and the two pooled span rows
++                d_rows = 1 if kind in (0, 1, 2, 4, 5) else rows
++                blob = data[off:off + d_rows * hc * n_embd * 4]
++                if len(blob) < d_rows * hc * n_embd * 4:
++                    raise RuntimeError("the latent file is truncated at segment kind %d pos %d" % (kind, pos0))
++                if any(not math.isfinite(v[0]) for v in struct.iter_unpack("<f", blob)):
++                    raise RuntimeError("nonfinite latent readout")
++                off += len(blob)
++                seg = {"kind": {0: "last", 1: "turn", 2: "mean", 3: "tap", 4: "span_last",
++                                5: "span_mean", 6: "span_rows"}.get(kind, str(kind)),
++                       "pos0": pos0, "rows": rows, "data_b64": base64.b64encode(blob).decode()}
++                if kind in (3, 4, 5, 6):
++                    seg["layer"] = layer
++                if sp_idx >= 0:
++                    seg["span"] = sp_idx
++                segs.append(seg)
++            # patch 0007: a span that came back SHORT must be a fact the client sees, not a line in the engine's log:
++            # the pooled row of a span whose head the prompt cache already covered averages FEWER positions than the
++            # caller labelled it with, and a head trained on that silently learns the wrong span.  A read-out that
++            # asked for spans and got none is an error, not an empty 200 - with no span segment the file degrades to
++            # STRLAT2/1, which is what "95 tokens, zero segments" used to look like from the outside.
++            if off != len(data):
++                raise RuntimeError("unexpected trailing latent bytes")
++            if bounds:
++                wanted_kinds = [4 if p == "last" else 5 for p in pool.split(",")] if pool else [6]
++                expected = {(s, int(l), k) for s in range(len(bounds)) for l in taps.split(",") for k in wanted_kinds}
++                covered = {}
++                for kind, layer, sp_idx, pos0, rows in table:
++                    if sp_idx < 0:
++                        continue
++                    key = (sp_idx, layer, kind)
++                    if key not in expected or key in covered:
++                        raise RuntimeError("unexpected or duplicate span/layer/pool readout")
++                    a, b = bounds[sp_idx]
++                    want_pos, want_rows = (b - 1, b - a) if kind == 4 else (a, b - a)
++                    if pos0 != want_pos or rows != want_rows:
++                        raise RuntimeError("incomplete span/layer/pool coverage")
++                    covered[key] = True
++                if set(covered) != expected:
++                    raise RuntimeError("missing span/layer/pool readout")
++            short = []
++            self._json(200, {"model": svc.model, "kinds": kinds, "taps": taps, "span": span, "spans": spans,
++                             "contract_version": "jev-readout-v2",
++                             "readout_scheduling": "shared-slots" if cooperative else "exclusive",
++                             "readout_backend": "batched-prefill" if backend == "fast" and spans and taps and not req.get("latent_kinds") else "verify",
++                             "pool": pool, "version": ver, "hc": hc, "n_embd": n_embd, "prompt_tokens": len(ids),
++                             "tokens_sampled": n, "segments": segs, "short": short,
++                             "latency_ms": round((time.time() - t0) * 1000.0, 1)})
+ 
+         def _count_tokens(self, req):
+             """Anthropic's token count, which Claude Code asks for its context figures: the prompt this server would
+@@ -6796,6 +7204,7 @@
+         if svc.config_effort:
+             print(f"[strata] thinking level: {svc.config_effort} (reasoning_effort in the config; a request, or the "
+                   "Chat settings shared with other apps, can set its own)", flush=True)
++    svc.latent_n_layers = cfg.get("latent_n_layers", 0)
+     svc.codex_thread_titles = cfg.get("codex_thread_titles") is True    # #923: opt-in, off by default
+     svc.codex_compaction_cache = cfg.get("codex_compaction_cache") is True   # #924: opt-in, off by default
+     try:
+diff --git a/src/core/verify.cpp b/src/core/verify.cpp
+index a8791cc671471fac92ba75f51a583b54b992a229..5e7b430d11936fb1fd6f6c8a37cabfdb00782a05 100644
+--- a/src/core/verify.cpp
++++ b/src/core/verify.cpp
+@@ -512,6 +512,7 @@
+     if (arena_b_) cudaFree(arena_b_);
+     if (h_commitb_) cudaFreeHost(h_commitb_);
+     if (qcnt_) cudaFree(qcnt_);
++    if (tap_dev_) cudaFree(tap_dev_);
+     if (d_spec_) cudaFree(d_spec_);
+     if (logit_bias_device_) cudaFree(logit_bias_device_);
+     if (cs_ && cs_ != ext_stream_) cudaStreamDestroy(cs_);   // set_stream: the stage's stream, shared, not ours
+@@ -847,6 +848,82 @@
+ }
+ 
+ const float* Verifier::final_R(int t) const { return R_ + (size_t) t * (size_t) (g_->hc * g_->n_embd); }
++
++// ---- patch 0004: the latent taps.  See `enable_taps`/`read_taps` in verify.hpp for what they are for.
++
++void Verifier::enable_taps() {
++    if (taps_on_) return;
++    if (g_ == nullptr || le_ < 0) return;   // not initialised yet: there is nothing to stage into
++    const size_t dim = (size_t) g_->hc * (size_t) g_->n_embd;
++    const size_t want = ((size_t) g_->n_layers + 1) * (size_t) strata::kernels::kVerifyMaxT * dim;
++    if (tap_dev_ == nullptr) {
++        const OnDevice on(device_);
++        if (cudaMalloc((void**) &tap_dev_, want * sizeof(float)) != cudaSuccess) {
++            cudaGetLastError();
++            tap_dev_ = nullptr;
++            std::fprintf(stderr, "strata verify: the latent taps could not take %.1f MiB of VRAM\n",
++                         (double) want * sizeof(float) / 1048576.0);
++            return;
++        }
++        std::fprintf(stderr, "strata verify: the latent taps are on (%lld layers + the final one of every window,"
++                             " %.1f MiB)\n", (long long) g_->n_layers, (double) want * sizeof(float) / 1048576.0);
++    }
++    // A graph captured before this call holds no tap nodes, so a request that asks for taps after the first
++    // request of the same window size would read a stale buffer.  Drop every cached graph (this body runs once):
++    // the next window of that size captures it again, with the tap nodes.  The previous commit is awaited first.
++    if (cs_ != nullptr) {
++        cudaStreamSynchronize(cs_);
++        for (auto& e : exec_) { if (e != nullptr) { cudaGraphExecDestroy(e); e = nullptr; } }
++        for (auto& e : exec_nr_) { if (e != nullptr) { cudaGraphExecDestroy(e); e = nullptr; } }
++        for (auto& kv : exec_bm_) if (kv.second != nullptr) cudaGraphExecDestroy(kv.second);
++        exec_bm_.clear();
++    }
++    taps_on_ = true;
++    if (next_ != nullptr) next_->enable_taps();
++}
++
++bool Verifier::read_taps(const std::vector<int32_t>& layers, int64_t row0, int64_t n, int64_t out_row0,
++                         int64_t dst_rows, std::vector<float>& dst) {
++    if (g_ == nullptr || n <= 0 || dst_rows <= 0 || out_row0 < 0 || out_row0 > dst_rows ||
++        n > dst_rows - out_row0) return false;
++    for (const int32_t l : layers)
++        if (l < -1 || l >= g_->n_layers) return false;
++    if (tap_dev_ == nullptr) return false;
++    if (n > 0 && tap_dev_ != nullptr && g_ != nullptr) {
++        const OnDevice on(device_);
++        const size_t dim = (size_t) g_->hc * (size_t) g_->n_embd;
++        const size_t maxrows = (size_t) strata::kernels::kVerifyMaxT;
++        for (size_t k = 0; k < layers.size(); ++k) {
++            const int32_t l = layers[k];
++            if (l < 0 ? next_ != nullptr : (l < lb_ || l >= le_)) continue;   // another stage ran it
++            if (row0 < 0 || n < 0 || (size_t) (row0 + n) > maxrows) {
++                std::fprintf(stderr, "strata verify: tap rows [%lld, %lld) are outside the window\n",
++                             (long long) row0, (long long) (row0 + n));
++                return false;
++            }
++            const size_t slot = (l < 0) ? (size_t) (g_->n_layers - 1) : (size_t) l;
++            // patch 0007: `dst` is the CALLER's buffer and `dst_rows` is a stride the CALLER chose, and nothing here
++            // checked that the two agree.  A caller that sized its block for one span length and asked for a read of
++            // another wrote host heap out of bounds - which is a silent corruption at best and a crash in whoever
++            // owned those pages at worst.  The row bound above already keeps the device block honest; this one keeps
++            // the destination honest.
++            if (dst_rows <= 0 || out_row0 < 0 ||
++                dst.size() < ((size_t) k * (size_t) dst_rows + (size_t) out_row0 + (size_t) n) * dim) {
++                std::fprintf(stderr, "strata verify: tap %zu, %lld row(s) at %lld with stride %lld does not fit its "
++                                     "%zu-float destination\n", k, (long long) n, (long long) out_row0,
++                             (long long) dst_rows, dst.size());
++                return false;
++            }
++            float* d = dst.data() + ((size_t) k * (size_t) dst_rows + (size_t) out_row0) * dim;
++            if (cudaMemcpy(d, tap_dev_ + slot * maxrows * dim + (size_t) row0 * dim,
++                           (size_t) n * dim * sizeof(float), cudaMemcpyDeviceToHost) != cudaSuccess) {
++                cudaGetLastError();
++                return false;
++            }
++        }
++    }
++    return next_ == nullptr || next_->read_taps(layers, row0, n, out_row0, dst_rows, dst);
++}
+ 
+ // ================================ THE WINDOW, AS CAPTURED ================================
+ //
+@@ -1725,6 +1802,12 @@
+     for (int64_t l = lb_; l < le_; ++l)
+         for (int grp = 0; grp < G; ++grp) {
+             if (!post(l, grp)) return false;
++            // patch 0004: `R_` holds layer `l`'s residual from here until the next layer's write - the same point
++            // `--dump-layers` reads in session.cpp.  One device-to-device copy per layer, taken after the last
++            // group so that every row of `l` is complete; a graph node, so nothing crosses to the host here.
++            if (taps_on_ && tap_dev_ != nullptr && grp + 1 == G)
++                cudaMemcpyAsync(tap_dev_ + (size_t) l * (size_t) strata::kernels::kVerifyMaxT * (size_t) (HC * N),
++                                R_, (size_t) T * (size_t) (HC * N) * sizeof(float), cudaMemcpyDeviceToDevice, cs);
+             if (l + 1 < le_ && !pre(l + 1, grp)) return false;
+         }
+     if (le_ < g.n_layers) {   // a layer split's earlier stage: hand the residual on, no head
+diff --git a/src/prefill/prefill.cpp b/src/prefill/prefill.cpp
+index 2fa71c7ce670720a5457f905f2df74ddedb3496a..8bf1e39485fa5a92e5c7ad5b4af9a333894cc4e5 100644
+--- a/src/prefill/prefill.cpp
++++ b/src/prefill/prefill.cpp
+@@ -4144,6 +4144,9 @@
+                 if (steered && !cv_fused)   // --control-vector-scaled
+                     strata::kernels::cvec_apply(m.R, l, T, D, nullptr, 0, nullptr, 0, false, m.cs);
+             }
++            // Read exactly the post-layer multi-stream R that verify taps expose.
++            // The optional callback owns synchronization; ordinary prefill unchanged.
++            if (on_layer && !on_layer(m.R, l, T, p0, (void*) m.cs, err)) return false;
+         }
+         if (!ple_land()) return false;   // a stage that ends before layer 1: the rows land anyway, the next gather starts
+         if (issuer.joinable()) {
+diff --git a/src/program/generate.cpp b/src/program/generate.cpp
+index ba00f94d75121b8d4c7cbfdafd8daeb8d12e0be5..72079f63e5bb1f2a16ab63007027725e56e8c1ba 100644
+--- a/src/program/generate.cpp
++++ b/src/program/generate.cpp
+@@ -640,6 +640,13 @@
+     /// --memory-limit-mib N / STRATA_MEMORY_LIMIT_MIB: the total RAM this engine's container or cgroup may use, for a
+     /// container that cannot see its real limit (0 or unset = none; the flag wins over the variable)
+     int64_t memory_limit_mib = -1;
++    /// --serve (patch 0006): host RAM for the DECISION region.  A request that asks for it (cache_region=decision)
++    /// parks into and restores from this cache alone, so a run of extractions evicts its own old snapshots and never
++    /// a conversation the decode side is serving.  Both directions are closed: a decision request restores only from
++    /// the decision region, and a conversation that the decode side produced is always parked into the normal region
++    /// (the live session remembers which region it came from).  0 = no separate region (the old shared behaviour).
++    int64_t decision_cache_mib = 0;
++    int decision_cache_slots = 4;
+     /// --serve SAVE: disk space a session file must leave free where it is written (MiB; 0 = no check)
+     int64_t session_min_free_mib = 4096;
+     bool session_save_reclaim = false;
+@@ -792,6 +799,9 @@
+                  "                       wins; 0 = none). Parking and session save/restore keep their floor under it\n"
+                  "  --conversation-cache-min-tokens N  --serve: park only conversations of at least N tokens, so\n"
+                  "                       short side requests do not take the slots a long one needs (default 0 = park any)\n"
++                 "  --decision-cache-mib N  --serve (patch 0006): separate RAM budget for requests that pass\n"
++                 "                       cache_region=decision (default 0 = mixed into --conversation-cache-mib)\n"
++                 "  --decision-cache-slots N  --serve: at most N parked decision conversations (default 4)\n"
+                  "  --session-min-free-mib N  --serve: disk space a SAVE must leave free (default 4096; 0 = no check)\n"
+                  "  --session-save-reclaim  --serve: reclaim unpinned host caches if SAVE needs RAM (opt-in)\n"
+                  "  --vram-elastic       --serve (#533, opt-in, NVIDIA): the expert cache in segments (--vram-segment-mib,\n"
+@@ -2106,11 +2116,12 @@
+         else if (a == "--prompt-cache") o.prompt_cache = std::max(0, std::atoi(next("--prompt-cache")));
+         else if (a == "--conversation-cache-mib" || a == "--conversation-cache-slots" ||
+                  a == "--conversation-cache-min-free-mib" || a == "--conversation-cache-min-tokens" ||
+-                 a == "--session-min-free-mib" || a == "--memory-limit-mib") {
++                 a == "--session-min-free-mib" || a == "--memory-limit-mib" ||
++                 a == "--decision-cache-mib" || a == "--decision-cache-slots") {
+             const std::string value = next(a.c_str());
+             int64_t number = 0;
+             const auto result = std::from_chars(value.data(), value.data() + value.size(), number);
+-            const int64_t limit = (a == "--conversation-cache-slots" || a == "--conversation-cache-min-tokens")
++            const int64_t limit = (a == "--conversation-cache-slots" || a == "--conversation-cache-min-tokens" || a == "--decision-cache-slots")
+                                       ? INT32_MAX : INT64_MAX / (1024 * 1024);
+             if (result.ec != std::errc{} || result.ptr != value.data() + value.size() || number < 0 || number > limit) {
+                 std::fprintf(stderr, "%s needs a nonnegative integer within range\n", a.c_str());
+@@ -2121,6 +2132,8 @@
+             else if (a == "--conversation-cache-min-tokens") o.conversation_cache_min_tokens = number;
+             else if (a == "--session-min-free-mib") o.session_min_free_mib = number;
+             else if (a == "--memory-limit-mib") o.memory_limit_mib = number;
++            else if (a == "--decision-cache-mib") o.decision_cache_mib = number;
++            else if (a == "--decision-cache-slots") o.decision_cache_slots = (int) number;
+             else o.conversation_cache_slots = (int) number;
+         }
+         else if (a == "--prompt-cache-tail") o.prompt_cache_tail = true;
+@@ -2343,6 +2356,11 @@
+     if (o.serve && o.conversation_cache_mib > 0 && (o.prompt_cache == 0 || o.conversation_cache_slots == 0))
+         std::fprintf(stderr, "strata serve: warning: conversation caching is disabled by %s\n",
+                      o.prompt_cache == 0 ? "--prompt-cache 0" : "--conversation-cache-slots 0");
++    if (o.serve && o.decision_cache_mib > 0 && (o.prompt_cache == 0 || o.decision_cache_slots == 0)) {
++        std::fprintf(stderr, "strata serve: warning: the decision cache region is disabled by %s\n",
++                     o.prompt_cache == 0 ? "--prompt-cache 0" : "--decision-cache-slots 0");
++        o.decision_cache_mib = 0;
++    }
+     // parking with --layer-split saves every stage (SavedConversation::stage_images)
+     // Layer split (multi-GPU): the later stages run layers [K_i, K_i+1) on their own GPUs (--split-device, default
+     // the next visible ones); "auto" places the K from each GPU's free VRAM once the weights are in (below).  KV
+@@ -7240,7 +7258,8 @@
+         // to the suffix/prompt-lookup drafter (DraftPolicy still picks Lookup vs plain per round) or, when
+         // neither fires, plain one-token-per-round decoding - slower, never wrong: the verify window still
+         // confirms every emitted token against the real model regardless of where the draft came from.
+-        const bool use_mtp = !o.mtp.empty();
++        const bool have_mtp = !o.mtp.empty();
++        bool use_mtp = have_mtp;   // reset per request; one-shot readout disables draft KV
+         // STRATA_PREFILL_HELPER_SOURCE (opt-in): the prompt path may take a blob a helper's VRAM cache already
+         // holds from that cache instead of reading the files again.  The helpers are idle while a prompt is read
+         // (the serve path is serial: no batch slots), so the copy needs no ordering against their kernel streams.
+@@ -8138,6 +8157,25 @@
+         strata::core::ConversationCache conversations(
+             o.prompt_cache > 0 ? (size_t) o.conversation_cache_mib * 1024 * 1024 : 0,
+             (size_t) o.conversation_cache_slots, o.conversation_cache_min_tokens);
++        // patch 0006: the DECISION region - the same cache class, a second instance with its own budget and slots.
++        // A request whose keys carry cache_region=decision parks into and restores from this instance alone.  The
++        // live session tracks the region it came from (live_decision, set once the request has established its
++        // state), so a conversation the decode side produced is NEVER parked here: an extraction arriving in the
++        // middle of a chat would otherwise push that chat's snapshot into the region the extractions evict.
++        strata::core::ConversationCache decisions(
++            o.prompt_cache > 0 ? (size_t) o.decision_cache_mib * 1024 * 1024 : 0,
++            (size_t) o.decision_cache_slots);
++        bool req_decision = false;    // this request's region (cache_region=decision); reset with the request keys
++        bool live_decision = false;   // the region the session the engine holds right now came from
++        // The park path belongs to the OUTGOING session (live_decision); a restore belongs to the INCOMING request.
++        auto region = [&]() -> strata::core::ConversationCache& { return req_decision ? decisions : conversations; };
++        auto live_region = [&]() -> strata::core::ConversationCache& {
++            return live_decision ? decisions : conversations;
++        };
++        // " (decision)" in the log keeps these lines out of the server's conversation-cache monitor regex, which
++        // tracks the decode side's own cache.
++        auto region_tag = [&] { return req_decision ? " (decision)" : ""; };
++        auto live_tag = [&] { return live_decision ? " (decision)" : ""; };
+         // Disk sessions: what a session file is bound to.  The model fingerprint samples every model input this
+         // engine loaded, by role (conversation_file.hpp), once; the config fingerprint covers the RESOLVED settings
+         // that change what the saved bytes mean - the rope (K is cached post-RoPE), the loaded control vector, the
+@@ -8215,7 +8253,10 @@
+         // Save only on a switch/rewind, not on each continuing request. No graph
+         // addresses change: all parked images live in ordinary host vectors.
+         auto park_current_body = [&](size_t held) -> bool {
+-            if (!conversations.enabled() || !live_ok || live.empty()) return true;
++            // patch 0006: the outgoing session parks into the region it came from (live_region()), not the region of
++            // the request that just arrived - that is what keeps an extraction from displacing a live chat.
++            auto& cc = live_region();
++            if (!cc.enabled() || !live_ok || live.empty()) return true;
+             // #2049: parking copies the outgoing conversation's running checkpoints and K/V into host memory, which
+             // is a silent stretch of the "request" stage; when the OS has paged that memory out it takes minutes.
+             // Named, so a stall report says "parking"; its copies beat (conversation_copy.hpp), so the watchdog
+@@ -8228,17 +8269,17 @@
+             // switch-time decision, so a client's small side requests would otherwise park themselves and, once the
+             // cache is full, evict the long conversation they were interleaved with (oldest first) - the reuse it
+             // wanted.  Returning true is the same non-error skip the byte-budget and RAM-floor paths below take.
+-            if (!conversations.wants((int64_t) live.size())) {
++            if (!cc.wants((int64_t) live.size())) {
+                 std::fprintf(stderr, "strata serve: conversation cache: skip parking (%zu tokens, below the %lld "
+                                      "minimum; parked=%zu)\n",
+-                             live.size(), (long long) o.conversation_cache_min_tokens, conversations.size());
++                             live.size(), (long long) o.conversation_cache_min_tokens, cc.size());
+                 return true;
+             }
+             // #342: before make_room evicts oldest-first, the copies of this conversation a turn back go (they hold
+             // nothing the outgoing chain does not, apart from the tail this conversation rewrote)
+-            if (const size_t dropped = conversations.drop_superseded(live, live_imgs, checks, cvec_cached))
+-                std::fprintf(stderr, "strata serve: conversation cache: dropped %zu superseded cop%s of this "
+-                             "conversation; parked=%zu\n", dropped, dropped == 1 ? "y" : "ies", conversations.size());
++            if (const size_t dropped = cc.drop_superseded(live, live_imgs, checks, cvec_cached))
++                std::fprintf(stderr, "strata serve: conversation cache%s: dropped %zu superseded cop%s of this "
++                             "conversation; parked=%zu\n", live_tag(), dropped, dropped == 1 ? "y" : "ies", cc.size());
+             // A layer split parks one image per stage: the first stage's (with the draft layer's K/V) and one per
+             // later stage (without it - the draft ring is saved once).  The checkpoints are MOVED apart into their
+             // stage parts for the capture and put back together whichever way this ends (no running state copied).
+@@ -8254,7 +8295,7 @@
+                 ~MergeBack() { if (on && !strata::core::conversation_checkpoints_merge(std::move(cs), checks)) checks.clear(); }
+             } merge_back{cs, checks, n_st > 0};
+             const strata::core::ConversationView view{live, live_imgs, n_st > 0 ? cs.stage0 : checks, cvec_cached};
+-            auto reuse = conversations.take_reuse();
++            auto reuse = cc.take_reuse();
+             std::vector<strata::core::ConversationKvReuse> stage_reuse = std::move(reuse.stages);
+             stage_reuse.resize(n_st);
+             reuse.stages.clear();
+@@ -8304,9 +8345,9 @@
+             // estimate must stay uncapped: it counts the retained buffers'
+             // capacity and directories, and put() charges that same true size -
+             // a capped figure would under-evict and overfill the budget.
+-            if (!conversations.make_room(estimate, held)) {
+-                std::fprintf(stderr, "strata serve: conversation cache: skip parking (snapshot %zu MiB exceeds available budget)\n",
+-                             estimate >> 20);
++            if (!cc.make_room(estimate, held)) {
++                std::fprintf(stderr, "strata serve: conversation cache%s: skip parking (snapshot %zu MiB exceeds available budget)\n",
++                             live_tag(), estimate >> 20);
+                 return true;
+             }
+             const auto t0 = Clock::now();
+@@ -8331,18 +8372,17 @@
+                     return strata::core::conversation_memory_admit(
+                         mem ? std::optional<uint64_t>(mem->available) : std::nullopt, additional, floor);
+                 };
+-                while (!admit() && conversations.size() > 0 && evicted < conversations.slots() &&
+-                       conversations.evict_oldest())
++                while (!admit() && cc.size() > 0 && evicted < cc.slots() && cc.evict_oldest())
+                     ++evicted;
+                 if (!admit()) {
+-                    std::fprintf(stderr, "strata serve: conversation cache: skip parking (physical RAM admission; need %zu MiB plus %lld MiB floor, %s; evicted %zu, %zu still parked)\n",
+-                                 additional >> 20, (long long) o.conversation_cache_min_free_mib, ram_note(mem).c_str(),
+-                                 evicted, conversations.size());
++                    std::fprintf(stderr, "strata serve: conversation cache%s: skip parking (physical RAM admission; need %zu MiB plus %lld MiB floor, %s; evicted %zu, %zu still parked)\n",
++                                 live_tag(), additional >> 20, (long long) o.conversation_cache_min_free_mib, ram_note(mem).c_str(),
++                                 evicted, cc.size());
+                     return true;
+                 }
+                 if (evicted)
+-                    std::fprintf(stderr, "strata serve: conversation cache: evicted %zu parked conversation%s to admit this snapshot (%zu MiB plus %lld MiB floor)\n",
+-                                 evicted, evicted == 1 ? "" : "s", additional >> 20,
++                    std::fprintf(stderr, "strata serve: conversation cache%s: evicted %zu parked conversation%s to admit this snapshot (%zu MiB plus %lld MiB floor)\n",
++                                 live_tag(), evicted, evicted == 1 ? "" : "s", additional >> 20,
+                                  (long long) o.conversation_cache_min_free_mib);
+                 strata::core::SavedConversation image;
+                 size_t reused_bytes = 0;
+@@ -8367,11 +8407,11 @@
+                     return true;
+                 }
+                 const size_t snapshot_bytes = image.bytes();
+-                const bool stored = conversations.put(std::move(image), held);
+-                std::fprintf(stderr, "strata serve: conversation cache: %s %zu tokens in %.1f ms; parked=%zu bytes=%zu evictions=%zu snapshot_bytes=%zu reused_kv_bytes=%zu\n",
+-                             stored ? "parked" : "skipped", live.size(),
++                const bool stored = cc.put(std::move(image), held);
++                std::fprintf(stderr, "strata serve: conversation cache%s: %s %zu tokens in %.1f ms; parked=%zu bytes=%zu evictions=%zu snapshot_bytes=%zu reused_kv_bytes=%zu\n",
++                             live_tag(), stored ? "parked" : "skipped", live.size(),
+                              std::chrono::duration<double, std::milli>(Clock::now() - t0).count(),
+-                             conversations.size(), conversations.bytes(), conversations.evictions(), snapshot_bytes, reused_bytes);
++                             cc.size(), cc.bytes(), cc.evictions(), snapshot_bytes, reused_bytes);
+             } catch (const std::bad_alloc&) {
+                 // The active state has not been touched. Continue with normal
+                 // prompt processing rather than killing a serving process.
+@@ -9592,7 +9632,7 @@
+                         "mtp_max=%d lookup=%d vram_free_mib=%lld cvec=%s arena_mib=%lld pool_workers=%d pcie_frac=%.2f "
+                         "spec_min_p=%.2f conversation_cache_mib=%lld conversation_cache_slots=%d "
+                         "conversation_cache_min_free_mib=%lld conversation_cache_min_tokens=%lld "
+-                        "tail_role_token=%lld vram_elastic=%d%s engine=" STRATA_VERSION "\n",
++                        "tail_role_token=%lld vram_elastic=%d jev_slot_readout=%d%s engine=" STRATA_VERSION "\n",
+                         (long long) o.max_context, o.kv.c_str(),
+                         (long long) (g.n_qsa_layers() > 0 && ss.qsa_states[ss.qsa_primary()].kv_mode == 1
+                                          ? ss.qsa_states[ss.qsa_primary()].n_slots * 4 : 0),
+@@ -9605,6 +9645,7 @@
+                         o.spec_min_p, (long long) o.conversation_cache_mib, o.conversation_cache_slots,
+                         (long long) o.conversation_cache_min_free_mib, (long long) o.conversation_cache_min_tokens,
+                         (long long) o.tail_role_token, xcache.segmented() ? 1 : 0,
++                        o.batch > 0 && o.batch_groups <= 2 ? 1 : 0,
+                         o.batch > 0 ? (" batch_slots=" + std::to_string(o.batch) +
+                                        " slot_cache=" + std::to_string(o.prompt_cache > 0 ? 1 : 0) +
+                                        " batch_groups=" + std::to_string(o.batch_groups)).c_str() : "");
+@@ -10182,7 +10223,8 @@
+             int32_t tok[strata::kernels::kVerifyMaxT] = {};
+             int64_t pos[strata::kernels::kVerifyMaxT] = {};
+             int64_t since = 0;              ///< tick it started waiting (fairness)
+-            int S = 0;                      ///< slots in its window: up to its last active one (idle ones cost rows)
++            int first = 0;                  ///< kv-retention-v1: first active slot within this group
++            int S = 0;                      ///< window from first through last active (GS=2 has no idle holes)
+         };
+         std::vector<PGroup> pg((size_t) (piped ? o.batch_groups : 0));
+         std::vector<int> stage_group((size_t) n_pipe, -1);
+@@ -10213,14 +10255,15 @@
+                 // the last stage: the group's picks
+                 const int32_t* outb = vk.batch_out();
+                 for (int t = 0; t < G.S; ++t) {
+-                    BSlot& sl = bs[(size_t) (gi * GS + t)];
++                    const int slot = gi * GS + G.first + t;
++                    BSlot& sl = bs[(size_t) slot];
+                     if (!sl.active) continue;
+                     if (vk.nonfinite_in(t)) {   // #879: the slot ends, nothing emitted
+                         std::fprintf(stderr, "strata batch: non-finite logits (#879) in slot %d at position %lld: it "
+                                              "ends (BDONE nonfinite) and the next request reads its prompt from token 0\n",
+-                                     gi * GS + t, (long long) sl.p);
++                                     slot, (long long) sl.p);
+                         const double ms = std::chrono::duration<double, std::milli>(Clock::now() - sl.t0).count();
+-                        std::printf("BDONE %d %lld nonfinite %.1f\n", gi * GS + t, (long long) sl.produced, ms);
++                        std::printf("BDONE %d %lld nonfinite %.1f\n", slot, (long long) sl.produced, ms);
+                         sl.active = false;
+                         sl.cached = false;
+                         sl.checks.clear();
+@@ -10228,7 +10271,7 @@
+                         continue;
+                     }
+                     const int32_t y = outb[t];
+-                    std::printf("BT %d %d\n", gi * GS + t, (int) y);
++                    std::printf("BT %d %d\n", slot, (int) y);
+                     ++sl.produced;
+                     ++bt_rows;
+                     const bool eos = std::find(o.eos_ids.begin(), o.eos_ids.end(), (int64_t) y) != o.eos_ids.end();
+@@ -10237,7 +10280,7 @@
+                     sl.ids.push_back(sl.x);
+                     if (fin != nullptr) {
+                         const double ms = std::chrono::duration<double, std::milli>(Clock::now() - sl.t0).count();
+-                        std::printf("BDONE %d %lld %s %.1f\n", gi * GS + t, (long long) sl.produced, fin, ms);
++                        std::printf("BDONE %d %lld %s %.1f\n", slot, (long long) sl.produced, fin, ms);
+                         sl.active = false;
+                         // a pipelined slot is a cache again (#857: a request left alone in its slot goes back to the solo path with its
+                         // drafts): its state is final once its last window has left the last stage.  A later group window whose pad
+@@ -10271,10 +10314,18 @@
+                     if (pick < 0) continue;
+                     rr = pick + 1;
+                     PGroup& G = pg[(size_t) pick];
++                    G.first = GS;
+                     G.S = 0;
+-                    for (int t = 0; t < GS; ++t) if (bs[(size_t) (pick * GS + t)].active) G.S = t + 1;
++                    for (int t = 0; t < GS; ++t) if (bs[(size_t) (pick * GS + t)].active) {
++                        G.first = std::min(G.first, t);
++                        G.S = t + 1;
++                    }
++                    if (G.first == GS) continue;
++                    G.S -= G.first;
++                    // Do not write padding over a preceding idle conversation. With GS=2 the active rows
++                    // are now contiguous; larger groups retain the existing invalidation of internal holes.
+                     for (int t = 0; t < G.S; ++t) {
+-                        BSlot& sl = bs[(size_t) (pick * GS + t)];
++                        BSlot& sl = bs[(size_t) (pick * GS + G.first + t)];
+                         G.tok[t] = sl.active ? sl.x : 0;
+                         G.pos[t] = sl.active ? sl.p : 0;
+                         if (!sl.active) sl.cached = false;   // its pad row writes its state
+@@ -10286,7 +10337,7 @@
+                 }
+                 PGroup& G = pg[(size_t) pick];
+                 strata::core::progress().busy.store(true);
+-                if (!stage_verifier(k).batch_launch(pick * GS, G.S, G.tok, G.pos, err)) {
++                if (!stage_verifier(k).batch_launch(pick * GS + G.first, G.S, G.tok, G.pos, err)) {
+                     std::printf("ERR %s\n", err.c_str());
+                     return false;
+                 }
+@@ -10313,6 +10364,299 @@
+             return true;
+         };
+         for (;;) {
++            use_mtp = have_mtp;
++
++            // ---- THE LATENT READ-OUT (the Jev decision interface, read-only).  `lat=<path>` asks the engine to
++            // write the model's final residual R (hc x n_embd, f32 - the state the LM head itself consumes) to
++            // <path>; `latk=last,turn,meanN` says which positions (default `last`):
++            //   last   - the last prompt position (the state that predicts the first token)
++            //   turn   - the last turn boundary (`--turn-token`) inside the part this request read
++            //   meanN  - the element-wise mean of the last N positions, per stream (hc stays separate)
++            // Nothing is allocated, copied or tested beyond one bool per window unless a request asks, and the
++            // copies are per request, never per token.  A request that only wants the latent needs the prompt pass
++            // plus the window holding the last position - the same window a max_new=1 request already runs.
++            std::string lat_path;
++            bool lat_fast = true;   // diagnostic latfast=0 retains accepted verify path
++            bool lat_last = false, lat_turn = false, lat_written = false;
++            int64_t lat_mean = 0, lat_turn_pos = -1, lat_last_pos = -1, lat_ring_pos0 = -1;
++            std::vector<float> lat_last_v, lat_turn_v, lat_ring;
++            int64_t lat_dim = 0, lat_ring_rows = 0;
++            auto lat_dev = [&] { return last_st != nullptr ? last_st->dev : 0; };
++            auto lat_init = [&] { if (lat_dim == 0) lat_dim = (int64_t) g.hc * (int64_t) g.n_embd; };
++            // patch 0004: the taps.  `latt=23,29,35,41` names the layers whose residual a read-out wants (or `-1`
++            // for the final, normed one), and `latspan=A-B` the absolute prompt positions to take them at
++            // (absent: the last prompt position alone, which is what `latk=last` reads).  Written as STRLAT2.
++            std::vector<int32_t> lat_taps;
++            int64_t lat_span_a = -1, lat_span_b = -1, lat_span_rows = 0, lat_span_have = 0, lat_span_pos0 = 0;
++            std::vector<float> lat_tap_v;
++            // ---- patch 0005: SEVERAL spans at once, optionally POOLED.  A decision read-out wants the question as
++            // one span and each option as its own, so it can pool or attend per option.  `latspans=A-B,C-D,..`
++            // names them (their order is the option order); `latpool=last,mean` asks for the pooled rows instead
++            // of every row - two rows per span per layer, ~20x smaller than the whole suffix, which is what makes
++            // a 45k-decision dataset fit.  Without `latpool` the raw rows of each span come back instead.
++            struct LatSpan { int64_t a, b; };
++            std::vector<LatSpan> lat_spans;
++            bool lat_pool_last = false, lat_pool_mean = false;
++            std::vector<float> lat_sp_sum, lat_sp_last, lat_sp_scratch;
++            std::vector<std::vector<float>> lat_sp_raw;      // [span * n_taps + tap] the raw rows collected
++            std::vector<int64_t> lat_sp_cnt, lat_sp_have, lat_sp_rawpos, lat_sp_lastpos;
++            auto lat_spans_init = [&] {
++                if (lat_spans.empty() || !lat_sp_sum.empty()) return;
++                lat_init();
++                const size_t nt = lat_taps.size();
++                lat_sp_sum.assign(lat_spans.size() * nt * (size_t) lat_dim, 0.0f);
++                lat_sp_last.assign(lat_spans.size() * nt * (size_t) lat_dim, 0.0f);
++                lat_sp_cnt.assign(lat_spans.size() * nt, 0);
++                lat_sp_have.assign(lat_spans.size(), 0);
++                lat_sp_rawpos.assign(lat_spans.size(), -1);
++                lat_sp_lastpos.assign(lat_spans.size(), -1);
++                int64_t mx = 0;
++                for (const LatSpan& s : lat_spans) mx = std::max(mx, s.b - s.a);
++                // patch 0007: this block is a PER-READ staging buffer, not a per-span one.  A read_taps() call can
++                // never return more than kVerifyMaxT rows - verify.cpp turns away row0 + n past exactly that, because
++                // the device tap block is that deep - so sizing it by the LONGEST span allocated nt*span*dim bytes to
++                // hold nt*kVerifyMaxT of them.  One span over a --max-context 262144 prompt asked for
++                // 3*262144*2560*4 = 8 GB of host RAM from a request that is inside no try: the bad_alloc takes the
++                // engine down, and every chat on it with it.  The raw block below really does accumulate spans, so
++                // it gets a budget instead.
++                mx = std::min(mx, (int64_t) strata::kernels::kVerifyMaxT);
++                lat_sp_scratch.assign(nt * (size_t) (mx * lat_dim), 0.0f);
++                if (!lat_pool_last && !lat_pool_mean) {
++                    int64_t rows = 0;
++                    for (const LatSpan& s : lat_spans) rows += std::max<int64_t>(0, s.b - s.a);
++                    const int64_t bytes = rows * (int64_t) nt * (int64_t) lat_dim * (int64_t) sizeof(float);
++                    static constexpr int64_t kLatRawBudget = (int64_t) 1 << 30;   // 1 GiB of raw tap rows a request
++                    if (bytes > kLatRawBudget) {                                  // may hold at once
++                        std::fprintf(stderr, "strata serve: the %zu latent span(s) ask for %lld raw tap rows "
++                                             "(%lld bytes), over the %lld-byte budget for one request: the spans are "
++                                             "dropped and nothing of the prompt is read out\n", lat_spans.size(),
++                                     (long long) rows, (long long) bytes, (long long) kLatRawBudget);
++                        lat_spans.clear();
++                        return;
++                    }
++                    lat_sp_raw.resize(lat_spans.size() * nt);
++                }
++            };
++            // rows [row0, row0+n) of `R_rows` (device, the LAST stage's final residuals) -> host
++            auto lat_copy = [&](const float* R_rows, int64_t row0, int64_t n, std::vector<float>& dst) {
++                lat_init();
++                if (R_rows == nullptr || n <= 0) return;
++                const strata::core::OnDevice on(lat_dev());
++                dst.assign((size_t) (n * lat_dim), 0.0f);
++                cudaMemcpy(dst.data(), R_rows + (size_t) (row0 * lat_dim), (size_t) (n * lat_dim) * sizeof(float),
++                           cudaMemcpyDeviceToHost);
++            };
++            // the prompt path's windows: `R_rows` covers positions [q, q + T), the read of this call ends at b
++            auto lat_window = [&](const float* R_rows, int64_t T, int64_t q, int64_t b) {
++                if (lat_path.empty()) return;
++                if (lat_turn && lat_turn_pos >= q && lat_turn_pos < q + T)
++                    lat_copy(R_rows, lat_turn_pos - q, 1, lat_turn_v);
++                if (lat_mean > 0 && q + T > b - lat_mean) {          // only the tail windows feed the mean
++                    const int64_t n = std::min<int64_t>(T, lat_mean);
++                    std::vector<float> rows;
++                    lat_copy(R_rows, T - n, n, rows);
++                    if (lat_ring_pos0 < 0) lat_ring_pos0 = q + T - n;
++                    if (lat_ring_rows + n > lat_mean) {
++                        const int64_t drop = lat_ring_rows + n - lat_mean;
++                        lat_ring.erase(lat_ring.begin(), lat_ring.begin() + (size_t) (drop * lat_dim));
++                        lat_ring_rows -= drop;
++                        lat_ring_pos0 += drop;
++                    }
++                    lat_ring.insert(lat_ring.end(), rows.begin(), rows.end());
++                    lat_ring_rows += n;
++                }
++            };
++            // patch 0004: pull the tap rows `[max(a, q), min(e, q + T))` of ONE window out of the layers the
++            // request named.  A request reads its prompt window by window and the windows arrive in order, so
++            // the rows land in the block in prompt order.  `a < 0` means "this window does not contribute".
++            auto lat_tap_read = [&](int64_t T, int64_t q, int64_t a, int64_t e) {
++                if (lat_taps.empty() || a < 0) return;
++                lat_init();
++                const int64_t r0 = std::max(a, q), r1 = std::min(e, q + T);
++                if (r1 <= r0) return;
++                if (lat_span_rows == 0) {                       // the first window fixes the block: one row per position
++                    lat_span_rows = e - a;
++                    lat_span_pos0 = r0;                         // ... and where the rows really start (a cached prefix is not read)
++                    lat_tap_v.assign((size_t) ((int64_t) lat_taps.size() * lat_span_rows * lat_dim), 0.0f);
++                }
++                if (!ver.read_taps(lat_taps, r0 - q, r1 - r0, lat_span_have, lat_span_rows, lat_tap_v))
++                    std::fprintf(stderr, "strata serve: the latent taps of rows [%lld, %lld) did not come back\n",
++                                 (long long) r0, (long long) r1);
++                lat_span_have += r1 - r0;
++            };
++            // patch 0005: the same window, but for every requested span at once: each span keeps its own rows
++            // (or its running sum, count and last row, when pooling).  Spans are read span by span so the
++            // device->host traffic is exactly the rows asked for, and never the rows around them.
++            auto lat_spans_read = [&](int64_t T, int64_t q) {
++                if (lat_taps.empty() || lat_spans.empty()) return;
++                lat_spans_init();
++                const size_t nt = lat_taps.size();
++                for (size_t s = 0; s < lat_spans.size(); ++s) {
++                    const int64_t r0 = std::max(lat_spans[s].a, q), r1 = std::min(lat_spans[s].b, q + T);
++                    if (r1 <= r0) continue;
++                    const int64_t n = r1 - r0;
++                    // patch 0007: a tap layer this stage did not run is SKIPPED, not written - verify.cpp continues
++                    // on "another stage ran it", and on rows outside the window it continues too - so read_taps leaves
++                    // those rows exactly as it found them.  The scratch is reused window after window, so without
++                    // this the rows of the PREVIOUS window were summed into this span's mean: a silently wrong
++                    // feature vector, and nothing anywhere in the log.  (With `--layer-split` covering every tap the
++                    // rows are always written, which is why the collected data is clean; this bites the moment a tap
++                    // names a layer no stage owns, or a read past the window bound is turned away.)
++                    std::fill_n(lat_sp_scratch.data(), (size_t) (nt * n * lat_dim), 0.0f);
++                    if (!ver.read_taps(lat_taps, r0 - q, n, 0, n, lat_sp_scratch)) {
++                        std::fprintf(stderr, "strata serve: the latent taps of span %zu rows [%lld, %lld) did not "
++                                             "come back\n", s, (long long) r0, (long long) r1);
++                        continue;
++                    }
++                    if (lat_sp_rawpos[s] < 0) lat_sp_rawpos[s] = r0;
++                    lat_sp_lastpos[s] = r1 - 1;
++                    lat_sp_have[s] += n;
++                    for (size_t t = 0; t < nt; ++t) {
++                        const size_t idx = s * nt + t;
++                        const float* rows = lat_sp_scratch.data() + (size_t) (t * (size_t) (n * lat_dim));
++                        if (!lat_pool_last && !lat_pool_mean) {
++                            lat_sp_raw[idx].insert(lat_sp_raw[idx].end(), rows, rows + (size_t) (n * lat_dim));
++                            continue;
++                        }
++                        float* sum = lat_sp_sum.data() + idx * (size_t) lat_dim;
++                        for (int64_t r = 0; r < n; ++r)
++                            for (int64_t i = 0; i < lat_dim; ++i) sum[(size_t) i] += rows[(size_t) (r * lat_dim + i)];
++                        lat_sp_cnt[idx] += n;
++                        std::memcpy(lat_sp_last.data() + idx * (size_t) lat_dim,
++                                    rows + (size_t) ((n - 1) * lat_dim), (size_t) lat_dim * sizeof(float));
++                    }
++                }
++            };
++            // write it: magic "STRLAT1\0" (8B), u32 version/hc/n_embd/n_seg, per segment {pos0, rows}, then the data
++            auto lat_flush = [&] {
++                if (lat_path.empty() || lat_written) return;
++                lat_written = true;
++                lat_init();
++                std::vector<float> mean_v;
++                if (lat_ring_rows > 0) {                            // the per-stream mean of the captured tail
++                    mean_v.assign((size_t) lat_dim, 0.0f);
++                    for (int64_t r = 0; r < lat_ring_rows; ++r)
++                        for (int64_t i = 0; i < lat_dim; ++i)
++                            mean_v[(size_t) i] += lat_ring[(size_t) (r * lat_dim + i)] / (float) lat_ring_rows;
++                }
++                std::FILE* f = std::fopen(lat_path.c_str(), "wb");
++                if (f == nullptr) {
++                    std::fprintf(stderr, "strata serve: cannot write the latent %s\n", lat_path.c_str());
++                    return;
++                }
++                struct LatSeg { int64_t kind, layer, span, pos0, rows; const float* data; size_t n; };
++                std::vector<LatSeg> segs;
++                // kind 0 = last (rows 1), 1 = turn (rows 1), 2 = mean (ONE row already averaged over `rows`
++                // positions starting at pos0), 3 = a raw tap block, 4 = a span's last row, 5 = a span's mean row,
++                // 6 = a span's raw rows.  `span` is the index into the request's `latspans` (-1 when not a span).
++                if (!lat_last_v.empty()) segs.push_back({0, -1, -1, lat_last_pos, 1, lat_last_v.data(), lat_last_v.size()});
++                if (!lat_turn_v.empty()) segs.push_back({1, -1, -1, lat_turn_pos, 1, lat_turn_v.data(), lat_turn_v.size()});
++                if (!mean_v.empty())     segs.push_back({2, -1, -1, lat_ring_pos0, lat_ring_rows, mean_v.data(), mean_v.size()});
++                // patch 0004: the taps over ONE span, one block per layer.  STRLAT2 keeps the layer index in the
++                // segment header, so a reader can tell which depth of the trunk a block came from.
++                std::vector<float> tap_blocks;
++                if (!lat_taps.empty() && lat_span_have > 0) {
++                    lat_init();
++                    // a span whose head the prompt cache already covered comes back short: say so, do not pretend
++                    if (lat_span_have != lat_span_rows)
++                        std::fprintf(stderr, "strata serve: the latent taps: %lld of %lld row(s) read (rows %lld..%lld "
++                                             "came from the prompt cache, not from this request)\n",
++                                     (long long) lat_span_have, (long long) lat_span_rows, (long long) lat_span_pos0,
++                                     (long long) (lat_span_pos0 + lat_span_rows - lat_span_have));
++                    const size_t k0 = segs.size();
++                    for (size_t k = 0; k < lat_taps.size(); ++k) {
++                        const size_t off = (size_t) ((int64_t) k * lat_span_rows * lat_dim);
++                        tap_blocks.insert(tap_blocks.end(), lat_tap_v.begin() + (ptrdiff_t) off,
++                                          lat_tap_v.begin() + (ptrdiff_t) (off + (size_t) (lat_span_have * lat_dim)));
++                    }
++                    for (size_t k = 0; k < lat_taps.size(); ++k)
++                        segs.push_back({3, (int64_t) lat_taps[k], -1, lat_span_pos0, lat_span_have, nullptr,
++                                        (size_t) (lat_span_have * lat_dim)});
++                    for (size_t k = 0; k < lat_taps.size(); ++k)   // the pointers, once tap_blocks stopped growing
++                        segs[k0 + k].data = tap_blocks.data() + (size_t) (k * (size_t) (lat_span_have * lat_dim));
++                }
++                // patch 0005: the spans, pooled or raw.  Written in span order, then layer, then pool: the client
++                // sent the spans, so it knows which is which - and every header names the span anyway.
++                bool lat_v3 = false;
++                std::vector<std::vector<float>> sp_blocks;
++                if (!lat_spans.empty() && !lat_sp_have.empty()) {
++                    lat_init();
++                    if (lat_taps.empty())
++                        std::fprintf(stderr, "strata serve: latspans was given without latt, so no layer was read\n");
++                    const size_t nt = lat_taps.size();
++                    for (size_t s = 0; s < lat_spans.size(); ++s) {
++                        const int64_t want = lat_spans[s].b - lat_spans[s].a;
++                        if (lat_sp_have[s] <= 0) {
++                            // patch 0007: silent before.  A span with no rows is the prompt path never having read
++                            // the tokens under it - the segment that covers it went batched, and read_part() has no
++                            // tap hook - and the response simply came back shorter than the client asked for.  That
++                            // is how a 95-token prompt once returned no segments at all while a 59-token one
++                            // returned everything, with nothing in the log to read.
++                            std::fprintf(stderr, "strata serve: the latent span %zu (%lld-%lld) read NO rows: the "
++                                                 "prompt path over it has no tap hook; this span is missing from the "
++                                                 "response\n", s, (long long) lat_spans[s].a,
++                                         (long long) lat_spans[s].b);
++                            continue;
++                        }
++                        if (lat_sp_have[s] != want)
++                            std::fprintf(stderr, "strata serve: the latent span %zu: %lld of %lld row(s) read (the "
++                                                 "rest came from the prompt cache, not from this request)\n",
++                                         s, (long long) lat_sp_have[s], (long long) want);
++                        for (size_t t = 0; t < nt; ++t) {
++                            const size_t idx = s * nt + t;
++                            const int64_t layer = (int64_t) lat_taps[t];
++                            if (!lat_pool_last && !lat_pool_mean) {
++                                sp_blocks.push_back(lat_sp_raw[idx]);
++                                segs.push_back({6, layer, (int64_t) s, lat_sp_rawpos[s], lat_sp_have[s],
++                                                sp_blocks.back().data(), sp_blocks.back().size()});
++                                lat_v3 = true;
++                                continue;
++                            }
++                            if (lat_pool_last) {
++                                sp_blocks.emplace_back(lat_sp_last.data() + idx * (size_t) lat_dim,
++                                                       lat_sp_last.data() + (idx + 1) * (size_t) lat_dim);
++                                segs.push_back({4, layer, (int64_t) s, lat_sp_lastpos[s], lat_sp_cnt[idx],
++                                                sp_blocks.back().data(), sp_blocks.back().size()});
++                            }
++                            if (lat_pool_mean) {
++                                const float c = (float) std::max<int64_t>(1, lat_sp_cnt[idx]);
++                                std::vector<float> mn(lat_sp_sum.begin() + idx * (size_t) lat_dim,
++                                                      lat_sp_sum.begin() + (idx + 1) * (size_t) lat_dim);
++                                for (int64_t i = 0; i < lat_dim; ++i) mn[(size_t) i] /= c;
++                                sp_blocks.push_back(std::move(mn));
++                                segs.push_back({5, layer, (int64_t) s, lat_spans[s].a, lat_sp_cnt[idx],
++                                                sp_blocks.back().data(), sp_blocks.back().size()});
++                            }
++                            lat_v3 = true;
++                        }
++                    }
++                }
++                const int lat_ver = lat_v3 ? 3 : (tap_blocks.empty() ? 1 : 2);
++                char magic[8] = {'S', 'T', 'R', 'L', 'A', 'T', '1', '\0'};
++                magic[6] = (char) ('0' + lat_ver);
++                const uint32_t hdr[4] = {(uint32_t) lat_ver, (uint32_t) g.hc, (uint32_t) g.n_embd,
++                                         (uint32_t) segs.size()};
++                std::fwrite(magic, 1, 8, f);
++                std::fwrite(hdr, sizeof(uint32_t), 4, f);
++                for (const LatSeg& sg : segs) {
++                    if (lat_ver == 3) {
++                        const int64_t h[5] = {sg.kind, sg.layer, sg.span, sg.pos0, sg.rows};
++                        std::fwrite(h, sizeof(int64_t), 5, f);
++                    } else if (lat_ver == 2) {
++                        const int64_t h[4] = {sg.kind, sg.layer, sg.pos0, sg.rows};
++                        std::fwrite(h, sizeof(int64_t), 4, f);
++                    } else {
++                        const int64_t h[3] = {sg.kind, sg.pos0, sg.rows};
++                        std::fwrite(h, sizeof(int64_t), 3, f);
++                    }
++                }
++                for (const LatSeg& sg : segs)
++                    if (sg.data != nullptr && sg.n > 0) std::fwrite(sg.data, sizeof(float), sg.n, f);
++                std::fclose(f);
++                std::fprintf(stderr, "strata serve: latent written to %s (STRLAT%d, hc %lld, n_embd %lld, "
++                                     "%zu segment(s))\n",
++                             lat_path.c_str(), lat_ver, (long long) g.hc, (long long) g.n_embd, segs.size());
++            };
+             if (batch_on() || (piped && pipe_inflight())) {
+                 if (!try_next_line(line)) {
+                     if (!(piped ? pump(true) : batch_step())) return 1;
+@@ -10597,6 +10941,8 @@
+                         continue;
+                     }
+                     conversations.take_reuse();   // retained K/V described the outgoing session
++                    decisions.take_reuse();
++                    live_decision = false;        // a session file is the decode side's
+                     live_ok = false;
+                     // host -> device in synchronous copies of the whole state: one bounded allowance
+                     blocking("transfer", bytes);
+@@ -10660,6 +11006,7 @@
+             // a parked conversation holding it stays parked) and a later request that resumes from it does not park the
+             // branch it leaves: N queries cost one prefix, not N.  Absent = as before.
+             int64_t req_pin = 0;
++            req_decision = false;   // patch 0006: cache_region=decision below; the region is a per-request choice
+             // tuning keys (setup's calibration measures settings without restarting the engine): the PCIe share of
+             // the missed experts and the draft-probability floor, for this request only
+             double req_pcie_frac = o.pcie_frac, req_spec_min_p = o.spec_min_p;
+@@ -10684,6 +11031,26 @@
+                     else if (key == "cvec") req_cvec = std::atoi(tok.c_str() + eq + 1);
+                     else if (key == "ckpt") req_ckpt = std::atoi(tok.c_str() + eq + 1) != 0;
+                     else if (key == "pin") req_pin = std::max<long long>(0, std::atoll(tok.c_str() + eq + 1));
++                    // patch 0006: cache_region=decision - park into and restore from the decision region alone
++                    else if (key == "cache_region") {
++                        // patch 0007: the region has to exist before a request may be bound to it.  Asking for
++                        // cache_region=decision on an engine started without --decision-cache-mib/slots parked into
++                        // a cache that stores nothing, and the line below then moved the LIVE session onto that
++                        // region: from there on every chat's conversation was parked into the empty one too, so the
++                        // decode side lost its cache completely and no log line said why.
++                        const bool want_dec = tok.compare(eq + 1, std::string::npos, "decision") == 0;
++                        if (want_dec && !decisions.enabled()) {
++                            static bool warned_no_region = false;
++                            if (!warned_no_region) {
++                                warned_no_region = true;
++                                std::fprintf(stderr, "strata serve: cache_region=decision but the decision region "
++                                                     "is empty (--prompt-cache off, or --decision-cache-mib/slots 0): "
++                                                     "ignored, this and later requests park in the conversation "
++                                                     "cache\n");
++                            }
++                            req_decision = false;
++                        } else req_decision = want_dec;
++                    }
+                     else if (key == "temperature") req_temperature = fv;
+                     else if (key == "top_p") req_top_p = fv;
+                     else if (key == "top_k") req_top_k = std::atoi(tok.c_str() + eq + 1);
+@@ -10708,6 +11075,84 @@
+                             if (*qe != ',' && *qe != '\0') { req_img_keys.clear(); break; }
+                         }
+                     }
++                    else if (key == "latfast") lat_fast = std::atoi(tok.c_str() + eq + 1) != 0;
++                    else if (key == "lat") lat_path = tok.substr(eq + 1);
++                    else if (key == "latk") {              // last,turn,meanN - any order; absent = last
++                        const std::string lv = tok.substr(eq + 1);
++                        for (size_t l0 = 0; l0 < lv.size();) {
++                            const size_t l1 = lv.find(',', l0);
++                            const std::string kk = lv.substr(l0, l1 == std::string::npos ? std::string::npos : l1 - l0);
++                            if (kk == "last") lat_last = true;
++                            else if (kk == "turn") lat_turn = true;
++                            else if (kk.rfind("mean", 0) == 0)
++                                lat_mean = std::max<int64_t>(0, std::atoll(kk.c_str() + 4));
++                            if (l1 == std::string::npos) break;
++                            l0 = l1 + 1;
++                        }
++                    }
++                    // patch 0004: `latt=<layers>` turns the taps on for this request (`-1` = the final residual)
++                    // and `latspan=<a>-<b>` the absolute prompt positions they are taken at.
++                    else if (key == "latt") {
++                        const std::string lv = tok.substr(eq + 1);
++                        for (size_t l0 = 0; l0 < lv.size();) {
++                            const size_t l1 = lv.find(',', l0);
++                            const std::string kk = lv.substr(l0, l1 == std::string::npos ? std::string::npos : l1 - l0);
++                            // patch 0007: atoi() answers 0 for anything it cannot read, so `latt=abc` asked for LAYER
++                            // ZERO - a perfectly real vector, from a layer nobody meant.  A tap is a plain integer or
++                            // -1 here, so say so instead of quietly reading a different layer.
++                            const size_t ds = (!kk.empty() && kk[0] == '-') ? 1u : 0u;
++                            if (!kk.empty() && ds < kk.size() &&
++                                kk.find_first_not_of("0123456789", ds) == std::string::npos)
++                                lat_taps.push_back((int32_t) std::atoi(kk.c_str()));
++                            else if (!kk.empty())
++                                std::fprintf(stderr, "strata serve: latt dropped \"%s\": a layer is an integer, or -1 "
++                                                     "for the final residual\n", kk.c_str());
++                            if (l1 == std::string::npos) break;
++                            l0 = l1 + 1;
++                        }
++                        if (!lat_taps.empty()) ver.enable_taps();
++                        // patch 0007: name a tap no stage can produce.  read_taps() skips a layer its own stage did
++                        // not run, and when no stage in the chain runs it nothing is ever written - the request used
++                        // to come back with a vector of stale rows for it (see lat_spans_read, which now zeroes them
++                        // first), so a typo like `latt=99` looked like a real read of a real layer.
++                        for (const int32_t l : lat_taps)
++                            if (l >= (int32_t) g.n_layers)
++                                std::fprintf(stderr, "strata serve: latt asks for layer %d but the model has %lld "
++                                                     "(0..%lld): its rows come back zero, no stage runs it\n",
++                                             l, (long long) g.n_layers, (long long) (g.n_layers - 1));
++                    }
++                    else if (key == "latspan") {
++                        const std::string sv = tok.substr(eq + 1);
++                        const size_t dash = sv.find('-');
++                        if (dash != std::string::npos && dash > 0) {
++                            lat_span_a = std::strtoll(sv.c_str(), nullptr, 10);
++                            lat_span_b = std::strtoll(sv.c_str() + dash + 1, nullptr, 10);
++                        }
++                    }
++                    // patch 0005: `latspans=A-B,C-D,..` (up to 16, absolute prompt positions, in the order the
++                    // read-out wants to see them - the question, then each option) and `latpool=last,mean` for
++                    // the pooled rows (two per span per layer) instead of every row.
++                    else if (key == "latspans") {
++                        const std::string sv = tok.substr(eq + 1);
++                        for (size_t l0 = 0; l0 < sv.size() && lat_spans.size() < 16;) {
++                            const size_t l1 = sv.find(',', l0);
++                            const std::string kk = sv.substr(l0, l1 == std::string::npos ? std::string::npos : l1 - l0);
++                            const size_t dash = kk.find('-');
++                            if (dash != std::string::npos && dash > 0) {
++                                const int64_t a = std::strtoll(kk.c_str(), nullptr, 10);
++                                const int64_t b = std::strtoll(kk.c_str() + dash + 1, nullptr, 10);
++                                if (b > a) lat_spans.push_back(LatSpan{a, b});
++                            }
++                            if (l1 == std::string::npos) break;
++                            l0 = l1 + 1;
++                        }
++                        if (!lat_spans.empty()) ver.enable_taps();
++                    }
++                    else if (key == "latpool") {
++                        const std::string pv = tok.substr(eq + 1);
++                        lat_pool_last = pv.find("last") != std::string::npos;
++                        lat_pool_mean = pv.find("mean") != std::string::npos;
++                    }
+                     // unknown keys are skipped: the ids start at the first token without '='
+                 }
+             }
+@@ -10731,6 +11176,85 @@
+                 continue;
+             }
+             const int64_t n = (int64_t) ids.size();
++            // patch 0007: the spans are clamped to the prompt this request actually carries.  Unclamped they SIZE
++            // the read-out's scratch from whatever the client typed - "latspans=0-1000000000" asks for a vector in
++            // terabytes, from a call that is inside no try, and a bad_alloc takes the process with it.  Clamped, an
++            // out-of-range span reads what it can and the "%lld of %lld row(s) read" line already says so.
++            for (LatSpan& s : lat_spans) {
++                const int64_t a = std::clamp<int64_t>(s.a, 0, n), b = std::clamp<int64_t>(s.b, 0, n);
++                if (a != s.a || b != s.b)
++                    std::fprintf(stderr, "strata serve: latent span %lld-%lld clamped to the prompt (%lld tokens)\n",
++                                 (long long) s.a, (long long) s.b, (long long) n);
++                s.a = a;
++                s.b = std::max(a, b);
++            }
++            // Per-request hooks; Prefill::run drains the stage pipeline before
++            // returning. Each stage writes only its own layer's vector/count.
++            // Initialization is on the main thread, before any stage can read.
++            const bool lat_fast_active = lat_fast && !lat_taps.empty() && !lat_spans.empty()
++                                         && !lat_last && !lat_turn && lat_mean == 0;
++            // A readout is a GEN on the main SessionState, never a BGEN's
++            // gathered slot rows. Existing chat slots keep independent state.
++            if (lat_fast_active && admit_slot >= 0) {
++                std::printf("ERR fast latent readout requires GEN, not BGEN slot admission\n");
++                std::fflush(stdout);
++                continue;
++            }
++            struct LatPrefillHooks {
++                std::vector<strata::prefill::Prefill*> paths;
++                ~LatPrefillHooks() { for (auto* p : paths) p->on_layer = nullptr; }
++            } lat_hooks;
++            if (lat_fast_active) {
++                lat_spans_init();
++                auto observe = [&](const float* R, int64_t layer, int64_t T, int64_t q,
++                                   void* stream, std::string& e) -> bool {
++                    const size_t nt = lat_taps.size();
++                    for (size_t t = 0; t < nt; ++t) {
++                        const int64_t resolved = lat_taps[t] == -1 ? g.n_layers - 1 : lat_taps[t];
++                        if (resolved != layer) continue;
++                        for (size_t s = 0; s < lat_spans.size(); ++s) {
++                            const int64_t r0 = std::max(lat_spans[s].a, q);
++                            const int64_t r1 = std::min(lat_spans[s].b, q + T);
++                            if (r1 <= r0) continue;
++                            const int64_t nr = r1 - r0;
++                            std::vector<float> rows((size_t) (nr * lat_dim));
++                            auto cs = (cudaStream_t) stream;
++                            if (cudaMemcpyAsync(rows.data(), R + (size_t) ((r0 - q) * lat_dim),
++                                                rows.size() * sizeof(float), cudaMemcpyDeviceToHost, cs) != cudaSuccess ||
++                                cudaStreamSynchronize(cs) != cudaSuccess) {
++                                e = "latent prefill: copying layer " + std::to_string(layer);
++                                return false;
++                            }
++                            const size_t idx = s * nt + t;
++                            // Count span-wide metadata once; all per-layer coverage
++                            // is still independently represented by lat_sp_cnt.
++                            if (t == 0) {
++                                if (lat_sp_rawpos[s] < 0) lat_sp_rawpos[s] = r0;
++                                lat_sp_lastpos[s] = r1 - 1;
++                                lat_sp_have[s] += nr;
++                            }
++                            if (!lat_pool_last && !lat_pool_mean) {
++                                lat_sp_raw[idx].insert(lat_sp_raw[idx].end(), rows.begin(), rows.end());
++                            } else {
++                                float* sum = lat_sp_sum.data() + idx * (size_t) lat_dim;
++                                for (int64_t r = 0; r < nr; ++r)
++                                    for (int64_t i = 0; i < lat_dim; ++i)
++                                        sum[(size_t) i] += rows[(size_t) (r * lat_dim + i)];
++                                lat_sp_cnt[idx] += nr;
++                                std::memcpy(lat_sp_last.data() + idx * (size_t) lat_dim,
++                                            rows.data() + (size_t) ((nr - 1) * lat_dim),
++                                            (size_t) lat_dim * sizeof(float));
++                            }
++                        }
++                    }
++                    return true;
++                };
++                lat_hooks.paths.push_back(&sp);
++                for (auto& st : stages) lat_hooks.paths.push_back(&st->sp);
++                for (auto* p : lat_hooks.paths) p->on_layer = observe;
++                std::fprintf(stderr, "strata serve: latent backend=batched-prefill, %zu taps %zu spans\n",
++                             lat_taps.size(), lat_spans.size());
++            }
+             req_imgs.clear();
+             if (geni && !o.vision) { std::printf("ERR this engine was started without --vision\n"); continue; }
+             if (geni || !mrope_identity) {
+@@ -10918,6 +11442,7 @@
+             }
+             int64_t resume = 0;
+             bool from_live = false;
++            bool restored_parked = false;   // patch 0007: the live session came out of THIS request's region
+             if (o.prompt_cache > 0 && want_cvec == cvec_cached) {
+                 if (live_ok && starts_with(live, live_imgs)) { resume = (int64_t) live.size(); from_live = true; }
+                 for (const ConvCheckpoint& c : checks)
+@@ -10982,9 +11507,27 @@
+                                  k + 1, (long long) (k < now.size() ? now[k].start : -1));
+                 }
+             }
+-            const auto parked = conversations.best(ids, req_imgs, want_cvec);
++            const auto parked = region().best(ids, req_imgs, want_cvec);
+             std::optional<strata::core::SavedConversation> incoming;
+-            if (parked.tokens > std::max(resume, slot_tokens)) incoming.emplace(conversations.take(parked.index));
++            if (parked.tokens > std::max(resume, slot_tokens)) incoming.emplace(region().take(parked.index));
++            // patch 0006: a tap request must READ its prompt.  The tap rows exist only for the tokens this request
++            // itself pushed through the verify windows, so a prefix restored from the parked cache, continued from
++            // the live session or copied from a batch slot comes back with NO rows for the spans it covered
++            // (measured: the second of two identical prompts returned the decide span alone, the only span in the
++            // sampling window).  A request that carries `latt` therefore always starts at 0.
++            if (!lat_taps.empty() && (resume > 0 || slot_tokens > 0 || incoming.has_value())) {
++                std::fprintf(stderr, "strata serve: latent taps: reading the prompt from token 0 (%lld tokens were "
++                             "reusable, but the taps need the rows this request reads itself)\n",
++                             (long long) std::max<int64_t>(resume, slot_tokens));
++                resume = 0;
++                from_live = false;
++                slot_source = -1;
++                slot_tokens = 0;
++                if (incoming) {
++                    region().put(std::move(*incoming));   // hand it back: this request will not use it
++                    incoming.reset();
++                }
++            }
+             if (incoming) slot_source = -1;
+             // Reject the entire image before parking/overwriting the outgoing
+             // state. Invalid entries can safely fall back to its existing prefix.
+@@ -11114,16 +11657,17 @@
+                 cvec_cached = incoming->cvec;
+                 resume = parked.tokens;
+                 from_live = parked.live;
++                restored_parked = true;   // patch 0007: region() is this request's region, so the session is its own
+                 if (std::getenv("STRATA_SNAPSHOT_FULL_CAPTURE") == nullptr) {
+                     std::vector<std::vector<strata::core::ConversationKv>> stage_kv;   // every stage's, for its next park
+                     for (auto& si : incoming->stage_images) stage_kv.push_back(std::move(si.kv));
+-                    conversations.retain(std::move(incoming->kv), int64_t(live.size()), std::move(stage_kv));
++                    region().retain(std::move(incoming->kv), int64_t(live.size()), std::move(stage_kv));
+                 }
+                 incoming.reset(); // Running-state/checkpoint copies are no longer needed.
+-                std::fprintf(stderr, "strata serve: conversation cache: restored %lld tokens (%s) in %.1f ms; parked=%zu bytes=%zu\n",
+-                             (long long) resume, from_live ? "live" : "checkpoint",
++                std::fprintf(stderr, "strata serve: conversation cache%s: restored %lld tokens (%s) in %.1f ms; parked=%zu bytes=%zu\n",
++                             region_tag(), (long long) resume, from_live ? "live" : "checkpoint",
+                              std::chrono::duration<double, std::milli>(Clock::now() - t0).count(),
+-                             conversations.size(), conversations.bytes());
++                             region().size(), region().bytes());
+             }
+             if (want_cvec != cvec_cached) {
+                 live_ok = false;
+@@ -11136,6 +11680,15 @@
+             checks.erase(std::remove_if(checks.begin(), checks.end(), [&](const ConvCheckpoint& c) {
+                              return (int64_t) c.ids.size() > resume || !starts_with(c.ids, c.imgs);
+                          }), checks.end());
++            // patch 0006: the session the engine now holds belongs to this region.  patch 0007: only when this
++            // request earned that claim.  A tap request already reads from token 0 (the guard above turns any
++            // restored prefix down), and a conversation taken out of `region()` is this request's own - both really
++            // do belong here.  Anything else - a chat that continued from the live session or picked a prompt up out
++            // of a shared batch slot (`live = bs[slot_source].ids`, and `bs[]` is not split by region) - is a session
++            // the OTHER side filled, and re-labelling it here parked a decode-side conversation into the region the
++            // extractions evict, which is the one thing the note at the caches' declaration forbids.  Note the
++            // direction: a chat request must never move the label to `true`, so `req_decision &&` comes first.
++            live_decision = req_decision && (resume == 0 || restored_parked);
+             live_ok = false;   // until this request has finished, the session is in between
+             // the elastic K/V: the outgoing session is parked and this request rewrites every cell from `resume` on,
+             // so cells past this prompt's are no longer anyone's - far more than it needs go back to the cache
+@@ -11143,6 +11696,8 @@
+                 kv_quiesce();
+                 // STRATA_KV_GROW_HOLD=1 (opt-in): keep the K/V as long as the longest parked conversation; default: trim to this request alone, as 0.1.40
+                 static const bool hold_on = [] { const char* v = std::getenv("STRATA_KV_GROW_HOLD"); return v != nullptr && std::atoi(v) != 0; }();
++                // patch 0006: the decision region's parked conversations are deliberately NOT counted here - they are
++                // throwaway one-off prompts, and holding VRAM for them would take it from the decode side.
+                 if (!kvg_trim(n + 256, hold_on ? conversations.longest_tokens() + 256 : 0)) {
+                     std::printf("ERR the K/V could not give its VRAM back to the expert cache\n");
+                     std::fflush(stdout);
+@@ -11197,8 +11752,12 @@
+             if (use_mtp && resume > 0 && reread_to <= 0) mtp.kv_restore(resume);
+             tr("request", n, geni ? 1 : 0);
+             if (use_mtp) mtp.set_prompt_len(n);
++            // A one-shot latent GEN with NO saved main state can
++            // omit MTP. A normal generation restores have_mtp next iteration;
++            // ckpt=0 leaves live_ok=false, so no stale draft state can be reused.
++            if (lat_fast_active && max_new == 1 && !req_ckpt) use_mtp = false;
+             const int64_t read_from = reread_to > 0 ? 0 : resume;
+-            conversations.limit_reuse(read_from);
++            region().limit_reuse(read_from);
+             pp_total = n;
+             pp_from = read_from;
+             pp_reached = read_from;
+@@ -11224,6 +11783,18 @@
+             static const bool no_short = std::getenv("STRATA_CKPT_REREAD") != nullptr;
+             int64_t req_short_read = o.short_read;   // STRATA_PIPELINE_SWITCH may set it per request (short_read=)
+             auto windows_ok = [&](int64_t a, int64_t b) -> bool {
++                // patch 0006: a tap request (latt / latspans) MUST go through the verify windows - the batched
++                // read_part path and the pipelined loop have no tap hooks, so a prompt that does not happen to fit
++                // one short segment used to come back with NO rows at all (measured: a 95-token prompt returned 0
++                // segments while a 59-token one returned all of them).  The bound keeps a pathological segment out
++                // of the serial loop; a picture row still needs the batched path.
++                if (lat_fast_active) return false;   // all prompt segments use fast prefill
++                if (!lat_taps.empty() && !no_short && b - a <= 4096) {
++                    if (sp.embd_rows != nullptr)
++                        for (int64_t i = a; i < b; ++i)
++                            if (sp.embd_rows[i] != nullptr) return false;
++                    return true;
++                }
+                 if (no_short || b - a > req_short_read) return false;
+                 if (sp.embd_rows != nullptr)
+                     for (int64_t i = a; i < b; ++i)
+@@ -11349,7 +11920,7 @@
+             auto read_windows = [&](int64_t a, int64_t b, std::string& e) -> bool {
+                 // (STRATA_LOGPOS reads every window's logits: the serial loop)
+                 // the pipelined prompt read stays two-stage (three or more stages read serially; only the decode overlaps)
+-                if (pipe && n_stages == 2 && pl_pw >= 1 && std::getenv("STRATA_LOGPOS") == nullptr) return read_windows_pl(a, b, e);
++                if (pipe && n_stages == 2 && pl_pw >= 1 && lat_taps.empty() && std::getenv("STRATA_LOGPOS") == nullptr) return read_windows_pl(a, b, e);
+                 strata::core::progress_at("reading the prompt (verify windows), from token", a);   // #217: not "batched"
+                 // every token is committed and the picks are discarded: no head sampling (see set_head_sampling)
+                 struct NoHeadSampling {
+@@ -11392,6 +11963,12 @@
+                     }();
+                     if (logpos != nullptr && !ver.window_logprobs(nxt.data(), T, q, logpos_extra, logpos, e))
+                         return false;
++                    lat_window(ver.final_R_all(), T, q, b);   // no-op unless this request asked
++                    // patch 0004/0005: the prompt windows feed the taps only when the request named a span; with no
++                    // span the taps read the tail position alone (see the first-window block below), which is the
++                    // same position `latk=last` reports.
++                    if (!lat_spans.empty()) lat_spans_read(T, q);
++                    else lat_tap_read(T, q, lat_span_a, lat_span_b < 0 ? lat_span_a + 1 : lat_span_b);
+                     if (!ver.commit(T, e) || (use_mtp && !mtp.prefill(ver.final_R_all(), nxt.data(), T, q, e))) return false;
+                     q += T;
+                     pp_reached = q;   // #471
+@@ -11570,6 +12147,27 @@
+             // the request ends with `YIELDED <slot> <tokens>` + DONE cancel, and the server sends it again later: it
+             // continues from the slot with the same chunks.  #656's cooperative preemption, with a slot as the park.
+             auto read_part = [&](int64_t a0, int64_t b0, std::string& e) -> bool {
++                // (a layer split reads its stages as a pipeline over one run's chunks: in pieces only beside slots)
++                // Cooperative fast readout beside the production's two piped
++                // slot groups. Never overlap their verifier scratch/handoffs
++                // with a prefill run: drain before reading and after each step.
++                // Short readouts keep exactly R2's one-shot prefill shape.
++                if (lat_fast_active && piped && batch_on()) {
++                    if (!pipe_drain()) { e = "latent: failed to drain piped chat"; return false; }
++                    const int64_t C = std::max<int64_t>(sp.chunk(), 1);
++                    for (int64_t q = a0; q < b0;) {
++                        const int64_t r = std::min(b0, q + C);
++                        if (!sp.run(ids.data() + q, r - q, q, e)) return false;
++                        q = r;
++                        if (q < b0 && batch_on()) {
++                            if (!pump(true) || !pipe_drain()) {
++                                e = "latent: piped chat step failed"; return false;
++                            }
++                            ++il_parts;
++                        }
++                    }
++                    return true;
++                }
+                 // (a layer split reads its stages as a pipeline over one run's chunks: beside slots a chunk at a time, with
+                 // none decoding in pieces of STRATA_BATCH_YIELD_CHUNKS chunks (default 8; 0 = one run) so a BYIELD is taken)
+                 static const int64_t yield_chunks = [] {
+@@ -11723,6 +12321,7 @@
+             // is cheaper to read again than the extra part costs (~0.3 s).
+             const int64_t last_turn = turn_at;   // ckpt=0 drops the split there, the root is still looked for before it
+             if (!req_ckpt) turn_at = -1;
++            lat_turn_pos = last_turn;   // the latent's turn anchor: the real boundary, not the ckpt=0 reset
+             int64_t root_at = -1;
+             if (o.prompt_cache > 0 && o.turn_token >= 0 && o.prompt_cache_root > 0 && (read_from == 0 || resumed_from0))
+                 for (int64_t i = 1; i < last_turn; ++i)
+@@ -11761,10 +12360,20 @@
+                                  "%lld)\n", (long long) req_pin, (long long) read_from);
+             }
+             std::vector<int64_t> cuts = {reread_to, root_at, message_at, turn_at, n - 1};
+-            if (pin_at >= 0) {
+-                cuts.push_back(pin_at);
++            if (lat_fast_active && !req_ckpt && req_pin <= 0 && reread_to <= 0)
++                cuts = {n - 1};   // one-shot: no chat checkpoints or artificial tiny prefill parts
++            if (pin_at >= 0) cuts.push_back(pin_at);
++            // patch 0007: windows_ok() lets a tap segment through the verify windows only while it is 4096 tokens or
++            // shorter, and read_part() - the path EVERY longer segment takes - has no tap hook at all.  A span that
++            // straddled a long segment therefore got its middle back as nothing: the shortfall line in lat_flush
++            // named the row count, but the request still answered with fewer segments than the client asked for.
++            // Cut a span request's prompt at that bound so every row it asks for is really read.  The extra
++            // boundaries cost nothing: a checkpoint is saved only at the named ones below, and the windows themselves
++            // are the same number either way.
++            if (!lat_spans.empty() && !lat_fast_active)
++                for (int64_t c = read_from + 4096; c < n - 1; c += 4096) cuts.push_back(c);
++            if (pin_at >= 0 || !lat_spans.empty())
+                 std::sort(cuts.begin(), cuts.end());   // the skipped -1s first, n - 1 still last
+-            }
+             int64_t at = read_from;
+             for (const int64_t to : cuts) {
+                 if (to <= at) continue;
+@@ -11782,7 +12391,7 @@
+                 pp_exact = false;   // a batched or pipelined part is in flight: a cancel may leave the state past pp_reached
+                 const bool sp_ok = win ? read_windows(at, to, err) : read_part(at, to, err);
+                 if (sp_ok) pp_exact = true;
+-                if (trace) {
++                if (trace || lat_fast_active) {
+                     std::fprintf(stderr, "strata trace: read %lld tokens (%s) in %.1f ms\n", (long long) (to - at),
+                                  win ? "windows" : "batched",
+                                  std::chrono::duration<double, std::milli>(Clock::now() - tsp).count());
+@@ -12662,6 +13271,17 @@
+                 // Diagnostics (as in generate): STRATA_DUMP_FIRST_LOGITS=<path> writes the logits of each request's first
+                 // window to <path>.<n>, so the prompt paths (a peer card's share, a split) can be compared by KL
+                 if (first_window) {
++if (!lat_path.empty() && lat_last && lat_last_v.empty()) {
++                        lat_copy(ver.final_R_all(), 0, 1, lat_last_v);   // row 0 = position p = the last prompt position
++                        lat_last_pos = p;
++                }
++                // patch 0004: the tail position the line above reads is in THIS window, not in the prompt
++                // windows, so the taps have to be taken here as well - otherwise `latt` could not read the
++                // decide position at all.  With no `latspan` this is the only window that feeds them.
++                if (!lat_taps.empty() || !lat_spans.empty()) {
++                    if (!lat_spans.empty()) lat_spans_read(T, p);   // patch 0005: the spans may reach the tail
++                    else lat_tap_read(T, p, lat_span_a < 0 ? p : lat_span_a, lat_span_b < 0 ? p + 1 : lat_span_b);
++                }
+                     static const char* fl = std::getenv("STRATA_DUMP_FIRST_LOGITS");
+                     static int fl_n = 0;
+                     if (fl != nullptr) {
+@@ -12933,6 +13553,7 @@
+                 std::snprintf(chain_txt, sizeof(chain_txt), " %lld %lld %lld %lld %lld", (long long) chain_ok,
+                               (long long) chain_drafts, (long long) sfx_ok, (long long) sfx_drafts, (long long) dec_windows);
+             if (yielded_at >= 0) std::printf("YIELDED %d %lld\n", yielded_slot, (long long) yielded_at);
++            lat_flush();
+             std::printf("DONE %lld %lld %.1f %.1f %s %lld %lld %lld %lld %lld %lld %lld %.1f %lld %lld%s\n",
+                         (long long) produced_n,
+                         (long long) n, prompt_ms, decode_ms, finish, (long long) draft_accepted, (long long) draft_offered,

@@ -1,0 +1,12 @@
+argv: ["<ENV_ROOT>\\Scripts\\python.exe", "-m", "jev.analyze_flips", "--help"]
+usage: analyze_flips.py [-h] --split {cal,dev,ood,test} --rows ROWS
+                        --out-flips OUT_FLIPS [--min-domain-n MIN_DOMAIN_N]
+                        [--max-domain-rows MAX_DOMAIN_ROWS]
+
+options:
+  -h, --help            show this help message and exit
+  --split {cal,dev,ood,test}
+  --rows ROWS
+  --out-flips OUT_FLIPS
+  --min-domain-n MIN_DOMAIN_N
+  --max-domain-rows MAX_DOMAIN_ROWS

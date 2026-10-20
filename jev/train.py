@@ -8,9 +8,9 @@ import time
 from pathlib import Path
 import numpy as np
 import torch
-from common import SCHEMA, PROMPT_VERSION, atomic_json, digest, source_hashes, release_pages, volunteer_for_oom
-from head import Head
-from readout import layers_of
+from .common import SCHEMA, PROMPT_VERSION, atomic_json, digest, source_hashes, release_pages, volunteer_for_oom
+from .head import Head
+from .readout import layers_of
 
 POOLS = ('span_last', 'span_mean')
 

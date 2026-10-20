@@ -1,0 +1,50 @@
+{
+  "route": "head",
+  "policy": {
+    "min_confidence": 0.8,
+    "min_margin": 0.05,
+    "max_normalized_entropy": 0.4,
+    "force_decode": false
+  },
+  "thresholds_status": "dev-selected default; select on dev only",
+  "certified": false,
+  "certification": {
+    "certified": false,
+    "reason": "no certificate in D:\\01-R&D\\Small-decider-release\\certs binds engine c1d3070c7c28 / server d85622eb9886 / config 0ba271cde5b8 / vision 914d5da36507; use load_measurement (or --allow-uncertified) for an explicit uncertified run",
+    "opt_in": "--allow-uncertified"
+  },
+  "head_geometry": {
+    "layers": [
+      23,
+      29,
+      35,
+      41,
+      -1
+    ],
+    "blocks": 2,
+    "d": 512,
+    "dropout": 0.1,
+    "fusion": "concat",
+    "hc": 4,
+    "n_embd": 2560,
+    "compute_backend": "batched-prefill-one-shot-r2",
+    "trained_on": {
+      "engine_sha256": "44f993830eb22f2448d7fc5f8db82ded860a66ebcf4767061dd455e0262364d0",
+      "server_sha256": "32368d78a5c76f7fc427bc2553eeeca73f2580d18e51ec22c1b7bce9061debf2",
+      "model_config_sha256": "5e7a3152f4b226a8d6ac67b383e87bee292fb434c920edb7d01ec745cf214723"
+    }
+  },
+  "metrics": {
+    "requests": 20,
+    "head": 20,
+    "decode": 0,
+    "failed": 0,
+    "independently_labeled": 0,
+    "correct": 0,
+    "head_coverage": 1.0,
+    "decode_rate": 0.0,
+    "valid_answer_rate": 1.0,
+    "accuracy": null,
+    "conditional_accuracy": null
+  }
+}

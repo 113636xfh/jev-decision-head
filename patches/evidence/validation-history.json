@@ -1,0 +1,34 @@
+{
+  "schema": "small-decider-patch-validation-history-v1",
+  "attempts": [
+    {
+      "stage": "offline-test-fixture-initial",
+      "status": "FAIL",
+      "actual_tests": 17,
+      "errors": 1,
+      "error": "AttributeError: Handler has no attribute watch_done",
+      "fix": "set watch_done and record as the real HTTP handler initialization does; no target source changed",
+      "final_status": "PASS, 17 tests"
+    },
+    {
+      "stage": "verifier-windows-initial",
+      "status": "FAIL",
+      "apply_check_rc": 0,
+      "apply_rc": 0,
+      "error": "patched file bytes differ: include/strata/core/verify.hpp",
+      "cause": "global Git core.autocrlf=true converted applied files to CRLF",
+      "fix": "explicit core.autocrlf=false on every sandbox Git operation; exact byte checks retained",
+      "final_status": "PASS on independent fetched upstream checkout"
+    },
+    {
+      "stage": "archive-stage-python39-initial",
+      "status": "FAIL",
+      "error": "TypeError: extractall() got an unexpected keyword argument 'filter'",
+      "fix": "staging-only Python3.9 extractor checked path/link safety explicitly; released verifier uses Git checkout and no tar extraction",
+      "final_status": "upstream archive Git blob/tree/commit verification passed"
+    }
+  ],
+  "patch_source_changed_to_pass": false,
+  "numeric_tolerances_relaxed": false,
+  "old_certificates_modified": false
+}

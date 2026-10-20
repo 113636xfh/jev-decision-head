@@ -1,0 +1,1 @@
+argv: ["<ENV_ROOT>\\Scripts\\python.exe", "-m", "jev.selfcheck"]

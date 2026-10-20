@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/Niko1221/Strata",
+  "commit": "296b59d2f73c8f04a805df29c2fa97655adace78",
+  "source": "tools/strata_tokenizer.py",
+  "source_sha256": "40595124e02c198e464c12cbe5fe6d4fb079daa3238263fc71ea8d2cf279ca12",
+  "license": "MIT",
+  "changes": "Removed unused GGUF extraction, CLI, and from_gguf constructor; tokenizer algorithm unchanged."
+}

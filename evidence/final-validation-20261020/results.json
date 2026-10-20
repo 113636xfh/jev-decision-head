@@ -1,0 +1,115 @@
+{
+  "complete": true,
+  "current_run_passed": true,
+  "steps": [
+    {
+      "name": "install-final-requirements",
+      "rc": 0
+    },
+    {
+      "name": "pip-check",
+      "rc": 0
+    },
+    {
+      "name": "unit-tests",
+      "rc": 0
+    },
+    {
+      "name": "selfcheck",
+      "rc": 0
+    },
+    {
+      "name": "help-predict",
+      "rc": 0
+    },
+    {
+      "name": "help-cascade",
+      "rc": 0
+    },
+    {
+      "name": "help-identity",
+      "rc": 0
+    },
+    {
+      "name": "help-fingerprint_model",
+      "rc": 0
+    },
+    {
+      "name": "help-domain",
+      "rc": 0
+    },
+    {
+      "name": "help-eval_replay",
+      "rc": 0
+    },
+    {
+      "name": "help-eval_benchmark",
+      "rc": 0
+    },
+    {
+      "name": "help-probe_drift",
+      "rc": 0
+    },
+    {
+      "name": "help-check_baseline",
+      "rc": 0
+    },
+    {
+      "name": "help-train",
+      "rc": 0
+    },
+    {
+      "name": "help-train_distilled",
+      "rc": 0
+    },
+    {
+      "name": "help-tune_policy",
+      "rc": 0
+    },
+    {
+      "name": "help-analyze_flips",
+      "rc": 0
+    },
+    {
+      "name": "help-finalize_rows",
+      "rc": 0
+    },
+    {
+      "name": "help-run_all",
+      "rc": 0
+    }
+  ],
+  "source_sha256": {
+    "jev/analyze_flips.py": "f846f3b329b735071f5f18a8c087f8f9b9409a2ccc139113b4d228a3cce4c7e8",
+    "jev/cascade.py": "fec5a758736ec98b8773da7ce32e8e3fab9650b8453c844070b624b2b533c6be",
+    "jev/check_baseline.py": "9f65b1a9e6eea5f9687de6a6d16e73679ad579ced03350f6b9424d82384cd340",
+    "jev/common.py": "25c2dea5156928671bcba957bac825b145c79e8dbec3ce0a4240271bf2267b57",
+    "jev/domain.py": "65f5f78488187ee2cca713a3c0847112a3945dac1a47abe88bac53fc83503399",
+    "jev/eval_benchmark.py": "ad33aa15d066cd66b6250f106bdef5b0435ad23894c681ff8b9c256e18041e4c",
+    "jev/eval_replay.py": "335e88d1e957ea3aa8225720329435abbe667406eecfa57f8e422b7b2fd96656",
+    "jev/extract.py": "c11cc474dd82a4e75a785269271fc89144fad822ec1de93dbb7183e3cb69c0c1",
+    "jev/finalize_rows.py": "01c8ff26d2bdd698b5a51323b77e36c2f562a794a4b1b0684ddcf6a81e580545",
+    "jev/fingerprint_model.py": "5d572c64a3cc4a28ad9d925621881a50191718b8f41bf37d1ea5f0cd156d72b0",
+    "jev/gpu_data.py": "f2c1d4c80ce05e2c8b8d44788e51ac506a8052e732b0945ad121249e24e1ea21",
+    "jev/head.py": "acada1b9aea63d1611820854b41175245323646274b23b3dd22736404e282d44",
+    "jev/head_loader.py": "09cbc41fabbb20f0d3913a4c0bc75b454596a20e75bba12184850aa3dcd8c6fb",
+    "jev/identity.py": "4b2c515a8f98211d91c81b7fe8a4e297e04b280589a675c913730ddbcf0d4100",
+    "jev/jevbench.py": "e2000f94c138fad922b32f35cf4606790371a28baba9caa9c708308655dfbce9",
+    "jev/predict.py": "bcaec2f82c4399be1aa6dea767b1edfba827455a1a2e00f7f91fe22e80eeb915",
+    "jev/probe_drift.py": "8e451f833a02e42b9cbb766d29652f04cfbb17a20859581c8f54057885cf8aa6",
+    "jev/readout.py": "b576ce4b04cb23d1844ad221fbe80676013aa0cdd38bf3b88a949baf0cb5eaab",
+    "jev/readout_compatibility.py": "6db56656ab0dc9bb2a871b159d7a5033d8ec4a007c966a0dbe4e7430e510e33d",
+    "jev/runtime.py": "6fedd826bdd253c19f005ab785b08d0a22fc01c4f62b266186c76a64dbef3dd1",
+    "jev/run_all.py": "1ec29e1c42bb56d8b8ee8ed3ae3534e65466048c7aec4bce4e8e063056b3372a",
+    "jev/selfcheck.py": "44beb285de39e1769cf7f866d6ddca98ead8300684af5e94be2f4902537f7ee7",
+    "jev/strata_tokenizer.py": "3db48555a4419424fbaef9864171d952567ccffd805a749df440309fa31d66dc",
+    "jev/train.py": "6094c828576a335dd6f353fcf9e8575c3a40a7678711086ce5ddd5a0d381b6c2",
+    "jev/train_distilled.py": "22fefa6860bf6ecbcfbd872257b969d963647fb454e321439b21f7cc6560cc50",
+    "jev/tune_policy.py": "85b295f6dce28a1bc1346b36782f5627d18a39a971e47410c8916d60c14c28e9",
+    "jev/upstream_scoring.py": "6315a838b30936baca4ea33725aabb54ff46b146c14f5213b2fd38549382fcd5",
+    "jev/__init__.py": "bc669a4ad1aa310530d8a8bd2a678f0e5b48f66b87e3d98d6852d9b5b9c7846d",
+    "requirements.txt": "776caeeeefe12ed9181f49e70a06b2d843802c78e2db344f9f6f906d79a8aea6",
+    "requirements-cpu.txt": "88ca16df9fc498f39e257b4e67d37029b4e2312f8d01f8b3b3c74b6e1c3cb578"
+  },
+  "boundary": "Earlier isolated selfcheck native crash is unresolved; passing this run does not erase it."
+}

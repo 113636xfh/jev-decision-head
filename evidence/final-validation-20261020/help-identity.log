@@ -1,0 +1,9 @@
+usage: identity.py [-h] --out OUT [--base BASE] [--verify IDENTITY] [--force]
+
+options:
+  -h, --help         show this help message and exit
+  --out OUT
+  --base BASE
+  --verify IDENTITY  re-verify an existing identity file
+  --force            re-record over an existing file, archiving it as
+                     *.previous-<utc> first

@@ -1,0 +1,26 @@
+usage: train.py [-h] --shards SHARDS [SHARDS ...] --out OUT [--layers LAYERS]
+                [--blocks {2,4,8}] [--d {512,1024}]
+                [--fusion {concat,weighted}] [--batch BATCH] [--epochs EPOCHS]
+                [--patience PATIENCE] [--lr LR] [--dropout DROPOUT]
+                [--brier BRIER] [--seed SEED] [--device DEVICE]
+                [--train-subset TRAIN_SUBSET]
+
+options:
+  -h, --help            show this help message and exit
+  --shards SHARDS [SHARDS ...]
+  --out OUT
+  --layers LAYERS
+  --blocks {2,4,8}
+  --d {512,1024}
+  --fusion {concat,weighted}
+  --batch BATCH
+  --epochs EPOCHS
+  --patience PATIENCE
+  --lr LR
+  --dropout DROPOUT
+  --brier BRIER
+  --seed SEED
+  --device DEVICE
+  --train-subset TRAIN_SUBSET
+                        prepared train-N.jsonl; keeps complete original
+                        components

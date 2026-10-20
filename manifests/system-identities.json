@@ -1,0 +1,87 @@
+{
+  "abliterated_measurement": {
+    "captured_utc": "2026-10-18T05:27:20Z",
+    "compatibility_certificate_issued": false,
+    "engine_sha256": "c1d3070c7c289fcb09875cb909ce9a5fd3270a5f5fc1b548a75df4bc773a3b7b",
+    "model_config_sha256": "5440f05cbf03c283c530b63202c4bea93948a5154aae9fcb22990b5f6b732238",
+    "server_sha256": "d85622eb988638e089c07d6692b09f09f516a17c74d20c6540f6b874c6f9b65d",
+    "shipped_artifact": "identity/runtime-identity.run-20261018.json",
+    "shipped_sha256": "1b46772d6a5f041893c35fcaca35bc57f5c08b2e4d802ee0fae8971d35c304ad",
+    "vision_sha256": "914d5da3650755c3711265a9c437e57d6058958afa145e40d4a70a66c4ddc63b"
+  },
+  "build_policy": "apply/build and interface checks are distinct from exact-pair numerical compatibility",
+  "default_policy": "strict matching historical certificate and all its constraints; otherwise refuse certified use",
+  "head_artifacts": {
+    "weights/best.pt": {
+      "bytes": 52787698,
+      "sha256": "8d3f60094cc79bdbee2b66837963c8f9f094819a97fc6d774d24fbcbbb674d2b"
+    },
+    "weights/norm.npz": {
+      "bytes": 819694,
+      "sha256": "b00ddad2c2b0ddc0ae0c9dfc50fcc1ec16de1f9f21683a13698aadca2e9ab2b2"
+    }
+  },
+  "historical_adaptive_compatibility": {
+    "numerical_mode": "empirical decision/routing compatibility; not bitwise equality",
+    "policy": {
+      "guard_band": 0.0,
+      "temperature": 1.1525501023241218,
+      "threshold": 0.85
+    },
+    "runtime": {
+      "engine_sha256": "ce7559e09c26a53313d283e1da8b3773c28f1a51e93d700124ee7633965522d2",
+      "model_config_sha256": "b6b687b8ce1e68b19d5bc8e6d4ca11099a3211559e3769a783a5d761bacc1464",
+      "server_sha256": "3ebd690b5a977939447f8b8f5c5d619edb9a9ba69a7860293ff6f1805803bbbf",
+      "vision_sha256": "914d5da3650755c3711265a9c437e57d6058958afa145e40d4a70a66c4ddc63b"
+    },
+    "shipped_artifact": "certs/old-pair-adaptive-head-v1.compatibility.json",
+    "shipped_sha256": "703daf8f29776180b79983fe3e9f6d0cc214da55030a498c3c3e1b05e9f07f8e",
+    "transitive_or_arbitrary_runtime_coverage": false
+  },
+  "historical_bitwise_compatibility": {
+    "from_hashes": {
+      "engine_sha256": "44f993830eb22f2448d7fc5f8db82ded860a66ebcf4767061dd455e0262364d0",
+      "model_config_sha256": "5e7a3152f4b226a8d6ac67b383e87bee292fb434c920edb7d01ec745cf214723",
+      "server_sha256": "32368d78a5c76f7fc427bc2553eeeca73f2580d18e51ec22c1b7bce9061debf2"
+    },
+    "scope": "Exact pair, unchanged weights/config/tokenizer/protocol; bounded 20 archived FP16 samples, 5000-token FP32 interleaving/history, full interface and complete deterministic chat tests. Not an exhaustive corpus proof or SLA. Additional byte-strict repeat includes IEEE signed zero in FP16 and FP32.",
+    "shipped_artifact": "certs/live-readout-compatibility-r2-bitwise.json",
+    "shipped_sha256": "2c8828de2407c898e0c0b4e92c5a89dda2a1bf2cf3cf7c8ace5a1569bf6afb5f",
+    "to_hashes": {
+      "engine_sha256": "7550ecd793448befd3905e83f01f4493de313618eb6c7bed8ff92aa6ae8f456e",
+      "model_config_sha256": "5e7a3152f4b226a8d6ac67b383e87bee292fb434c920edb7d01ec745cf214723",
+      "server_sha256": "0d0763f4b78ce79e332bf82125db1501d689517441d359fee0725c1f724d8bbd"
+    }
+  },
+  "measurement_policy": "explicit uncertified measurement, separate outputs, no certificate implied",
+  "purpose": "descriptive provenance index, NOT a new compatibility certificate",
+  "schema": "jev-release-identity-index-v1",
+  "training_archive": {
+    "compute_backend": "batched-prefill-one-shot-r2",
+    "engine_sha256": "44f993830eb22f2448d7fc5f8db82ded860a66ebcf4767061dd455e0262364d0",
+    "hc": 4,
+    "layers": [
+      15,
+      23,
+      29,
+      35,
+      41,
+      -1
+    ],
+    "model_config_sha256": "5e7a3152f4b226a8d6ac67b383e87bee292fb434c920edb7d01ec745cf214723",
+    "n_embd": 2560,
+    "pools": [
+      "span_last",
+      "span_mean"
+    ],
+    "prompt_version": "lossless-state-final-assistant-token-v2",
+    "server_sha256": "32368d78a5c76f7fc427bc2553eeeca73f2580d18e51ec22c1b7bce9061debf2",
+    "tokenizer": {
+      "chat_template.jinja": "12827f24b742ea4e80cdc12dbcf9622227056b9f797252a3149263d4f9aaadce",
+      "merges.txt": "4ba698529766c7a2f5052083ea10cdf2485577f5237a332ee291054eb11e3332",
+      "token_type.json": "5088c8c298fc06af8382ddb3b76c888703ac2634e82263b97eedcc2ad202738b",
+      "tokenizer.json": "c0bd435efbc6c3b28964b47999afe16c4ad268c7c7c4e8cb3af410796a6f30bf",
+      "vocab.json": "4ba64f0332abcfb0b600b7df1537d1e836e68009d5fb7cdb77339738dc6365c4"
+    }
+  }
+}

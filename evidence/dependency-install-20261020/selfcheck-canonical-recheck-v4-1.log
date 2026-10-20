@@ -1,0 +1,16 @@
+argv: ["<ENV_ROOT>\\Scripts\\python.exe", "-m", "jev.selfcheck"]
+<ENV_ROOT>\Lib\site-packages\torch\nn\modules\transformer.py:385: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  warnings.warn(
+ok   imports: 23 modules import without the training workspace
+ok   extract boundary: extract needs the Strata source tree (fcntl) - expected off that host
+ok   weights load: 13194368 parameters, geometry {'layers': [23, 29, 35, 41, -1], 'blocks': 2, 'd': 512, 'fusion': 'concat'}
+ok   parameter count: expected 13,194,368, got 13194368
+ok   norm shapes: mu/sd (2, 5, 10240) = pools x layers x (hc*n_embd)
+ok   forward pass: k=3 probabilities [0.3333, 0.3333, 0.3333]
+ok   published policy: selected on dev only: {'min_confidence': 0.8, 'min_margin': 0.05, 'max_normalized_entropy': 0.4, 'force_decode': False}
+ok   cascade routes: confident->head, uncertain->decode
+ok   certificate gate accepts a matching pair: old-pair-adaptive-head-v1.compatibility.json
+ok   certificate gate refuses a swapped backbone: no certificate in <PROJECT_ROOT>\certs binds engine c1d3070c000...
+ok   benchmark snapshot: 231 public decisions, both renderings build, scorer returns ['correct', 'predicted', 'renormalized', 'strict_valid', 'valid']
+ok   published baseline: 1996 dev rows for check_baseline.py
+{"certificates": ["live-readout-compatibility-r2-bitwise.json", "old-pair-adaptive-head-v1.compatibility.json"], "note": "offline only; online numerical compatibility requires a certificate issued against the running pair", "parameters": 13194368, "selfcheck": "passed"}

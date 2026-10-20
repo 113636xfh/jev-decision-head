@@ -1,0 +1,197 @@
+{
+  "original_archive_sha256": "ec423fe801affd7583e2bb6c51671df198cc9ad1355831167874daade2f0bbb8",
+  "sealed_utc": "2026-10-20T12:41:35.461025+00:00",
+  "primary_gate": "verification-gate-v2.json",
+  "initial_quality_gate": "FAIL",
+  "initial_error": "RuntimeError('torch wheel source is not the official CPU index')",
+  "official_cpu_provenance": {
+    "index_url": "https://download.pytorch.org/whl/cpu/torch/",
+    "index_final_url": "https://download.pytorch.org/whl/cpu/torch/",
+    "index_sha256": "5120676213fefe4cbaa5dfe91fdfe39125cf8e95f4cbfe11f4e326d0e52464b9",
+    "wheel_url": "https://download-r2.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp312-cp312-win_amd64.whl",
+    "wheel_sha256": "4027d982eb2781c93825ab9527f17fbbb12dbabf422298e4b954be60016f87d8",
+    "matching_links": [
+      {
+        "url": "https://download-r2.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp312-cp312-win_amd64.whl",
+        "sha256": "4027d982eb2781c93825ab9527f17fbbb12dbabf422298e4b954be60016f87d8"
+      }
+    ]
+  },
+  "quality_gate": "FAIL",
+  "installation_gate": "PASS",
+  "help_successes": 15,
+  "help_attempts": 15,
+  "failed_steps": [
+    {
+      "name": "v2-04-selfcheck",
+      "returncode": 3221225477,
+      "elapsed_s": 5.984,
+      "log": "v2-04-selfcheck.log"
+    }
+  ],
+  "source_snapshot_sha256": {
+    "jev/__init__.py": "bc669a4ad1aa310530d8a8bd2a678f0e5b48f66b87e3d98d6852d9b5b9c7846d",
+    "jev/analyze_flips.py": "f846f3b329b735071f5f18a8c087f8f9b9409a2ccc139113b4d228a3cce4c7e8",
+    "jev/cascade.py": "fec5a758736ec98b8773da7ce32e8e3fab9650b8453c844070b624b2b533c6be",
+    "jev/check_baseline.py": "9f65b1a9e6eea5f9687de6a6d16e73679ad579ced03350f6b9424d82384cd340",
+    "jev/common.py": "25c2dea5156928671bcba957bac825b145c79e8dbec3ce0a4240271bf2267b57",
+    "jev/domain.py": "d4034d4fa78185d4481d6f81fab3099f0e45d2d6997d4fe739bb9554546e0e0d",
+    "jev/eval_benchmark.py": "ad33aa15d066cd66b6250f106bdef5b0435ad23894c681ff8b9c256e18041e4c",
+    "jev/eval_replay.py": "335e88d1e957ea3aa8225720329435abbe667406eecfa57f8e422b7b2fd96656",
+    "jev/extract.py": "c11cc474dd82a4e75a785269271fc89144fad822ec1de93dbb7183e3cb69c0c1",
+    "jev/finalize_rows.py": "01c8ff26d2bdd698b5a51323b77e36c2f562a794a4b1b0684ddcf6a81e580545",
+    "jev/fingerprint_model.py": "5d572c64a3cc4a28ad9d925621881a50191718b8f41bf37d1ea5f0cd156d72b0",
+    "jev/gpu_data.py": "f2c1d4c80ce05e2c8b8d44788e51ac506a8052e732b0945ad121249e24e1ea21",
+    "jev/head.py": "acada1b9aea63d1611820854b41175245323646274b23b3dd22736404e282d44",
+    "jev/head_loader.py": "09cbc41fabbb20f0d3913a4c0bc75b454596a20e75bba12184850aa3dcd8c6fb",
+    "jev/identity.py": "3cf2062042d4c1e7c260a620f90c4237be945bab814f3f0ff3248351c66f9a1d",
+    "jev/jevbench.py": "e2000f94c138fad922b32f35cf4606790371a28baba9caa9c708308655dfbce9",
+    "jev/predict.py": "21c9ee7843d9ce10cc8f63b5dba12da8143812c8589e457825ad9050025563f7",
+    "jev/probe_drift.py": "8e451f833a02e42b9cbb766d29652f04cfbb17a20859581c8f54057885cf8aa6",
+    "jev/readout.py": "b576ce4b04cb23d1844ad221fbe80676013aa0cdd38bf3b88a949baf0cb5eaab",
+    "jev/readout_compatibility.py": "6db56656ab0dc9bb2a871b159d7a5033d8ec4a007c966a0dbe4e7430e510e33d",
+    "jev/run_all.py": "1ec29e1c42bb56d8b8ee8ed3ae3534e65466048c7aec4bce4e8e063056b3372a",
+    "jev/runtime.py": "ebf7471bf686674532e9b64705a5cb0f7c62d3eaf3c947842b6a8baa27b29635",
+    "jev/selfcheck.py": "eaeada1134cd3fdf85ef2e41851b331ab347eb34b706313dae3312cf7c029370",
+    "jev/train.py": "6094c828576a335dd6f353fcf9e8575c3a40a7678711086ce5ddd5a0d381b6c2",
+    "jev/train_distilled.py": "22fefa6860bf6ecbcfbd872257b969d963647fb454e321439b21f7cc6560cc50",
+    "jev/tune_policy.py": "85b295f6dce28a1bc1346b36782f5627d18a39a971e47410c8916d60c14c28e9",
+    "jev/upstream_scoring.py": "6315a838b30936baca4ea33725aabb54ff46b146c14f5213b2fd38549382fcd5"
+  },
+  "requirements_sha256": {
+    "requirements.txt": "1742c84cd901d494bf9ec2e2a5457c1531510bc2820a9e2ebf6b92962787dd1c",
+    "requirements-cpu.txt": "88ca16df9fc498f39e257b4e67d37029b4e2312f8d01f8b3b3c74b6e1c3cb578"
+  },
+  "protected_smoke_evidence_sha256": {
+    "README.md": "7913f06ea703cb1f00b07c6517b6f4216419cb64c3ff2ea8aa338b6a4a33003b",
+    "identity-fresh.json": "07219d9487ce42029dd777926f4363efcb0a44ac704b4b59e988c972458e422d",
+    "rows-smoke20-summary.json": "dc2a34a8c2b87d7659dda04e5c2218d2a30e1c14cbcb64a177a51cae080b4702",
+    "smoke20-check.json": "888597ce58237df9afe0889fb8c2aaaf87dc88301bb381149868655c2e77c031"
+  },
+  "boundary": "Only this Windows CPython 3.12 CPU install is tested; broad requirement ranges and other OS/Python/GPU configurations are not certified. No live inference, training or production request.",
+  "selfcheck_diagnostic": {
+    "finished_utc": "2026-10-20T12:38:53.600419+00:00",
+    "argv": [
+      "<ENV_ROOT>\\Scripts\\python.exe",
+      "-X",
+      "faulthandler",
+      "-u",
+      "-m",
+      "jev.selfcheck"
+    ],
+    "returncode": 0,
+    "returncode_hex": "0x0",
+    "error": null,
+    "quality_gate": "PASS",
+    "boundary": "Same environment and code; only unbuffered output/faulthandler added. No runtime or selfcheck edits."
+  },
+  "selfcheck_canonical_rechecks": {
+    "finished_utc": "2026-10-20T12:39:48.226232+00:00",
+    "trials": [
+      {
+        "number": 1,
+        "returncode": 0,
+        "returncode_hex": "0x0",
+        "error": null,
+        "log": "selfcheck-canonical-recheck-v4-1.log"
+      },
+      {
+        "number": 2,
+        "returncode": 0,
+        "returncode_hex": "0x0",
+        "error": null,
+        "log": "selfcheck-canonical-recheck-v4-2.log"
+      }
+    ],
+    "overall_quality_gate": "FAIL",
+    "reason": "The earlier canonical 0xc0000005 failure remains unexplained; successful reruns do not erase it.",
+    "boundary": "No runtime/selfcheck edits, installation changes, GPU or production calls."
+  },
+  "installed_versions": {
+    "torch": "2.6.0+cpu",
+    "sympy": "1.13.1",
+    "numpy": "1.26.4",
+    "mpmath": "1.3.0",
+    "tokenizers": "0.23.3",
+    "huggingface_hub": "2.2.0",
+    "click": "8.5.0",
+    "hf-xet": "1.7.0",
+    "httpx2": "2.15.1",
+    "httpcore2": "2.15.1",
+    "Jinja2": "3.1.6",
+    "anyio": "4.15.1",
+    "filelock": "4.2.4",
+    "fsspec": "2026.9.0",
+    "h11": "0.16.0",
+    "idna": "3.20",
+    "MarkupSafe": "3.0.4",
+    "packaging": "26.3",
+    "PyYAML": "6.0.3",
+    "tqdm": "4.70.1",
+    "truststore": "0.10.5",
+    "typing_extensions": "4.16.0",
+    "colorama": "0.4.6",
+    "networkx": "3.7",
+    "setuptools": "84.2.0"
+  },
+  "torch_download": [
+    {
+      "url": "https://download-r2.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp312-cp312-win_amd64.whl",
+      "archive_info": {
+        "hashes": {
+          "sha256": "4027d982eb2781c93825ab9527f17fbbb12dbabf422298e4b954be60016f87d8"
+        },
+        "hash": "sha256=4027d982eb2781c93825ab9527f17fbbb12dbabf422298e4b954be60016f87d8"
+      }
+    }
+  ],
+  "cuda_dependencies": [],
+  "artifact_sha256": {
+    "01-create-venv.log": "6d3872d83b5464c6990f83a5a8fcfd389845beabb1a86e3589c9177f52f2bf07",
+    "02-clean-inventory.log": "3686c34c98e2cec4822049a01923b1374beb3d2dc7493a8f6017b300af5f97c8",
+    "03-pip-bootstrap.log": "1a3c6d84e6e1f0c7313cdb149a57f5a5fbbf8e35d259694db913ef9eee9a2371",
+    "04-requirements-install.log": "eb70528e8de715e7988532eb33b067c4ff3da9c855dae35c752cc6b51ea0be3d",
+    "baseline-and-derived-tests-v3.log": "bd480af460f78a1720e346ff630ba71f6a7bfb276366f6bebcab6cb07290e91e",
+    "baseline-and-derived-tests-v4.log": "685b3adb88b6c18d7f7e923fea28e35fa5461bb2de68eb8c1c608ec99f9552ca",
+    "baseline-contract-tests-v1.log": "f39ee1eb5a086711c296dac99b8a4a116bde15684e87444a68a65c0b17ff0df8",
+    "install-gate.json": "c7d3efeec2f303b34b6b46bcf63a8e9407624a730f8be50dcbdd145061a6f245",
+    "native-probe-runner-v3.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "official-torch-cpu-index-v2.html": "5120676213fefe4cbaa5dfe91fdfe39125cf8e95f4cbfe11f4e326d0e52464b9",
+    "pip-install-report.json": "fa35b9296adcf6aa7f1e7b3806c7979d321f3656f2c71cd3cc80b31e97fe018a",
+    "probe_selfcheck_native_v3.py": "e97d6a69052e538f63ead4a2a5315b57c152175f6327195352f9722ac7707523",
+    "pyvenv.cfg.txt": "9577be45c7f66c017d8703097ff2bd89d28e63fa43cef20e2bfbc9353d40fd97",
+    "README.md": "582292909c3511d6d3ca0fdfffa329cac06b61f5d5c837ea8a13865978e9b28d",
+    "recheck-runner-v4.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recheck_selfcheck_v4.py": "69e420c5dd7d5724460de9afe93d275c57f2302320261b21c50cd3ddd79c56cd",
+    "run_install.py": "7dc8c2d9179551b03008abccb9dea4d2f1a1ff6bb094bd900469a8742c27daf8",
+    "selfcheck-canonical-recheck-v4-1.log": "d7c4438e5e7c0b489c8895b8356878e6f129a245f910ae983303cadc89120325",
+    "selfcheck-canonical-recheck-v4-2.log": "d7c4438e5e7c0b489c8895b8356878e6f129a245f910ae983303cadc89120325",
+    "selfcheck-canonical-rechecks-v4.json": "f21de8bb63727e1759e6818adcd3a192a7a041e418f0f92b27ed255aa2144606",
+    "selfcheck-native-probe-v3.json": "a8b1a0e8163c6d4f3146be09d052ac6f3d3bd430e0347c3a45a83b688e7bae93",
+    "selfcheck-native-probe-v3.log": "49eb4e8b69669f14292b74e9ee1b8e2c328eab6d653cc5673d54d35d7736445d",
+    "summarize_install.py": "a781b37d8b6a51613fddc3dc56d800b61194e8c152a8175f5f21b85a8efd5a1a",
+    "v2-01-pip-check.log": "91a06bc9f0a65884f3f5154ac0eb9db5c9445a357a3ece081d762c85564535fb",
+    "v2-02-freeze.log": "4b01ad6981a9f97d28193a991d41399e3105e13a3aff4531cb8d2a40aa2da163",
+    "v2-03-platform.log": "ef74cc10e910cafda354363984fba21475de2d0e2198727ef604c011bc0f58e4",
+    "v2-04-selfcheck.log": "528748c8dde69976d6bab0965bbeef95430de55362346fabc3b4c934689760e2",
+    "v2-05-help-predict.log": "c8efe8f3b1e7b049554f431998f4e3be2e4f4e33e2d10646803950aa030d6799",
+    "v2-06-help-cascade.log": "b3961d06e0ad9ea408105988e6b5de32af52bb2b9fcfc1ad3193a55365bbcdde",
+    "v2-07-help-identity.log": "dc6ae8554e7f84e345cfa0d10a1f49728cc280a964f811e070488fc141849554",
+    "v2-08-help-fingerprint_model.log": "7813c2fe96e35aed1e1c7644aa397adaf01384877c79d63a65dd07e9cac5a8df",
+    "v2-09-help-domain.log": "d1106f68cc5a1eab2e806f832ed76e0bfba2e91034c3c00c5b3d5e491f5ce65a",
+    "v2-10-help-eval_replay.log": "bc88180e5cde2d22f6d5f8a71cde63cf094efa2ca79636e93decb449a2f17402",
+    "v2-11-help-eval_benchmark.log": "4829b596306931a2645c563c6dc16f4a09357377064b724aed7fcd2e406aa318",
+    "v2-12-help-probe_drift.log": "76dc869424ca8077b9fa44e29f2ff2ac5d578391535e66420d659354fa02b2b7",
+    "v2-13-help-check_baseline.log": "f83098598a0748e493116edf20b8fb3da3ce547f073be67629106a16d7180871",
+    "v2-14-help-train.log": "a3944a9b26e7720767dd8401026a07dce27672b85f5243fdefe24a1f451fc34d",
+    "v2-15-help-train_distilled.log": "d3b0e5c14299368ac1d4616b68f8b8fdd2e00f26e984c01a70cae3c3b815c126",
+    "v2-16-help-tune_policy.log": "9a7ca3449a5f058bcf2c894199d5c0d31eefc6121684c7fe39d49bc16227dc43",
+    "v2-17-help-analyze_flips.log": "4f657f877f095521bda5ea7d1825411314f1e16f4fc172f7ee39deffbf74bc08",
+    "v2-18-help-finalize_rows.log": "448d5d9e0974665f4a324d0c147bbb9e1fb76e91dec1f3aa8b85652276abf9b2",
+    "v2-19-help-run_all.log": "b4b5aac5e539ce1ee3e7064cf0eb065a8214920880fdf9fb48bd228676db95b6",
+    "v2-20-unittest.log": "0b5b97c1051d5b320adbf8d0c54638cb32cbfb7fe99109a156065c9a9dfd7009",
+    "verification-gate-v2.json": "6908fd468cde6f2d0ce379f913a657500b8f04a94e8d25bfe101aeea8500721c",
+    "verification-runner-v2.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verify_install_v2.py": "d49ddcd3fea994ec4dc082b9fe8763f0e58b0640c39b6325c2e97c197100557b"
+  }
+}

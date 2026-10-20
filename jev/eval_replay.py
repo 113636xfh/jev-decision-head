@@ -3,7 +3,7 @@
 Why this harness exists next to the JevBench one: the immutable taps archive stores the exact
 `latent_ids` and spans the head was trained on, so sending THOSE ids to the live engine isolates
 one variable - the backbone weights.  The JevBench harness tokenizes with the live pack, so it
-measures the deployed end-to-end path instead.
+measures the live end-to-end path instead.
 
 Per item, in one pass:
   * verify the archived record/npz digests (a changed archive is a hard stop, never silently skipped);
@@ -17,7 +17,6 @@ decision-level numbers are the evidence.
 """
 import argparse
 import json
-import sys
 import time
 from datetime import datetime
 from pathlib import Path
@@ -26,12 +25,9 @@ import numpy as np
 import torch
 
 HERE = Path(__file__).resolve().parent
-sys.path[:0] = [str(HERE)]
-
-import identity as IDENT                                             # noqa: E402
-from head_loader import UncertifiedLiveHead, RUN, V3            # noqa: E402
-from common import volunteer_for_oom, digest                         # noqa: E402
-from gpu_data import LAYERS                                          # noqa: E402
+from .head_loader import MeasurementHead, RUN, V3               # noqa: E402
+from .common import volunteer_for_oom, digest                         # noqa: E402
+from .gpu_data import LAYERS                                          # noqa: E402
 
 ARCHIVES = {'dev': V3 / 'taps-dev2k', 'test': V3 / 'taps-test2k',
             'ood': V3 / 'taps-ood2k', 'cal': V3 / 'taps-cal2k'}
@@ -104,6 +100,8 @@ def main():
     parser.add_argument('--identity', default=str(HERE / 'runtime-identity.json'))
     parser.add_argument('--base', default='http://127.0.0.1:8100')
     args = parser.parse_args()
+    if args.limit < 0 or args.stride < 1:
+        parser.error('--limit must be nonnegative and --stride must be positive')
     volunteer_for_oom()
     torch.set_num_threads(2)
 
@@ -119,19 +117,34 @@ def main():
         return 0
     if not args.confirm_window:
         raise SystemExit('refusing to start without --confirm-window')
+    if not picks:
+        raise SystemExit('no archived items selected from %s' % archive)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     rows_path = out.with_suffix('.jsonl') if out.suffix == '.json' else Path(str(out) + '.jsonl')
     summary_path = Path(str(rows_path).replace('.jsonl', '-summary.json'))
 
-    head = UncertifiedLiveHead(base=args.base, identity=args.identity, parallel=not args.exclusive)
+    head = MeasurementHead(base=args.base, identity=args.identity, parallel=not args.exclusive)
     with np.load(RUN / 'norm.npz', allow_pickle=False) as z:
         mu, sd = z['mu'].copy(), z['sd'].copy()
 
     rows, started = [], time.monotonic()
     if rows_path.exists():
         rows = [json.loads(line) for line in rows_path.open() if line.strip()]
+    selected = {json.loads(p.read_text())['item']['uid'] for p in picks}
     done = {r['uid'] for r in rows}
+    if len(done) != len(rows) or not done <= selected:
+        raise ValueError('existing replay rows contain duplicate or unselected uids')
+
+    def write_summary():
+        metrics = summarize(rows, len(picks))
+        summary_path.write_text(json.dumps({
+            'split': args.split, 'finished': done == selected,
+            'passed': done == selected and metrics['errors'] == 0,
+            'deadline': args.deadline, 'elapsed_s': time.monotonic() - started,
+            'identity_sha256': digest(args.identity), 'metrics': metrics,
+        }, ensure_ascii=False, indent=2) + '\n')
+
     consecutive = 0
     with rows_path.open('a') as sink:
         for path in picks:
@@ -180,8 +193,15 @@ def main():
                 # normalize_gpu reproduces numpy's ((FP32 - mu)/sd).astype(FP16) byte for byte
                 # (gpu_data.normalize_gpu; build_cache.py asserts it), so both sides below go
                 # through the accepted GPU path.
-                new_logits = head.normalized_from_raw(live.astype(np.float16), k)['logits']
-                old_logits = head.normalized_from_raw(archived.astype(np.float16), k)['logits']
+                # MeasurementHead returns JSON-safe lists; older test/loaders may
+                # return arrays. Coerce at this arithmetic boundary, not in runtime.
+                new_logits = np.asarray(head.normalized_from_raw(live.astype(np.float16), k)['logits'],
+                                        dtype=np.float64)[:k]
+                old_logits = np.asarray(head.normalized_from_raw(archived.astype(np.float16), k)['logits'],
+                                        dtype=np.float64)[:k]
+                if (new_logits.shape != (k,) or old_logits.shape != (k,)
+                        or not np.isfinite(new_logits).all() or not np.isfinite(old_logits).all()):
+                    raise ValueError('invalid head logits')
                 gold = item['options'].index(item['gold'])
                 pred_new, pred_old = int(new_logits.argmax()), int(old_logits.argmax())
                 row.update(status='ok', gold=gold, pred_new=pred_new, pred_old=pred_old,
@@ -198,23 +218,20 @@ def main():
             sink.write(json.dumps(row, ensure_ascii=False) + '\n')
             sink.flush()
             rows.append(row)
+            done.add(uid)
             consecutive = consecutive + 1 if row['status'] != 'ok' else 0
             if len(rows) % 25 == 0 or consecutive:
                 print('PROGRESS %s %d/%d %s %s api_ms=%.0f' % (args.split, len(rows), len(picks),
                                                                row['status'], row.get('error', ''),
                                                                row.get('api_ms', 0)), flush=True)
-            summary_path.write_text(json.dumps({'split': args.split, 'finished': len(rows) >= len(picks),
-                                                'deadline': args.deadline,
-                                                'elapsed_s': time.monotonic() - started,
-                                                'identity_sha256': digest(args.identity),
-                                                'metrics': summarize(rows, len(picks))},
-                                               ensure_ascii=False, indent=2) + '\n')
+            write_summary()
             if consecutive >= 3:
                 print('STOP three consecutive failures', flush=True)
                 return 2
+    write_summary()
     print(json.dumps({'done': summarize(rows, len(picks)),
                       'minutes': round((time.monotonic() - started) / 60, 1)}, indent=2))
-    return 0
+    return 0 if done == selected and all(r['status'] == 'ok' for r in rows) else 2
 
 
 if __name__ == '__main__':

@@ -1,0 +1,20 @@
+{"uid": "community-diversity-v2/20260921/shell_history/checksum_verify/36/2/choice", "split": "dev", "status": "ok", "n_options": 6, "gold": 3, "pred_old": 3, "correct_old": 1, "confidence_old": 0.5116748613846455}
+{"uid": "browser-control-v1:parent:3dcf965f391b71d8c5745a36:untrusted_page_instructions:operation", "split": "dev", "status": "ok", "n_options": 8, "gold": 4, "pred_old": 7, "correct_old": 0, "confidence_old": 0.6242005663448471}
+{"uid": "document-family-9b6e7913bd9b867c8c2b:document:13:attributes:span_2:currency", "split": "dev", "status": "ok", "n_options": 4, "gold": 1, "pred_old": 1, "correct_old": 1, "confidence_old": 0.958523488787128}
+{"uid": "community-diversity-v2/20260921/contracts/governing_law_venue/24/0/choice", "split": "dev", "status": "ok", "n_options": 6, "gold": 1, "pred_old": 3, "correct_old": 0, "confidence_old": 0.5990650277577473}
+{"uid": "browser-control-v1:parent:3dcf965f391b71d8c5745a36:ambiguous_observed_target:operation", "split": "dev", "status": "ok", "n_options": 8, "gold": 4, "pred_old": 5, "correct_old": 0, "confidence_old": 0.9050304023806072}
+{"uid": "wanli-decisions-v1:train:42442", "split": "dev", "status": "ok", "n_options": 3, "gold": 2, "pred_old": 2, "correct_old": 1, "confidence_old": 0.7486189063674609}
+{"uid": "sponsor-segment-control-v1:family:00025:video:0:s84cc4f0b", "split": "dev", "status": "ok", "n_options": 7, "gold": 3, "pred_old": 3, "correct_old": 1, "confidence_old": 0.9999999208046508}
+{"uid": "contact-family-838a9cfeabb1182a03a3:document:5:target_present", "split": "dev", "status": "ok", "n_options": 2, "gold": 0, "pred_old": 1, "correct_old": 0, "confidence_old": 0.6310070078853098}
+{"uid": "community-diversity-v2/20260921/contracts/governing_law_venue/31/2/score", "split": "dev", "status": "ok", "n_options": 5, "gold": 4, "pred_old": 1, "correct_old": 0, "confidence_old": 0.8949961561787452}
+{"uid": "workflow-controls-v1:security_incidents:42:193:v0:ESCALATE TIER2", "split": "dev", "status": "ok", "n_options": 2, "gold": 0, "pred_old": 0, "correct_old": 1, "confidence_old": 0.8620861510615065}
+{"uid": "drone-control-v1:parent:1ebf2675aa13e1ae79347994:side_goal_left:maneuver", "split": "dev", "status": "ok", "n_options": 5, "gold": 3, "pred_old": 2, "correct_old": 0, "confidence_old": 0.4645129250513457}
+{"uid": "wanli-decisions-v1:train:184312", "split": "dev", "status": "ok", "n_options": 3, "gold": 1, "pred_old": 1, "correct_old": 1, "confidence_old": 0.719369340836769}
+{"uid": "wanli-decisions-v1:train:289445", "split": "dev", "status": "ok", "n_options": 3, "gold": 0, "pred_old": 0, "correct_old": 1, "confidence_old": 0.5433615322656171}
+{"uid": "community-diversity-v2/20260921/support/damaged_order/17/1/choice", "split": "dev", "status": "ok", "n_options": 8, "gold": 1, "pred_old": 6, "correct_old": 0, "confidence_old": 0.48326566804458515}
+{"uid": "sponsor-segment-control-v1:family:00024:video:2:s768644e8", "split": "dev", "status": "ok", "n_options": 7, "gold": 0, "pred_old": 0, "correct_old": 1, "confidence_old": 0.9999880241818151}
+{"uid": "community-diversity-v2/20260921/contracts/governing_law_venue/52/0/noul", "split": "dev", "status": "ok", "n_options": 2, "gold": 0, "pred_old": 0, "correct_old": 1, "confidence_old": 0.9547894885909206}
+{"uid": "customer-control-v1:42:871:has_reproducible_steps", "split": "dev", "status": "ok", "n_options": 2, "gold": 0, "pred_old": 0, "correct_old": 1, "confidence_old": 0.9998888248390745}
+{"uid": "sponsor-segment-control-v1:family:00288:video:1:sc1381587", "split": "dev", "status": "ok", "n_options": 7, "gold": 4, "pred_old": 4, "correct_old": 1, "confidence_old": 0.9999996666432814}
+{"uid": "sf-d370130c041a42a23ff5a51b", "split": "dev", "status": "ok", "n_options": 2, "gold": 1, "pred_old": 1, "correct_old": 1, "confidence_old": 0.9972364070272499}
+{"uid": "wanli-decisions-v1:train:109851", "split": "dev", "status": "ok", "n_options": 3, "gold": 1, "pred_old": 1, "correct_old": 1, "confidence_old": 0.8305173054418225}

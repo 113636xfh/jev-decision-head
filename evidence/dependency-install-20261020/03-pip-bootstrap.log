@@ -1,0 +1,12 @@
+argv: ["<ENV_ROOT>\\Scripts\\python.exe", "-m", "pip", "install", "--upgrade", "pip"]
+Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+Requirement already satisfied: pip in <ENV_ROOT>\lib\site-packages (25.0.1)
+Collecting pip
+  Downloading https://pypi.tuna.tsinghua.edu.cn/packages/f3/6e/1736e5b4ae2b778ef2f81c47d797de9f891d4d8acb047a24ca37a60294dd/pip-26.2.1-py3-none-any.whl (1.8 MB)
+     ---------------------------------------- 1.8/1.8 MB 80.0 kB/s eta 0:00:00
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 25.0.1
+    Uninstalling pip-25.0.1:
+      Successfully uninstalled pip-25.0.1
+Successfully installed pip-26.2.1

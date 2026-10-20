@@ -1,28 +1,42 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="470" viewBox="0 0 1160 470"><rect width="1160" height="470" fill="#ffffff"/>
-<text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" fill="#111111" text-anchor="start">Where the time goes: the head is milliseconds, the prompt is seconds</text>
-<rect x="150.0" y="312.3131133837089" width="116.66666666666666" height="47.686886616291105" rx="3" fill="#1f6feb" stroke="#1f6feb" stroke-width="0"/>
-<text x="208.33333333333331" y="302.3131133837089" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#111111" text-anchor="middle">4.8 ms</text>
-<text x="208.33333333333331" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="600" fill="#111111" text-anchor="middle">head only</text>
-<rect x="336.66666666666663" y="131.79500284104478" width="116.66666666666666" height="228.20499715895522" rx="3" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
-<text x="394.99999999999994" y="121.79500284104478" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#111111" text-anchor="middle">1.82 s</text>
-<text x="394.99999999999994" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="600" fill="#111111" text-anchor="middle">channel p50</text>
-<rect x="523.3333333333333" y="90.41191558966472" width="116.66666666666666" height="269.5880844103353" rx="3" fill="#0f766e" stroke="#0f766e" stroke-width="0"/>
-<text x="581.6666666666666" y="80.41191558966472" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#111111" text-anchor="middle">7.10 s</text>
-<text x="581.6666666666666" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="600" fill="#111111" text-anchor="middle">channel p95</text>
-<line x1="120" y1="360" x2="680" y2="360" stroke="#111111" stroke-width="1.4"/>
-<text x="120" y="92" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#111111" text-anchor="start">per decision, bar height on a log scale (1 ms - 10 s)</text>
-<rect x="740" y="110" width="380" height="250" rx="8" fill="#f6f8fa" stroke="#5a6472" stroke-width="1.2"/>
-<text x="760" y="140" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111111" text-anchor="start">Channel latency by tier (p50)</text>
-<text x="760" y="191" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#111111" text-anchor="start">original</text>
-<rect x="880" y="175" width="78" height="22" rx="3" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
-<text x="966" y="191" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">1.52 s</text>
-<text x="760" y="237" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#111111" text-anchor="start">easy</text>
-<rect x="880" y="221" width="80" height="22" rx="3" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
-<text x="968" y="237" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">1.56 s</text>
-<text x="760" y="283" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#111111" text-anchor="start">hard</text>
-<rect x="880" y="267" width="156" height="22" rx="3" fill="#c2410c" stroke="#c2410c" stroke-width="0"/>
-<text x="1044" y="283" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">3.04 s</text>
-<text x="760" y="330" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="start">231 public items, 149,519 prompt tokens,</text>
-<text x="760" y="350" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#5a6472" text-anchor="start">645 s wall clock, one resident process</text>
-<text x="40" y="440" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#5a6472" text-anchor="start">Essentially all of the channel cost is reading the prompt once. A readout request does not reuse the prefix cache by design (~0.1 s more than a plain chat request at equal length).</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img">
+<title>Milliseconds for the head. Seconds for the channel.</title><desc>Historical JevBench public-231 run: feature readout, transport, normalisation and head.</desc>
+<rect x="0" y="0" width="1280" height="720" rx="0" fill="#ffffff" stroke="none" stroke-width="1.3"/>
+<rect x="48" y="34" width="40" height="30" rx="7" fill="#fdeacc" stroke="none" stroke-width="1.3"/>
+<text x="68" y="55" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="700" fill="#9a4d00">04</text>
+<text x="104" y="57" font-family="Arial, Helvetica, sans-serif" font-size="15" text-anchor="start" font-weight="700" fill="#5a6a80">JEV DECISION HEAD</text>
+<text x="48" y="108" font-family="Arial, Helvetica, sans-serif" font-size="28" text-anchor="start" font-weight="700" fill="#1a202c">Milliseconds for the head. Seconds for the channel.</text>
+<text x="48" y="140" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="400" fill="#5a6a80">Historical JevBench public-231 run: feature readout, transport, normalisation and head.</text>
+<text x="262" y="214" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="700" fill="#5a6a80">Latency per decision (log scale)</text>
+<line x1="262.0" y1="242" x2="262.0" y2="482" stroke="#e8edf3" stroke-width="1.5"/>
+<text x="262.0" y="516" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="400" fill="#5a6a80">1 ms</text>
+<line x1="411.0" y1="242" x2="411.0" y2="482" stroke="#e8edf3" stroke-width="1.5"/>
+<text x="411.0" y="516" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="400" fill="#5a6a80">10 ms</text>
+<line x1="560.0" y1="242" x2="560.0" y2="482" stroke="#e8edf3" stroke-width="1.5"/>
+<text x="560.0" y="516" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="400" fill="#5a6a80">100 ms</text>
+<line x1="709.0" y1="242" x2="709.0" y2="482" stroke="#e8edf3" stroke-width="1.5"/>
+<text x="709.0" y="516" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="400" fill="#5a6a80">1 s</text>
+<line x1="858.0" y1="242" x2="858.0" y2="482" stroke="#e8edf3" stroke-width="1.5"/>
+<text x="858.0" y="516" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="400" fill="#5a6a80">10 s</text>
+<text x="230" y="290" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="end" font-weight="700" fill="#1a202c">Head p50</text>
+<rect x="262" y="264" width="101.50494436896247" height="38" rx="5" fill="#e8850c" stroke="none" stroke-width="1.3"/>
+<text x="377.50494436896247" y="290" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="start" font-weight="700" fill="#9a4d00">4.8 ms</text>
+<text x="230" y="370" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="end" font-weight="700" fill="#1a202c">Channel p50</text>
+<rect x="262" y="344" width="485.7506368097761" height="38" rx="5" fill="#6480a0" stroke="none" stroke-width="1.3"/>
+<text x="761.7506368097761" y="370" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="start" font-weight="700" fill="#1a202c">1.82 s</text>
+<text x="230" y="450" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="end" font-weight="700" fill="#1a202c">Channel p95</text>
+<rect x="262" y="424" width="573.8374939591422" height="38" rx="5" fill="#6480a0" stroke="none" stroke-width="1.3"/>
+<text x="849.8374939591422" y="450" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="start" font-weight="700" fill="#1a202c">7.10 s</text>
+<rect x="950" y="186" width="282" height="354" rx="12" fill="#f7f9fb" stroke="none" stroke-width="1.3"/>
+<text x="976" y="225" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="start" font-weight="700" fill="#5a6a80">CHANNEL p50</text>
+<text x="976" y="280" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="400" fill="#5a6a80">Original</text>
+<text x="1206" y="312" font-family="Arial, Helvetica, sans-serif" font-size="26" text-anchor="end" font-weight="700" fill="#1a202c">1.52 s</text>
+<text x="976" y="360" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="400" fill="#5a6a80">Easy</text>
+<text x="1206" y="392" font-family="Arial, Helvetica, sans-serif" font-size="26" text-anchor="end" font-weight="700" fill="#1a202c">1.56 s</text>
+<text x="976" y="440" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="400" fill="#5a6a80">Hard</text>
+<text x="1206" y="472" font-family="Arial, Helvetica, sans-serif" font-size="26" text-anchor="end" font-weight="700" fill="#1a202c">3.04 s</text>
+<rect x="48" y="558" width="1184" height="54" rx="8" fill="#eef3fb" stroke="none" stroke-width="1.3"/>
+<text x="72" y="592" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="400" fill="#5a6a80">E5-2673 v4 | V100-SXM2 16 GB: 3 serving GPUs + GPU3 for the head | No NVLink</text>
+<line x1="48" y1="623" x2="1232" y2="623" stroke="#dce3eb" stroke-width="1.5"/>
+<text x="48" y="650" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="start" font-weight="400" fill="#5a6a80">231 items; 149,519 prompt tokens. Timings are specific to this hardware and serving implementation.</text>
+<text x="48" y="676" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="start" font-weight="400" fill="#5a6a80">Multi-layer readout does not reuse the prefix cache in this implementation.</text>
 </svg>

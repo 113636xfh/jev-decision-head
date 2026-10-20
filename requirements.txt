@@ -1,0 +1,11 @@
+# Client + head. The head runs on one spare GPU (or CPU, slower).
+# Bounds, not pins: the accepted runs used the interpreter recorded in
+# manifests/middle5-s1.manifest.json; check `python -m jev.selfcheck` after install.
+torch>=2.1
+numpy>=1.24,<2.0
+# Live prompts need the served model's tokenizer and chat template.
+tokenizers>=0.15
+regex>=2024.11.6
+jinja2>=3.1
+# Training/replay extras
+# (none beyond the above; extraction itself runs inside the Strata source tree)

@@ -1,0 +1,9 @@
+{
+  "baselines/middle5-s1.dev-predictions.jsonl": "2baa6043f71f36f4440f6fa7d9fd6ac3ad7ac6eab0cd0ff9206a91a4bcb183ae",
+  "certs/live-readout-compatibility-r2-bitwise.json": "b2d2c89b645b2e835fc6bbe8a9e42ecbfe4439a504e58130307975ee35d67b08",
+  "certs/old-pair-adaptive-head-v1.compatibility.json": "48a4a63f0e1c25ec44d938c9f2861ecd7e7c0a1863db4fd2bfbab8ad4cdcc4e4",
+  "identity/runtime-identity.pre-run.json": "e80b2ff9c3344b06b7554e60c0fdeaf13b535f1a23abadd55a1fbb5fb58fe63a",
+  "identity/runtime-identity.run-20261018.json": "39ff6fae1880ccfd41cc6057f77a83d4df0d39530494a28a960735e1598397b0",
+  "manifests/middle5-s1.manifest.json": "05f270e1512050cc0876b02b154d3d3b7c2a70f53514dbe52b67a02fa8ccac9c",
+  "results/middle5-s1.results.json": "c909af96551d4f5ae768795d57fe8dd6c804407a439d7aaa7021b9b3fe472f5a"
+}

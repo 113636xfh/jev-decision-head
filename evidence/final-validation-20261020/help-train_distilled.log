@@ -1,0 +1,10 @@
+usage: train_distilled.py [-h] --teacher-targets TEACHER_TARGETS
+                          [--teacher-weight TEACHER_WEIGHT]
+                          [--init-run INIT_RUN]
+
+options:
+  -h, --help            show this help message and exit
+  --teacher-targets TEACHER_TARGETS
+  --teacher-weight TEACHER_WEIGHT
+  --init-run INIT_RUN   warm start best.pt AND its train-fitted norm; matching
+                        architecture required

@@ -1,0 +1,149 @@
+{
+  "original_archive_sha256": "9cafc831692cda1a25943825a1fc9e3318512859fbc3c9267383952905f43a32",
+  "started_utc": "2026-10-20T12:37:29.031527+00:00",
+  "initial_gate": "install-gate.json",
+  "initial_gate_preserved": true,
+  "installation_repeated": false,
+  "venv": "<ENV_ROOT>",
+  "system_site_packages": false,
+  "scope": "Same fresh Windows CPython3.12 CPU venv; metadata source verification and offline checks only",
+  "quality_gate": "FAIL",
+  "steps": [
+    {
+      "name": "v2-01-pip-check",
+      "returncode": 0,
+      "elapsed_s": 2.062,
+      "log": "v2-01-pip-check.log"
+    },
+    {
+      "name": "v2-02-freeze",
+      "returncode": 0,
+      "elapsed_s": 1.047,
+      "log": "v2-02-freeze.log"
+    },
+    {
+      "name": "v2-03-platform",
+      "returncode": 0,
+      "elapsed_s": 7.86,
+      "log": "v2-03-platform.log"
+    },
+    {
+      "name": "v2-04-selfcheck",
+      "returncode": 3221225477,
+      "elapsed_s": 5.984,
+      "log": "v2-04-selfcheck.log"
+    },
+    {
+      "name": "v2-05-help-predict",
+      "returncode": 0,
+      "elapsed_s": 6.328,
+      "log": "v2-05-help-predict.log"
+    },
+    {
+      "name": "v2-06-help-cascade",
+      "returncode": 0,
+      "elapsed_s": 8.125,
+      "log": "v2-06-help-cascade.log"
+    },
+    {
+      "name": "v2-07-help-identity",
+      "returncode": 0,
+      "elapsed_s": 0.453,
+      "log": "v2-07-help-identity.log"
+    },
+    {
+      "name": "v2-08-help-fingerprint_model",
+      "returncode": 0,
+      "elapsed_s": 0.266,
+      "log": "v2-08-help-fingerprint_model.log"
+    },
+    {
+      "name": "v2-09-help-domain",
+      "returncode": 0,
+      "elapsed_s": 0.406,
+      "log": "v2-09-help-domain.log"
+    },
+    {
+      "name": "v2-10-help-eval_replay",
+      "returncode": 0,
+      "elapsed_s": 7.219,
+      "log": "v2-10-help-eval_replay.log"
+    },
+    {
+      "name": "v2-11-help-eval_benchmark",
+      "returncode": 0,
+      "elapsed_s": 6.047,
+      "log": "v2-11-help-eval_benchmark.log"
+    },
+    {
+      "name": "v2-12-help-probe_drift",
+      "returncode": 0,
+      "elapsed_s": 6.25,
+      "log": "v2-12-help-probe_drift.log"
+    },
+    {
+      "name": "v2-13-help-check_baseline",
+      "returncode": 0,
+      "elapsed_s": 0.218,
+      "log": "v2-13-help-check_baseline.log"
+    },
+    {
+      "name": "v2-14-help-train",
+      "returncode": 0,
+      "elapsed_s": 5.11,
+      "log": "v2-14-help-train.log"
+    },
+    {
+      "name": "v2-15-help-train_distilled",
+      "returncode": 0,
+      "elapsed_s": 4.641,
+      "log": "v2-15-help-train_distilled.log"
+    },
+    {
+      "name": "v2-16-help-tune_policy",
+      "returncode": 0,
+      "elapsed_s": 0.391,
+      "log": "v2-16-help-tune_policy.log"
+    },
+    {
+      "name": "v2-17-help-analyze_flips",
+      "returncode": 0,
+      "elapsed_s": 5.062,
+      "log": "v2-17-help-analyze_flips.log"
+    },
+    {
+      "name": "v2-18-help-finalize_rows",
+      "returncode": 0,
+      "elapsed_s": 5.235,
+      "log": "v2-18-help-finalize_rows.log"
+    },
+    {
+      "name": "v2-19-help-run_all",
+      "returncode": 0,
+      "elapsed_s": 0.25,
+      "log": "v2-19-help-run_all.log"
+    },
+    {
+      "name": "v2-20-unittest",
+      "returncode": 0,
+      "elapsed_s": 2.25,
+      "log": "v2-20-unittest.log"
+    }
+  ],
+  "official_cpu_provenance": {
+    "index_url": "https://download.pytorch.org/whl/cpu/torch/",
+    "index_final_url": "https://download.pytorch.org/whl/cpu/torch/",
+    "index_sha256": "5120676213fefe4cbaa5dfe91fdfe39125cf8e95f4cbfe11f4e326d0e52464b9",
+    "wheel_url": "https://download-r2.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp312-cp312-win_amd64.whl",
+    "wheel_sha256": "4027d982eb2781c93825ab9527f17fbbb12dbabf422298e4b954be60016f87d8",
+    "matching_links": [
+      {
+        "url": "https://download-r2.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp312-cp312-win_amd64.whl",
+        "sha256": "4027d982eb2781c93825ab9527f17fbbb12dbabf422298e4b954be60016f87d8"
+      }
+    ]
+  },
+  "installation_gate": "PASS",
+  "cli_count": 15,
+  "finished_utc": "2026-10-20T12:38:50.424358+00:00"
+}

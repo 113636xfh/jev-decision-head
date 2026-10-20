@@ -2,13 +2,11 @@ import os as _os
 JEV_DATA = _os.environ.get('JEV_DATA', _os.path.expanduser('~/jev-data'))
 STRATA = _os.environ.get('STRATA_ROOT', _os.path.expanduser('~/strata'))
 JEV_PY = _os.environ.get('JEV_PY', 'python3')
-"""Live identity for the abliterated backbone: record which pair actually answers.
+"""Live identity: record which server build is actually answering.
 
-Why not the accepted certificate: adaptive-head-v1/compatibility.json binds
-engine ce7559e0 / server 3ebd690b / config b6b687b8, i.e. the NON-abliterated backbone.
-Production now answers from a different pair (engine c1d3070c / server d85622eb /
-config 5440f05c = strata-iq3_s-abliterated.json).  Nothing here requires that certificate;
-instead every run records what is really executing and refuses to keep going when it changes.
+Every run records what is really executing (engine, server, config, tokenizer,
+weights) and refuses to keep going when it changes mid-run.  The environment the
+head was trained and tested on is pinned in `REPRODUCE.md`.
 
 Recorded on purpose (a mid-run restart or a repointed launcher would otherwise make "no
 accuracy drop" an artefact): the SHA-256 of the executing engine read through /proc, the
@@ -24,15 +22,15 @@ import time
 import urllib.request
 from pathlib import Path
 
-RUNTIME = Path(STRATA + '/v0.1.44.1')
-V3 = Path(JEV_DATA + '/jev-v3-fast')
-V4 = Path(JEV_DATA + '/jev-v4-gpu')
-RUN = V4 / 'runs/middle5-s1'
-AD = Path(JEV_DATA + '/strata-upgrade-20261016/adaptive-head-v1')
+RUNTIME = Path(os.environ.get('STRATA_RUNTIME', STRATA + '/v0.1.44.1'))
+RELEASE = Path(__file__).resolve().parent.parent
+V3 = Path(__file__).resolve().parent          # the released readout builder lives here
+RUN = Path(os.environ.get('JEV_WEIGHTS', RELEASE / 'weights'))
+HEAD_MANIFEST = Path(os.environ.get('JEV_HEAD_MANIFEST', RELEASE / 'manifests/middle5-s1.manifest.json'))
 BASE = 'http://127.0.0.1:8100'
 TAPS = '15,23,29,35,41,-1'
-# The frozen serving policy of the accepted head (same numbers the certificate carries).
-POLICY = {'threshold': 0.85, 'temperature': 1.1525501023241218, 'guard_band': 0.0}
+# The frozen serving policy of the head.
+POLICY = {'temperature': None, 'selection': 'policies/dev-thresholds.json'}
 # /metrics engine keys that define the readout protocol; a change means the answer came from
 # a different scheduling/placement than the one recorded.
 CAPACITY_KEYS = ('version', 'jev_slot_readout', 'batch_slots', 'batch_groups', 'max_context',
@@ -133,15 +131,11 @@ def capture(base: str = BASE) -> dict:
         'engine_metrics': engine_metrics,
         'load_samples': load,
         'gpu_snapshot': gpu,
-        'head_files': {'best.pt': digest(RUN / 'best.pt'), 'norm.npz': digest(RUN / 'norm.npz'),
-                       'manifest.json': digest(RUN / 'manifest.json')},
+        'head_files': {'best.pt': digest(RUN / 'best.pt'), 'norm.npz': digest(RUN / 'norm.npz')},
+        'head_manifest_sha256': digest(HEAD_MANIFEST),
         'readout_builder_sha256': digest(V3 / 'readout.py'),
         'taps': TAPS, 'pools': 'last,mean',
         'policy': POLICY,
-        'old_certificate': {'path': str(AD / 'compatibility.json'), 'sha256': digest(AD / 'compatibility.json'),
-                            'binds': {k: v for k, v in json.loads((AD / 'compatibility.json')
-                                                                  .read_text())['runtime'].items()},
-                            'covers_live_pair': False},
         'watched_files': [str(RUNTIME / 'serve/server.py'), str(config_path),
                           str(RUNTIME / 'engine-cuda12/strata'), str(RUN / 'best.pt'),
                           str(RUN / 'norm.npz')],

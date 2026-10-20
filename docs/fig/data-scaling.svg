@@ -1,33 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="470" viewBox="0 0 1160 470"><rect width="1160" height="470" fill="#ffffff"/>
-<text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" fill="#111111" text-anchor="start">More labelled items kept paying: 2k / 4k / 8k / 16k train</text>
-<text x="207.5" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">2000</text>
-<text x="295.0" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">4000</text>
-<text x="470.0" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">8000</text>
-<text x="820.0" y="382" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="middle">16000</text>
-<line x1="120" y1="360" x2="820" y2="360" stroke="#111111" stroke-width="1.4"/>
-<line x1="120" y1="360" x2="120" y2="80" stroke="#111111" stroke-width="1.4"/>
-<text x="470.0" y="404" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#111111" text-anchor="middle">train items</text>
-<text x="68" y="220.0" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#111111" text-anchor="middle" transform="rotate(-90 68 220.0)">accuracy</text>
-<line x1="120" y1="360.0" x2="820" y2="360.0" stroke="#d8dee6" stroke-width="1"/>
-<text x="110" y="364.0" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.65</text>
-<line x1="120" y1="220.0000000000002" x2="820" y2="220.0000000000002" stroke="#d8dee6" stroke-width="1"/>
-<text x="110" y="224.0000000000002" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.70</text>
-<line x1="120" y1="80.00000000000006" x2="820" y2="80.00000000000006" stroke="#d8dee6" stroke-width="1"/>
-<text x="110" y="84.00000000000006" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#5a6472" text-anchor="end">0.75</text>
-<path d="M207.5,318.6 L295.0,288.9 L470.0,221.7 L820.0,165.7" fill="none" stroke="#1f6feb" stroke-width="2.6"/>
-<circle cx="207.5" cy="318.6" r="4" fill="#1f6feb"/>
-<circle cx="295.0" cy="288.9" r="4" fill="#1f6feb"/>
-<circle cx="470.0" cy="221.7" r="4" fill="#1f6feb"/>
-<circle cx="820.0" cy="165.7" r="4" fill="#1f6feb"/>
-<path d="M207.5,268.2 L295.0,213.3 L470.0,161.5 L820.0,52.3" fill="none" stroke="#c2410c" stroke-width="2.6"/>
-<circle cx="207.5" cy="268.2" r="4" fill="#c2410c"/>
-<circle cx="295.0" cy="213.3" r="4" fill="#c2410c"/>
-<circle cx="470.0" cy="161.5" r="4" fill="#c2410c"/>
-<circle cx="820.0" cy="52.3" r="4" fill="#c2410c"/>
-<rect x="132" y="98" width="150" height="62" rx="4" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
-<line x1="140" y1="114" x2="166" y2="114" stroke="#1f6feb" stroke-width="2.6"/>
-<text x="174" y="119" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">dev (1,996)</text>
-<line x1="140" y1="136" x2="166" y2="136" stroke="#c2410c" stroke-width="2.6"/>
-<text x="174" y="141" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#111111" text-anchor="start">test (1,999)</text>
-<text x="40" y="440" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="400" fill="#5a6472" text-anchor="start">Same head, same protocol; only the number of labelled train items changes. dev is used for checkpoint selection, test only for reporting.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="740" viewBox="0 0 1280 740" role="img">
+<title>More labelled data helped this baseline</title><desc>Three input layers, 12.67 M parameters, seed 0; this is not the released five-layer head.</desc>
+<rect x="0" y="0" width="1280" height="740" rx="0" fill="#ffffff" stroke="none" stroke-width="1.3"/>
+<rect x="48" y="34" width="40" height="30" rx="7" fill="#fdeacc" stroke="none" stroke-width="1.3"/>
+<text x="68" y="55" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="700" fill="#9a4d00">08</text>
+<text x="104" y="57" font-family="Arial, Helvetica, sans-serif" font-size="15" text-anchor="start" font-weight="700" fill="#5a6a80">JEV DECISION HEAD</text>
+<text x="48" y="108" font-family="Arial, Helvetica, sans-serif" font-size="28" text-anchor="start" font-weight="700" fill="#1a202c">More labelled data helped this baseline</text>
+<text x="48" y="140" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="400" fill="#5a6a80">Three input layers, 12.67 M parameters, seed 0; this is not the released five-layer head.</text>
+<line x1="116" y1="558.0" x2="870" y2="558.0" stroke="#e8edf3" stroke-width="1"/>
+<text x="102" y="564.0" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="end" font-weight="400" fill="#5a6a80">65%</text>
+<line x1="116" y1="449.3333333333335" x2="870" y2="449.3333333333335" stroke="#e8edf3" stroke-width="1"/>
+<text x="102" y="455.3333333333335" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="end" font-weight="400" fill="#5a6a80">70%</text>
+<line x1="116" y1="340.66666666666674" x2="870" y2="340.66666666666674" stroke="#e8edf3" stroke-width="1"/>
+<text x="102" y="346.66666666666674" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="end" font-weight="400" fill="#5a6a80">75%</text>
+<line x1="116" y1="232.0" x2="870" y2="232.0" stroke="#e8edf3" stroke-width="1"/>
+<text x="102" y="238.0" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="end" font-weight="400" fill="#5a6a80">80%</text>
+<text x="204.43976470588234" y="586" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="400" fill="#5a6a80">1,994</text>
+<text x="293.32305882352944" y="586" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="400" fill="#5a6a80">3,998</text>
+<text x="470.5574117647059" y="586" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="400" fill="#5a6a80">7,994</text>
+<text x="825.6470588235294" y="586" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="middle" font-weight="400" fill="#5a6a80">16,000</text>
+<line x1="116" y1="558" x2="870" y2="558" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="116" y="200" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="700" fill="#5a6a80">Accuracy</text>
+<path d="M204.44,525.83 L293.32,502.80 L470.56,450.64 L825.65,407.17" fill="none" stroke="#6480a0" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="204.43976470588234" cy="525.8346666666669" r="5" fill="#6480a0" stroke="none" stroke-width="2"/>
+<circle cx="293.32305882352944" cy="502.79733333333337" r="5" fill="#6480a0" stroke="none" stroke-width="2"/>
+<circle cx="470.5574117647059" cy="450.63733333333334" r="5" fill="#6480a0" stroke="none" stroke-width="2"/>
+<circle cx="825.6470588235294" cy="407.17066666666665" r="5" fill="#6480a0" stroke="none" stroke-width="2"/>
+<path d="M204.44,486.71 L293.32,444.12 L470.56,403.91 L825.65,319.15" fill="none" stroke="#e8850c" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="204.43976470588234" cy="486.7146666666668" r="5" fill="#e8850c" stroke="none" stroke-width="2"/>
+<circle cx="293.32305882352944" cy="444.11733333333336" r="5" fill="#e8850c" stroke="none" stroke-width="2"/>
+<circle cx="470.5574117647059" cy="403.91066666666677" r="5" fill="#e8850c" stroke="none" stroke-width="2"/>
+<circle cx="825.6470588235294" cy="319.1506666666667" r="5" fill="#e8850c" stroke="none" stroke-width="2"/>
+<text x="493" y="618" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="middle" font-weight="400" fill="#5a6a80">Labelled training items</text>
+<rect x="946" y="190" width="286" height="396" rx="12" fill="#f7f9fb" stroke="none" stroke-width="1.3"/>
+<line x1="972" y1="231" x2="1000" y2="231" stroke="#6480a0" stroke-width="3"/>
+<text x="1010" y="236" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="start" font-weight="400" fill="#5a6a80">Dev</text>
+<line x1="972" y1="260" x2="1000" y2="260" stroke="#e8850c" stroke-width="3"/>
+<text x="1010" y="265" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="start" font-weight="400" fill="#5a6a80">Test</text>
+<text x="972" y="337" font-family="Arial, Helvetica, sans-serif" font-size="15" text-anchor="start" font-weight="700" fill="#5a6a80">AT 16,000 ITEMS</text>
+<text x="972" y="385" font-family="Arial, Helvetica, sans-serif" font-size="32" text-anchor="start" font-weight="700" fill="#6480a0">71.94%</text>
+<text x="972" y="415" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="400" fill="#5a6a80">Dev accuracy</text>
+<text x="972" y="479" font-family="Arial, Helvetica, sans-serif" font-size="32" text-anchor="start" font-weight="700" fill="#9a4d00">75.99%</text>
+<text x="972" y="509" font-family="Arial, Helvetica, sans-serif" font-size="17" text-anchor="start" font-weight="400" fill="#5a6a80">Test accuracy</text>
+<line x1="48" y1="643" x2="1232" y2="643" stroke="#dce3eb" stroke-width="1.5"/>
+<text x="48" y="670" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="start" font-weight="400" fill="#5a6a80">Dev selects checkpoints; test is used only for reporting. Normalisation is re-fit per training subset.</text>
+<text x="48" y="696" font-family="Arial, Helvetica, sans-serif" font-size="16" text-anchor="start" font-weight="400" fill="#5a6a80">Epoch caps are matched, not optimiser-update counts; early stopping can differ between runs.</text>
 </svg>

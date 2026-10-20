@@ -1,0 +1,14 @@
+patches/manifest.json: text: unset
+patches/manifest.json: eol: lf
+patches/evidence/reproducible-build-20261020.json: text: unset
+patches/evidence/reproducible-build-20261020.json: eol: lf
+patches/evidence/existing-build-summary-v2-20261020.json: text: unset
+patches/evidence/existing-build-summary-v2-20261020.json: eol: lf
+patches/reproduce-build.sh: text: set
+patches/reproduce-build.sh: eol: lf
+patches/verify.py: text: set
+patches/verify.py: eol: lf
+manifest filtered blob: 5d9c784e3f90f10fd5f137b0b171cb0d6e712d64
+manifest raw blob: 5d9c784e3f90f10fd5f137b0b171cb0d6e712d64
+summary filtered blob: 99e8800df5ae028f3162ccaacfc3fbfc5a18fd04
+summary raw blob: 99e8800df5ae028f3162ccaacfc3fbfc5a18fd04

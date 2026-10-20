@@ -1,22 +1,107 @@
-# Notice: what is licensed, and what is not
+# Notice: project artifacts and third-party rights
 
-The MIT licence in `LICENSE` covers **this repository's own artefacts**: the code in `jev/`,
-the Strata patches in `patches/`, the figures and their generator in `docs/fig/`, and the
-trained decision-head weights in `weights/`.
+The MIT license in LICENSE covers the project's own code, original figure work,
+member-export/audit utilities and original decision-head weights/normalization.
+It does not grant additional rights in upstream code, datasets, wording, assets or
+model weights. Patch contributions remain subject to the license of the upstream
+sources from which they derive; this notice does not relicense Strata.
 
-It does **not** cover, and this repository does **not** re-distribute, the following. Each item
-is only referenced by name, link or hash.
+## Vendored tokenizer
 
-| Item | Status here | Source / licence position |
-|---|---|---|
-| Backbone weights `Qwen3.8-Flash-Next-GSQ-RCO` (IQ3_S GGUF, 2 shards) | not included | third-party release; re-distribution rights not confirmed, so we do not mirror it |
-| Strata itself | not included | upstream project; our patches are derivative work of upstream sources and follow the upstream licence until (and if) they are merged upstream |
-| JevBench items (public 231) | not included | fetched by `jev/eval_benchmark.py` from the benchmark's own distribution; scored with the benchmark's own scorer |
-| `pngwn/typed-decisions-v2`, `pngwn/typed-decisions-v2-system-one` | not included | Hugging Face datasets under their own terms; our splits are derived indexes over them, shipped as manifests (ids, group ids, hashes) only |
-| HotpotQA, MMLU-Pro | not included | upstream datasets under their own terms, reached through the dataset cards above |
-| Feature archives (hidden-state readouts) | not included | derived from backbone activations over third-party items; we publish the protocol, the manifest and the hashes instead |
-| Internal control tasks behind the OOD split | not included | internal data; only aggregate metrics are published |
+`jev/strata_tokenizer.py` includes the byte-BPE tokenizer from Niko1221/Strata,
+commit `296b59d2f73c8f04a805df29c2fa97655adace78`, `tools/strata_tokenizer.py`.
+Copyright (c) 2026 Niko1221 and the Strata contributors. MIT license: `jev/STRATA-LICENSE`.
+Unused GGUF extraction and command-line code was removed; the tokenization algorithm is unchanged.
+Source digest and modifications: `jev/tokenizer_origin.json`.
 
-Per-item prediction files that are included (`baselines/`) contain identifiers, gold labels,
-predictions and probabilities only — no item text, and no state text from any third-party
-dataset.
+## Vendored public benchmark
+
+Included: `benchmarks/jevbench-public231/tasks.jsonl` (231 public tasks, gold for scoring)
+and `jev/upstream_scoring.py` (upstream scorer; line endings may differ).
+Source: https://github.com/fstandhartinger/jevbench,
+revision `7625ecb1b075cfe4d09d34141d353325825eea1d`.
+Copyright (c) 2026 Florian Standhartinger and contributors. MIT license:
+`benchmarks/jevbench-public231/LICENSE`, verified against that revision's LICENSE.
+The task snapshot combines datasets/public/{original,easy,hard}.jsonl and adds its tier;
+no sealed tasks are included. These public tasks are an exception to the withheld
+training/evaluation split payloads described below. Provenance and hashes:
+`benchmarks/jevbench-public231/manifest.json`.
+
+## Direct data input
+
+The actual selected train/dev/test/OOD/cal files were derived directly from:
+
+  Zefan Cai, Open-Jev v1.1 data
+  https://huggingface.co/datasets/ZefanCai/Open-Jev-v1.1
+  configuration: community-hard-mix-v2-redistributable
+  data terms: https://huggingface.co/datasets/ZefanCai/Open-Jev-v1.1/blob/main/LICENSE-DATA.md
+  third-party notices: https://huggingface.co/datasets/ZefanCai/Open-Jev-v1.1/blob/main/THIRD_PARTY_NOTICES.md
+
+This is the published 326,619-record projection, not the complete 328,672-record
+parent mixture or the exact full dataset used for an upstream model's training.
+It omits 2,053 Wikispeedia records; none was restored into our selected splits.
+The 23,718 released member identities all matched that cached public projection.
+Some public source names contain "control" or "workflow"; that does not make them
+additional project-private tasks. No private task body is published here.
+
+Source-dependent data terms retained by that release:
+
+- Original generated Open-Jev content: CC0 1.0 Universal,
+  https://creativecommons.org/publicdomain/zero/1.0/ .
+- WANLI text and derivatives: CC BY 4.0,
+  https://creativecommons.org/licenses/by/4.0/ .
+- Customer-control qualification: generated conversations are CC0; short upstream
+  question descriptions come from TypeSafe documentation whose source license was
+  not verified by the upstream release. We do not resolve or remove that caveat.
+- These data terms do not relicense external model weights, game assets, external
+  wording, customer material or other source datasets.
+
+WANLI attribution:
+Alisa Liu, Swabha Swayamdipta, Noah A. Smith and Yejin Choi (2022),
+"WANLI: Worker and AI Collaboration for Natural Language Inference Dataset Creation."
+Source: https://huggingface.co/datasets/alisawuffles/WANLI/tree/61c95318fd71c55b6ba355d76253254615f387ec
+Revision: 61c95318fd71c55b6ba355d76253254615f387ec .
+
+Upstream modifications convert premise/hypothesis pairs to typed entailment,
+contradiction and neutral choices, deterministically reorder options, and preserve
+source identifiers/gold/provenance with connected seed/premise grouping. Our local
+preparation preserves complete state/metadata and original targets, reorders options
+and targets together, isolates connected groups, selects whole-group subsets and
+excludes components represented in the older incompatible extraction backend.
+See docs/DATA.md and manifests/data-lineage.json for the exact chain and hashes.
+
+The pngwn/typed-decisions-v2 and pngwn/typed-decisions-v2-system-one datasets and
+HotpotQA/MMLU-Pro names in older summaries are related lineage references, not a
+verified recipe for downloading these exact selected records. Their independent
+terms would still apply to any separately obtained material. They must not replace
+the direct Open-Jev attribution above.
+
+## What is and is not redistributed
+
+- Included: head weights/normalization; project code and patches; figures; aggregate
+  metrics; dev predictions; ordered split membership, categories, numeric targets,
+  hard-label indices, permutations and hash commitments.
+- Not included: selected train/dev/test/OOD/cal state/question/option wording, full
+  task metadata or conversations; backbone weights; hidden-state activation archives; omitted Wiki
+  payloads; sealed benchmark items; separate private/internal control-task bodies.
+- Membership identifiers are intentionally linkable to the public upstream and may
+  reveal task/category names. This is an index, not a claim of anonymization.
+- Included baseline prediction files contain identifiers, labels, probabilities and
+  predictions rather than task-body/state text. Hashes are commitments, not a grant
+  of rights or a way to recover withheld content.
+- Backbone: Qwen3.8-Flash-Next-GSQ-RCO and its referenced abliterated IQ3_S build are
+  third-party assets, not included; redistribution rights have not been established.
+- Strata is not included as a complete upstream source/runtime distribution; its
+  own license governs its sources and derivative patch portions.
+- JevBench public-231 task payloads and its scorer are included under the upstream
+  MIT license above. This is the public 231-task snapshot, not an official sealed/full
+  benchmark result or a redistribution of withheld train/dev/test split text.
+
+## Historical evidence and release limits
+
+Historical artifacts are preserved byte-for-byte as found. Their original archival hashes
+and already-redacted shipped hashes are different and both recorded. The new
+member/origin/identity indices are bookkeeping, not compatibility claims: no acceptance is
+implied for an arbitrary build or measurement. These documentation statements do not
+constitute tests of loader enforcement, clean-upstream patch application/build, complete
+application installation, or exact-pair numerical compatibility.

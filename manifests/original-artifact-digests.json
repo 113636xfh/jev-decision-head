@@ -1,0 +1,33 @@
+{
+  "artifacts": {
+    "baselines/middle5-s1.dev-predictions.jsonl": {
+      "original_bytes": 409356,
+      "original_sha256": "7e76aa9a6a3df0754b7e6e55cb5c1d1d690b08d896d9d249556ec25cb74b9db2"
+    },
+    "certs/live-readout-compatibility-r2-bitwise.json": {
+      "original_bytes": 3984,
+      "original_sha256": "97e7a6986fb4522db23852b1f84d12dd9e6d37ee83355dc1cf4825ae0a249bca"
+    },
+    "certs/old-pair-adaptive-head-v1.compatibility.json": {
+      "original_bytes": 15878,
+      "original_sha256": "37236f092d5e0b01d242ad755f3dbf3934083240d0b2658a3f45121c81ea7634"
+    },
+    "identity/runtime-identity.pre-run.json": {
+      "original_bytes": 4072,
+      "original_sha256": "7847cde4fffffb665e9729d917526404292647983a16d636fef28121f9c93405"
+    },
+    "identity/runtime-identity.run-20261018.json": {
+      "original_bytes": 4045,
+      "original_sha256": "d042caaf738e5b264d3a9391d8af5e691aef2e1d355f5faeb3aa15c3d63551f8"
+    },
+    "manifests/middle5-s1.manifest.json": {
+      "original_bytes": 4495,
+      "original_sha256": "5d23d7db39855584b87abb2517fa9226acbfa5d13805b4ea6a1fc1d8fd58db95"
+    },
+    "results/middle5-s1.results.json": {
+      "original_bytes": 7846,
+      "original_sha256": "ad05b76274f79e13d020903d8e8a485c7740cce8737f89ad69dd342a861826c3"
+    }
+  },
+  "schema": "jev-release-original-digests-v1"
+}

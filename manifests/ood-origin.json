@@ -1,0 +1,28 @@
+{
+  "checked": [
+    "raw_sha256 over complete upstream record",
+    "id",
+    "group_id",
+    "source",
+    "source_split",
+    "kind",
+    "complete metadata hash",
+    "content hash including original options/targets",
+    "exact prepared-row reconstruction including option/target permutation",
+    "member/source ordering"
+  ],
+  "matched_members": 1991,
+  "members_file_sha256": "0efc5412aebc45237aee790cb218537c51f059163ed823377e9027b63d8c37dd",
+  "raw_gzip_sha256": "0b960c7f9d88bb64f1d282dddc2b45f1b5ae2d35920dfe515422d3dfe4319fef",
+  "raw_uncompressed_sha256": "93ee1b77318d96d5e8132756aab5546e76b35303e6c95dd2ff6fddb295951445",
+  "reconstructed_prepared_file_sha256": "3aef2d71edb6a9748d91559f2009e25fe774e94d7a1ea8e30b199cb2ceec84a1",
+  "schema": "jev-release-upstream-match-v1",
+  "selected_row_provenance_licenses": {
+    "CC-BY-4.0": 124,
+    "CC0-1.0": 1819,
+    "CC0-1.0 (generated numeric trajectories; no game assets)": 30,
+    "Generated conversations: CC0-1.0; upstream question descriptions: TypeSafe documentation, license not verified": 18
+  },
+  "unmatched_members": 0,
+  "upstream_rows": 84267
+}

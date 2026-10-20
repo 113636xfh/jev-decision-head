@@ -1,0 +1,19 @@
+{
+  "original_archive_sha256": "b5596ed3e98dfeb342287586d0bb59c60fe65d82d5df7187bd19209e1c3e2acd",
+  "accepted_file": "<PROJECT_ROOT>\\baselines\\middle5-s1.dev-predictions.jsonl",
+  "accepted_rows": 1996,
+  "rows_file": "baselines/middle5-s1.dev-predictions.jsonl",
+  "rows_ok": 1996,
+  "compared": 1996,
+  "gold_mismatches": 0,
+  "prediction_mismatches": 0,
+  "unknown_uids": 0,
+  "incompatible_rows": 0,
+  "missing_accepted_rows": 0,
+  "expected_count": 1996,
+  "require_complete": true,
+  "passed": true,
+  "errors": [],
+  "details": [],
+  "rows_schema": "baseline"
+}

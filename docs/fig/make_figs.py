@@ -1,324 +1,337 @@
 #!/usr/bin/env python3
-"""Generate the eight README figures as SVG. Data comes from files already in the
-repository (docs/fig/_run_metrics.json, docs/fig/_splits_replay.json,
-baselines/middle5-s1.dev-predictions.jsonl) or from numbers verified in the result
-documents. No experiment is re-run."""
-import json, math, os
+"""Generate the eight README SVGs; render with `node docs/fig/render.cjs`.
 
-OUT = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.dirname(os.path.dirname(OUT))
-F = 'Arial, Helvetica, sans-serif'
-INK, MUT, GRID, A1, A2, ACC = '#111111', '#5a6472', '#d8dee6', '#1f6feb', '#c2410c', '#0f766e'
+Only existing aggregates are plotted. No model, service or experiment is run.
+Run metrics, reliability bins and coverage curves are read from the adjacent JSONs.
+The latency and backbone-swap summaries below retain the previously published values.
+"""
+from pathlib import Path
+from html import escape
+import json
+import math
 
-
-class S:
-    def __init__(s, w, h, title=None):
-        s.w, s.h = w, h
-        s.p = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
-               f'viewBox="0 0 {w} {h}"><rect width="{w}" height="{h}" fill="#ffffff"/>']
-        if title:
-            s.txt(28, 34, title, 21, 'start', '700')
-
-    def txt(s, x, y, t, size=14, anchor='start', weight='400', fill=INK, spacing=None):
-        sp = f' letter-spacing="{spacing}"' if spacing else ''
-        s.p.append(f'<text x="{x}" y="{y}" font-family="{F}" font-size="{size}" '
-                   f'font-weight="{weight}" fill="{fill}" text-anchor="{anchor}"{sp}>{t}</text>')
-
-    def rect(s, x, y, w, h, fill='#ffffff', stroke=INK, sw=1.4, dash=None, rx=8):
-        d = f' stroke-dasharray="{dash}"' if dash else ''
-        s.p.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" '
-                   f'fill="{fill}" stroke="{stroke}" stroke-width="{sw}"{d}/>')
-
-    def line(s, x1, y1, x2, y2, stroke=INK, sw=1.4, dash=None):
-        d = f' stroke-dasharray="{dash}"' if dash else ''
-        s.p.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{stroke}" '
-                   f'stroke-width="{sw}"{d}/>')
-
-    def arrow(s, x1, y1, x2, y2, stroke=INK, sw=1.8, dash=None, head=8):
-        s.line(x1, y1, x2, y2, stroke, sw, dash)
-        ang = math.atan2(y2 - y1, x2 - x1)
-        for da in (math.radians(152), -math.radians(152)):
-            s.p.append(f'<line x1="{x2}" y1="{y2}" x2="{x2+head*math.cos(ang+da):.1f}" '
-                       f'y2="{y2+head*math.sin(ang+da):.1f}" stroke="{stroke}" stroke-width="{sw}"/>')
-
-    def box(s, x, y, w, h, title, lines=(), fill='#f6f8fa', stroke=INK, dash=None, tcol=INK):
-        s.rect(x, y, w, h, fill, stroke, 1.4, dash)
-        cx, n = x + w / 2, len(lines)
-        s.txt(cx, y + (24 if n else 30), title, 15, 'middle', '700', tcol)
-        for i, ln in enumerate(lines):
-            s.txt(cx, y + 44 + i * 19, ln, 12.5, 'middle', '400', MUT)
-
-    def save(s, name):
-        s.p.append('</svg>')
-        open(os.path.join(OUT, name), 'w', encoding='utf-8').write('\n'.join(s.p))
-        print('wrote', name)
+OUT = Path(__file__).resolve().parent
+FONT = 'Arial, Helvetica, sans-serif'
+INK, MUT, BORDER, GRID = '#1a202c', '#5a6a80', '#dce3eb', '#e8edf3'
+ORANGE, ORANGE_BG, ORANGE_INK = '#e8850c', '#fdeacc', '#9a4d00'
+BLUE, BLUE_BG = '#6480a0', '#eef3fb'
+GRAY_BG, GREEN_BG, GREEN = '#f7f9fb', '#eefaf3', '#1e7a4c'
+METRICS = json.loads((OUT / '_run_metrics.json').read_text())
+SPLITS = json.loads((OUT / '_splits_replay.json').read_text())
+THRESHOLDS = json.loads((OUT / '_dev_thresholds.json').read_text())
 
 
-def axes(s, x0, y0, w, h, xlab, ylab, xt, yt, xmax=1.0, ymax=1.0, grid=True):
-    """x0,y0 = bottom-left of plot area."""
-    for i, v in enumerate(yt):
-        yy = y0 - h * (v / ymax)
-        if grid:
-            s.line(x0, yy, x0 + w, yy, GRID, 1)
-        s.txt(x0 - 10, yy + 4, f'{v:g}', 12, 'end', '400', MUT)
-    for i, v in enumerate(xt):
-        xx = x0 + w * (v / xmax)
-        s.txt(xx, y0 + 22, f'{v:g}', 12, 'middle', '400', MUT)
-    s.line(x0, y0, x0 + w, y0, INK, 1.4)
-    s.line(x0, y0, x0, y0 - h, INK, 1.4)
-    s.txt(x0 + w / 2, y0 + 44, xlab, 13, 'middle', '600', INK)
-    s.p.append(f'<text x="{x0-52}" y="{y0-h/2}" font-family="{F}" font-size="13" font-weight="600" '
-               f'fill="{INK}" text-anchor="middle" transform="rotate(-90 {x0-52} {y0-h/2})">{ylab}</text>')
+class Figure:
+    def __init__(self, number, title, subtitle, height=680):
+        self.w, self.h = 1280, height
+        self.parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="{height}" '
+                      f'viewBox="0 0 1280 {height}" role="img">',
+                      f'<title>{escape(title)}</title><desc>{escape(subtitle)}</desc>']
+        self.rect(0, 0, self.w, self.h, '#ffffff', 'none', radius=0)
+        self.rect(48, 34, 40, 30, ORANGE_BG, 'none', radius=7)
+        self.text(68, 55, f'{number:02}', 16, 'middle', '700', ORANGE_INK)
+        self.text(104, 57, 'JEV DECISION HEAD', 15, weight='700', fill=MUT)
+        self.text(48, 108, title, 28, weight='700')
+        self.text(48, 140, subtitle, 17, fill=MUT)
+
+    def text(self, x, y, value, size=17, anchor='start', weight='400', fill=INK):
+        # Reject obvious canvas overflow before rendering. Nodes have a tighter width gate.
+        extent = len(str(value)) * size * .55
+        left = x - (extent if anchor == 'end' else extent / 2 if anchor == 'middle' else 0)
+        assert left >= -2 and left + extent <= self.w + 2, (value, left, extent)
+        assert 0 <= y - size and y + size * .3 < self.h, (value, y)
+        self.parts.append(f'<text x="{x}" y="{y}" font-family="{FONT}" font-size="{size}" '
+                          f'text-anchor="{anchor}" font-weight="{weight}" fill="{fill}">{escape(str(value))}</text>')
+
+    def rect(self, x, y, w, h, fill=GRAY_BG, stroke=BORDER, radius=12, dash=None):
+        extra = f' stroke-dasharray="{dash}"' if dash else ''
+        self.parts.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{radius}" '
+                          f'fill="{fill}" stroke="{stroke}" stroke-width="1.3"{extra}/>')
+
+    def line(self, x1, y1, x2, y2, color=BORDER, width=1.5, dash=None):
+        extra = f' stroke-dasharray="{dash}"' if dash else ''
+        self.parts.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" '
+                          f'stroke="{color}" stroke-width="{width}"{extra}/>')
+
+    def circle(self, x, y, r=5, fill=ORANGE, stroke='none', width=2):
+        self.parts.append(f'<circle cx="{x}" cy="{y}" r="{r}" fill="{fill}" '
+                          f'stroke="{stroke}" stroke-width="{width}"/>')
+
+    def arrow(self, x1, y1, x2, y2):
+        # Explicit polygon heads, not rotated SVG markers (resvg 2.x).
+        angle = math.atan2(y2-y1, x2-x1)
+        ux, uy = math.cos(angle), math.sin(angle)
+        bx, by = x2-12*ux, y2-12*uy
+        self.line(x1, y1, bx, by, '#718096', 2.2)
+        self.parts.append(f'<polygon points="{x2},{y2} {bx-5*uy},{by+5*ux} '
+                          f'{bx+5*uy},{by-5*ux}" fill="#718096"/>')
+
+    def node(self, x, y, w, title, support, accent=False, green=False, h=104):
+        for value, size in [(title, 20), (support, 16)]:
+            assert len(value)*size*.55 <= w-28, (title, value, w)
+        self.rect(x, y, w, h, ORANGE_BG if accent else GREEN_BG if green else GRAY_BG,
+                  ORANGE if accent else BORDER)
+        self.text(x+w/2, y+h/2-5, title, 20, 'middle', '700', ORANGE_INK if accent else INK)
+        self.text(x+w/2, y+h/2+23, support, 16, 'middle', fill=MUT)
+
+    def footer(self, first, second=None):
+        y = self.h - (74 if second else 58)
+        self.line(48, y-23, 1232, y-23)
+        self.text(48, y+4, first, 16, fill=MUT)
+        if second:
+            self.text(48, y+30, second, 16, fill=MUT)
+
+    def save(self, name):
+        (OUT / (name+'.svg')).write_text('\n'.join(self.parts+['</svg>'])+'\n', encoding='utf-8')
+        print('SVG', name)
 
 
-def poly(s, x0, y0, w, h, pts, col, xmax=1.0, ymax=1.0, sw=2.4, dash=None):
-    d = ' '.join(('M' if i == 0 else 'L') + f'{x0+w*(p[0]/xmax):.1f},{y0-h*(p[1]/ymax):.1f}'
-                 for i, p in enumerate(pts))
-    dd = f' stroke-dasharray="{dash}"' if dash else ''
-    s.p.append(f'<path d="{d}" fill="none" stroke="{col}" stroke-width="{sw}"{dd}/>')
+def legend(f, x, y, labels):
+    for i, (label, color, dashed) in enumerate(labels):
+        yy = y+i*29
+        f.line(x, yy-5, x+28, yy-5, color, 3, '6 4' if dashed else None)
+        f.text(x+38, yy, label, 16, fill=MUT)
 
 
-def legend(s, x, y, items, bg=None):
-    if bg:
-        s.rect(x - 8, y - 16, bg[0], bg[1], '#ffffff', '#ffffff', 0, rx=4)
-    for i, (col, lab, dash) in enumerate(items):
-        yy = y + i * 22
-        s.line(x, yy, x + 26, yy, col, 2.6, dash)
-        s.txt(x + 34, yy + 5, lab, 12.5, 'start', '400', INK)
+def chart(f, x, y, w, h, xticks, yticks, xmin=0, xmax=1, ymin=0, ymax=1):
+    """Plot origin is top-left; all series use this same explicit transform."""
+    def xy(a, b):
+        return x+w*(a-xmin)/(xmax-xmin), y+h-h*(b-ymin)/(ymax-ymin)
+    for value, label in yticks:
+        _, yy = xy(xmin, value)
+        f.line(x, yy, x+w, yy, GRID, 1)
+        f.text(x-14, yy+6, label, 16, 'end', fill=MUT)
+    for value, label in xticks:
+        xx, _ = xy(value, ymin)
+        f.text(xx, y+h+28, label, 16, 'middle', fill=MUT)
+    f.line(x, y+h, x+w, y+h, '#94a3b8')
+    return xy
 
 
-# ---------------------------------------------------------------- figure 1
-def fig_architecture():
-    s = S(1240, 640, 'One resident backbone, two interfaces')
-    s.box(40, 96, 210, 96, 'Caller request', ['state (text / JSON)', 'declared answer space L'])
-    s.box(300, 76, 300, 136, 'Strata backbone (one process)',
-          ['prompt read once', 'generation continues as usual', 'IQ3_S GGUF, 48 layers'])
-    s.box(660, 60, 210, 168, 'Multi-layer readout',
-          ['taps: 23 / 29 / 35 / 41', '/ last', 'spans: stem, each option,', 'decision position',
-           'pool: last + span mean'])
-    s.box(910, 76, 290, 136, 'Decision head (13.19 M)',
-          ['shared projection', 'candidate-set encoder', 'one score per option'])
-    s.box(910, 268, 290, 84, 'p(. | s, q) over L', ['distribution, not text', 'calibration is a first-class output'])
-    s.box(560, 268, 280, 84, 'Generation interface', ['tokens, sampling, chat', 'same weights, same slot'])
-    s.rect(40, 404, 1160, 190, '#ffffff', MUT, 1.4, '6 5')
-    s.txt(60, 432, 'Caller-side policy (not part of the head)', 15, 'start', '700', MUT)
-    s.box(70, 452, 250, 108, 'accept', ['threshold / margin /', 'normalised entropy on dev'])
-    s.box(370, 452, 250, 108, 'fall back', ['ask the same backbone', 'to generate an answer'])
-    s.box(670, 452, 250, 108, 'ask a human', ['or refuse, when the', 'operating point is infeasible'])
-    s.box(970, 452, 200, 108, 'log', ['keep failures in the', 'denominator'])
-    s.arrow(250, 144, 300, 144)
-    s.arrow(600, 144, 660, 144)
-    s.arrow(870, 144, 910, 144)
-    s.arrow(1055, 212, 1055, 268)
-    s.arrow(600, 212, 600, 268)
-    s.arrow(1055, 352, 1055, 404)
-    s.arrow(195, 192, 195, 404)
-    s.arrow(195, 404, 195, 452)
-    s.txt(40, 610, 'The dashed box is a policy we ship as a worked example; the head itself only returns a distribution.',
-          13, 'start', '400', MUT)
-    s.save('architecture.svg')
+def series(f, xy, points, color, dashed=False, dots=False):
+    points = list(points)
+    path = ' '.join(('M' if i == 0 else 'L')+f'{xy(a,b)[0]:.2f},{xy(a,b)[1]:.2f}'
+                    for i, (a,b) in enumerate(points))
+    dash = ' stroke-dasharray="7 5"' if dashed else ''
+    f.parts.append(f'<path d="{path}" fill="none" stroke="{color}" stroke-width="3" '
+                   f'stroke-linejoin="round"{dash}/>')
+    if dots:
+        for a,b in points:
+            f.circle(*xy(a,b), r=5, fill=color)
 
 
-# ---------------------------------------------------------------- figure 2
-def fig_readout_layout():
-    s = S(1240, 620, 'What one feature vector is made of')
-    s.box(40, 80, 300, 150, 'Prompt layout', ['question stem', 'option 1 … option K', 'final decision position'])
-    s.box(40, 270, 300, 150, 'Spans (3 kinds)', ['stem', 'each option', 'decision position'])
-    s.box(40, 460, 300, 110, 'Pooling (2 modes)', ['last position', 'span mean'])
-    s.box(420, 80, 300, 300, 'Backbone taps (this head: 5)', ['layer 23', 'layer 29', 'layer 35',
-                                                              'layer 41', 'last layer',
-                                                              'archive also stores layer 15',
-                                                              '', '4 residual streams × 2560'])
-    s.box(800, 120, 380, 220, 'One item = one fixed-size vector',
-          ['6 layers × 2 poolings × 4 streams', 'per span, concatenated', 'stored as FP16',
-           'per-record sha256 in the manifest'])
-    s.box(800, 380, 380, 110, 'Normalisation', ['z-score per (pool, layer, dim)', 'fitted on train split only'])
-    s.arrow(340, 155, 420, 155)
-    s.arrow(340, 345, 420, 300)
-    s.arrow(340, 515, 420, 340)
-    s.arrow(720, 230, 800, 230)
-    s.arrow(990, 340, 990, 380)
-    s.txt(40, 600, 'Changing the layer set, the span set or the pooling changes the meaning of the weights: '
-                   'they are recorded in the archive manifest and checked by the loader.', 13, 'start', '400', MUT)
-    s.save('readout-layout.svg')
+def architecture():
+    f = Figure(1, 'One backbone. Two interfaces.',
+               'A frozen resident model supplies features to a small, separately trained decision head.', 660)
+    xs = [48, 356, 664, 972]
+    for x, title, support, accent in [
+        (xs[0], 'Decision request', 'State + declared options', False),
+        (xs[1], 'Resident backbone', 'One set of frozen weights', False),
+        (xs[2], 'Multi-layer readout', 'Five taps; last + mean', False),
+        (xs[3], '13.19 M head', 'A probability per option', True)]:
+        f.node(x, 224, 260, title, support, accent)
+    for a,b in zip(xs, xs[1:]):
+        f.arrow(a+260, 276, b, 276)
+    f.node(xs[1], 436, 260, 'Generation API', 'Normal text generation')
+    f.arrow(xs[1]+130, 328, xs[1]+130, 436)
+    f.node(xs[3], 436, 260, 'Caller-side policy', 'Accept / generate / review', green=True)
+    f.arrow(xs[3]+130, 328, xs[3]+130, 436)
+    f.text(48, 197, 'DECISION PATH', 15, weight='700', fill=MUT)
+    f.footer('Weights are shared; a decision still requires its own readout forward pass.',
+             'The head returns a distribution. Fallback is an optional caller policy, not part of the head.')
+    f.save('architecture')
 
 
-# ---------------------------------------------------------------- figure 3
-def fig_reliability():
-    d = json.load(open(os.path.join(OUT, '_splits_replay.json')))
-    s = S(1240, 470, 'Reliability: the head is close to calibrated, and a backbone swap makes it worse')
-    x0, y0, w, h = 90, 380, 330, 300
-    axes(s, x0, y0, w, h, 'predicted probability', 'observed accuracy', [0, 0.25, 0.5, 0.75, 1.0], [0, 0.25, 0.5, 0.75, 1.0])
-    s.line(x0, y0, x0 + w, y0 - h, MUT, 1.2, '5 4')
-    for key, col, dash, lab in (('rel_old', A1, None, 'trained build'), ('rel_new', A2, '7 4', 'second build')):
-        pts = []
-        for cnt, cor, mean in d['dev'][key]:
-            if cnt:
-                pts.append((mean, cor / cnt))
-        poly(s, x0, y0, w, h, pts, col, 1.0, 1.0, 2.6, dash)
-    legend(s, x0 + 16, y0 - h + 34,
-           [(A1, 'trained build (ECE 0.0266)', None),
-            (A2, 'second build (ECE 0.0366)', '7 4')], bg=(232, 62))
-    s.txt(x0, 70, 'dev split, 1,996 items, per item', 14, 'start', '700')
-    # right: ECE bars
-    bx0, by0, bw, bh = 620, 380, 560, 300
-    axes(s, bx0, by0, bw, bh, 'split', 'expected calibration error', [], [0, 0.01, 0.02, 0.03, 0.04, 0.05], 4.0, 0.05)
-    splits = ['dev', 'test', 'ood', 'cal']
-    for i, sp in enumerate(splits):
-        for j, (key, col) in enumerate((('ece_old', A1), ('ece_new', A2))):
-            v = d[sp][key]
-            xx = bx0 + (i + 0.16 + j * 0.36) * (bw / 4.0)
-            hh = bh * (v / 0.05)
-            s.rect(xx, by0 - hh, bw / 4.0 * 0.32, hh, col, col, 0, rx=2)
-            s.txt(xx + bw / 4.0 * 0.16, by0 - hh - 8, f'{v:.4f}', 11.5, 'middle', '400', INK)
-        s.txt(bx0 + (i + 0.5) * (bw / 4.0), by0 + 22, sp, 12.5, 'middle', '600', INK)
-    legend(s, bx0 + 18, by0 - bh + 34, [(A1, 'trained build', None), (A2, 'second build', None)], bg=(190, 62))
-    s.txt(bx0, 70, 'ECE by split (aggregate, same head and features)', 14, 'start', '700')
-    s.txt(40, 452, 'Left: reliability diagram computed from per-item predictions of the same frozen head on both builds. '
-                   'Right: ECE from the same replay. Both are held-out splits.', 13, 'start', '400', MUT)
-    s.save('reliability.svg')
+def readout_layout():
+    f = Figure(5, 'From prompt spans to head inputs',
+               'The protocol is fixed; the number of spans depends on the number of candidates K.', 660)
+    f.node(48, 228, 350, 'Prompt spans', 'Stem + K options + decision')
+    f.node(465, 228, 350, 'FP16 archive', '(K+2) x 2 pools x 6 x 10240')
+    f.node(882, 228, 350, 'Selected head inputs', '(K+2) x 2 pools x 5 x 10240', accent=True)
+    f.arrow(398, 280, 465, 280)
+    f.arrow(815, 280, 882, 280)
+    f.node(882, 426, 350, 'Train-fit z-score', 'Same frozen mean and scale', green=True)
+    f.arrow(1057, 332, 1057, 426)
+    f.rect(48, 405, 767, 132, BLUE_BG, 'none')
+    f.text(72, 441, 'HEAD LAYERS', 15, weight='700', fill=MUT)
+    f.text(72, 475, '23 / 29 / 35 / 41 / last', 22, weight='700')
+    f.text(72, 509, 'Archive also retains layer 15. Each tap has 4 streams x 2560.', 17, fill=MUT)
+    f.footer('The final decision position follows the complete assistant suffix, not the last option.',
+             'The feature tensor is variable in K; changing spans, pooling or layers changes its meaning.')
+    f.save('readout-layout')
 
 
-# ---------------------------------------------------------------- figure 4
-def fig_risk_coverage():
-    d = json.load(open(os.path.join(OUT, '_splits_replay.json')))
-    s = S(1160, 470, 'Risk - coverage: what you give up when you only accept confident answers')
-    x0, y0, w, h = 100, 380, 900, 300
-    axes(s, x0, y0, w, h, 'coverage', 'accuracy on the accepted subset',
-         [0, 0.2, 0.4, 0.6, 0.8, 1.0], [0.5, 0.6, 0.7, 0.8, 0.9, 1.0], 1.0, 1.0)
-    for key, col, dash, lab in (('rc_old', A1, None, 'trained build'), ('rc_new', A2, '7 4', 'second build')):
-        poly(s, x0, y0, w, h, [(c, a) for c, a in d['dev'][key]], col, 1.0, 1.0, 2.6, dash)
-    thr = json.load(open(os.path.join(OUT, '_dev_thresholds.json')))
-    items = sorted(((float(k), v) for k, v in thr.items()))
-    for t, (cov, acc) in items:
-        xx = x0 + w * cov
-        s.line(xx, y0, xx, y0 - h, '#9aa4b0', 1.1, '4 4')
-        s.txt(xx, y0 - 12, f'{t:.2f}', 12, 'middle', '600', MUT)
-    s.rect(x0 + 24, y0 - 176, 330, 96, '#ffffff', '#d8dee6', 1, rx=6)
-    s.txt(x0 + 40, y0 - 152, 'operating points chosen on dev:', 12.5, 'start', '700', INK)
-    for k, (t, (cov, acc)) in enumerate(items):
-        s.txt(x0 + 40, y0 - 128 + k * 22, f'conf >= {t:.2f}   coverage {cov*100:4.1f}%   accuracy {acc*100:.1f}%',
-              12, 'start', '400', MUT)
-    legend(s, x0 + 20, y0 - h + 40, [(A1, 'trained build (dev)', None), (A2, 'second build (dev)', '7 4')], bg=(215, 62))
-    s.txt(40, 452, 'Curves: dev split, 1,996 items, head answering directly (no fallback). Dashed lines: the operating '
-                   'points chosen on dev. Thresholds are never tuned on test.', 13, 'start', '400', MUT)
-    s.save('risk-coverage.svg')
+def reliability():
+    f = Figure(2, 'Calibration under a backbone change',
+               'Same frozen head and feature protocol; archived features versus a second-build live readout.', 740)
+    f.text(100, 200, 'DEV RELIABILITY', 16, weight='700', fill=MUT)
+    xy = chart(f, 100, 248, 440, 330,
+               [(i/4, f'{i*25}%') for i in range(5)], [(i/4, f'{i*25}%') for i in range(5)])
+    series(f, xy, [(0,0),(1,1)], '#b7c3cf', True)
+    for key, color, dashed in [('rel_old', BLUE, False), ('rel_new', ORANGE, True)]:
+        series(f, xy, [(mean, correct/n) for n,correct,mean in SPLITS['dev'][key] if n], color, dashed, True)
+    f.text(320, 639, 'Mean confidence (10 equal-width bins)', 16, 'middle', fill=MUT)
+    f.text(100, 229, 'Observed accuracy', 16, fill=MUT)
+    f.rect(620, 182, 612, 464, GRAY_BG, 'none')
+    f.text(650, 221, 'EXPECTED CALIBRATION ERROR', 16, weight='700', fill=MUT)
+    f.text(650, 253, 'Lower is better', 16, fill=MUT)
+    f.text(925, 293, 'Archived', 16, 'end', weight='700', fill=BLUE)
+    f.text(1180, 293, 'Second build', 16, 'end', weight='700', fill=ORANGE_INK)
+    for i, sp in enumerate(['dev','test','ood','cal']):
+        yy = 343+i*69
+        f.text(650, yy, sp.upper(), 17, weight='700')
+        f.text(925, yy, f"{SPLITS[sp]['ece_old']:.4f}", 22, 'end', '700', BLUE)
+        f.text(1180, yy, f"{SPLITS[sp]['ece_new']:.4f}", 22, 'end', '700', ORANGE_INK)
+        if i<3:
+            f.line(650, yy+24, 1200, yy+24)
+    legend(f, 107, 286, [('Archived features', BLUE, False), ('Second-build readout', ORANGE, True)])
+    f.footer('Dev: 1,996 items. Low-confidence bins have few items; these are descriptive calibration estimates.')
+    f.save('reliability')
 
 
-# ---------------------------------------------------------------- figure 5
-def fig_latency():
-    s = S(1160, 470, 'Where the time goes: the head is milliseconds, the prompt is seconds')
-    x0, y0, w, h = 120, 360, 560, 280
-    items = [('head only', 4.8, A1), ('channel p50', 1820.0, A2), ('channel p95', 7100.0, ACC)]
-    lo, hi = math.log10(1.0), math.log10(10000.0)
-    for i, (lab, v, col) in enumerate(items):
-        xx = x0 + i * (w / 3) + 30
-        lw = w / 3 - 70
-        hh = h * (math.log10(v) - lo) / (hi - lo)
-        s.rect(xx, y0 - hh, lw, hh, col, col, 0, rx=3)
-        s.txt(xx + lw / 2, y0 - hh - 10, f'{v:.1f} ms' if v < 100 else f'{v/1000:.2f} s', 13, 'middle', '700', INK)
-        s.txt(xx + lw / 2, y0 + 22, lab, 12.5, 'middle', '600', INK)
-    s.line(x0, y0, x0 + w, y0, INK, 1.4)
-    s.txt(x0, 92, 'per decision, bar height on a log scale (1 ms - 10 s)', 14, 'start', '700')
-    s.rect(740, 110, 380, 250, '#f6f8fa', MUT, 1.2)
-    s.txt(760, 140, 'Channel latency by tier (p50)', 15, 'start', '700')
-    for i, (lab, v) in enumerate([('original', 1.52), ('easy', 1.56), ('hard', 3.04)]):
-        yy = 175 + i * 46
-        s.txt(760, yy + 16, lab, 13, 'start', '400', INK)
-        s.rect(880, yy, int(v / 3.2 * 165), 22, A2, A2, 0, rx=3)
-        s.txt(880 + int(v / 3.2 * 165) + 8, yy + 16, f'{v:.2f} s', 12.5, 'start', '400', INK)
-    s.txt(760, 330, '231 public items, 149,519 prompt tokens,', 12.5, 'start', '400', MUT)
-    s.txt(760, 350, '645 s wall clock, one resident process', 12.5, 'start', '400', MUT)
-    s.txt(40, 440, 'Essentially all of the channel cost is reading the prompt once. A readout request does not reuse the '
-                   'prefix cache by design (~0.1 s more than a plain chat request at equal length).', 13, 'start', '400', MUT)
-    s.save('latency-breakdown.svg')
+def risk_coverage():
+    f = Figure(6, 'Confidence trades coverage for accuracy',
+               'Dev-only operating points; the head answers directly, without generation fallback.', 740)
+    xy = chart(f, 104, 223, 700, 336,
+               [(i/5, f'{i*20}%') for i in range(6)], [(i/10, f'{i*10}%') for i in range(7,11)],
+               ymin=.7, ymax=1.01)
+    for key, color, dashed in [('rc_old', BLUE, False), ('rc_new', ORANGE, True)]:
+        series(f, xy, [(c,a) for c,a in SPLITS['dev'][key] if c>0], color, dashed)
+    f.text(104, 196, 'Accuracy on the accepted subset', 16, fill=MUT)
+    f.text(454, 619, 'Coverage: share of items answered by the head', 16, 'middle', fill=MUT)
+    legend(f, 126, 455, [('Archived features', BLUE, False), ('Second-build readout', ORANGE, True)])
+    f.rect(850, 190, 382, 402, GRAY_BG, 'none')
+    f.text(878, 228, 'EXAMPLE THRESHOLDS', 16, weight='700', fill=MUT)
+    for i, (threshold, values) in enumerate(sorted(THRESHOLDS.items())):
+        coverage, accuracy = values
+        y = 275+i*98
+        f.text(878, y, f'Confidence >= {float(threshold):.2f}', 18, weight='700')
+        f.text(878, y+31, f'{coverage*100:.1f}% coverage', 17, fill=MUT)
+        f.text(878, y+57, f'{accuracy*100:.1f}% accepted accuracy', 17, fill=MUT)
+    f.footer('All curves and thresholds shown here use dev (1,996 items); they are not a held-out deployment guarantee.')
+    f.save('risk-coverage')
 
 
-# ---------------------------------------------------------------- figure 6
-def fig_backbone_swap():
-    s = S(1160, 470, 'The head belongs to one backbone build')
-    x0, y0, w, h = 110, 370, 700, 290
-    axes(s, x0, y0, w, h, 'split', 'accuracy', [], [0.70, 0.75, 0.80, 0.85], 5.0, 0.15)
-    for v in (0.70, 0.75, 0.80, 0.85):
-        s.txt(x0 - 10, y0 - h * ((v - 0.70) / 0.15) + 4, f'{v:.2f}', 12, 'end', '400', MUT)
-    data = [('dev', .7455, .7380), ('test', .7644, .7494), ('ood', .8378, .8343),
-            ('cal', .7742, .7604), ('all 7,718', .7806, .7708)]
-    for i, (lab, a, b) in enumerate(data):
-        for j, (v, col) in enumerate(((a, A1), (b, A2))):
-            xx = x0 + (i + 0.16 + j * 0.36) * (w / 5.0)
-            hh = h * ((v - 0.70) / 0.15)
-            s.rect(xx, y0 - hh, w / 5.0 * 0.32, hh, col, col, 0, rx=2)
-            s.txt(xx + w / 5.0 * 0.16, y0 - hh - 7, f'{v*100:.2f}', 11, 'middle', '400', MUT)
-        s.txt(x0 + (i + 0.5) * (w / 5.0), y0 + 22, lab, 12.5, 'middle', '600', INK)
-    legend(s, x0 + 18, y0 - h + 34, [(A1, 'trained build', None), (A2, 'second build of the same model', None)], bg=(265, 62))
-    s.rect(850, 110, 270, 250, '#f6f8fa', MUT, 1.2)
-    s.txt(870, 140, 'What changed', 15, 'start', '700')
-    for i, ln in enumerate(['head: identical', 'features: identical', 'input tokens: identical',
-                            'backbone weights: different', '', '8.94% of items changed', 'their answer',
-                            'merged -0.98 pt, p ~ 0.0016']):
-        s.txt(870, 172 + i * 23, ln, 12.5, 'start', '400', INK if ln else MUT)
-    s.txt(40, 452, 'Same frozen head, same archived features, same tokens; only the backbone build differs. '
-                   'Per-family effects do not extrapolate across splits.', 13, 'start', '400', MUT)
-    s.save('backbone-swap.svg')
+def latency():
+    f = Figure(4, 'Milliseconds for the head. Seconds for the channel.',
+               'Historical JevBench public-231 run: feature readout, transport, normalisation and head.', 720)
+    f.text(262, 214, 'Latency per decision (log scale)', 17, weight='700', fill=MUT)
+    x0, w = 262, 596
+    def xp(v):
+        return x0+w*math.log10(v)/4
+    for v, label in [(1,'1 ms'),(10,'10 ms'),(100,'100 ms'),(1000,'1 s'),(10000,'10 s')]:
+        x = xp(v)
+        f.line(x, 242, x, 482, GRID)
+        f.text(x, 516, label, 16, 'middle', fill=MUT)
+    for i, (label, value, display) in enumerate([('Head p50',4.8,'4.8 ms'),('Channel p50',1820,'1.82 s'),('Channel p95',7100,'7.10 s')]):
+        y = 264+i*80
+        f.text(230, y+26, label, 18, 'end', weight='700')
+        f.rect(x0, y, xp(value)-x0, 38, ORANGE if i==0 else BLUE, 'none', radius=5)
+        f.text(xp(value)+14, y+26, display, 18, weight='700', fill=ORANGE_INK if i==0 else INK)
+    f.rect(950, 186, 282, 354, GRAY_BG, 'none')
+    f.text(976, 225, 'CHANNEL p50', 16, weight='700', fill=MUT)
+    for i,(tier,value) in enumerate([('Original','1.52 s'),('Easy','1.56 s'),('Hard','3.04 s')]):
+        yy = 280+i*80
+        f.text(976, yy, tier, 17, fill=MUT)
+        f.text(1206, yy+32, value, 26, 'end', '700')
+    f.rect(48, 558, 1184, 54, BLUE_BG, 'none', radius=8)
+    f.text(72, 592, 'E5-2673 v4 | V100-SXM2 16 GB: 3 serving GPUs + GPU3 for the head | No NVLink', 17, fill=MUT)
+    f.footer('231 items; 149,519 prompt tokens. Timings are specific to this hardware and serving implementation.',
+             'Multi-layer readout does not reuse the prefix cache in this implementation.')
+    f.save('latency-breakdown')
 
 
-# ---------------------------------------------------------------- figure 7
-def fig_depth():
-    m = json.load(open(os.path.join(OUT, '_run_metrics.json')))
-    s = S(1160, 470, 'A bigger head did not help: 2 / 4 / 8 blocks')
-    x0, y0, w, h = 120, 360, 620, 280
-    axes(s, x0, y0, w, h, 'head depth (blocks)', 'dev NLL  (lower is better)', [2, 4, 8], [], 8, 0.06)
-    for v in (0.64, 0.66, 0.68, 0.70):
-        yy = y0 - h * ((v - 0.64) / 0.06)
-        s.line(x0, yy, x0 + w, yy, GRID, 1)
-        s.txt(x0 - 10, yy + 4, f'{v:.2f}', 12, 'end', '400', MUT)
-    pts = []
-    for tag, xb in (('baseline-s0', 2), ('depth4-s0', 4), ('depth8-s0', 8)):
-        v = m[tag]['dev_nll']
-        pts.append((xb, v))
-        xx = x0 + w * (xb / 8) - 45
-        hh = h * ((v - 0.64) / 0.06)
-        s.rect(xx, y0 - hh, 90, hh, A1, A1, 0, rx=3)
-        s.txt(xx + 45, y0 - hh - 8, f'{v:.4f}', 12, 'middle', '700', INK)
-    s.txt(x0 + 30, y0 - 150, 'width 1024 (2 blocks): dev NLL 0.6739, test 75.09%', 12, 'start', '400', MUT)
-    s.rect(790, 110, 330, 250, '#f6f8fa', MUT, 1.2)
-    s.txt(810, 140, 'test accuracy (1,999)', 15, 'start', '700')
-    for i, (lab, tag) in enumerate([('2 blocks', 'baseline-s0'), ('4 blocks', 'depth4-s0'), ('8 blocks', 'depth8-s0')]):
-        yy = 175 + i * 40
-        s.txt(810, yy + 15, lab, 13, 'start', '400', INK)
-        s.rect(930, yy, int(m[tag]['test_acc'] * 200), 20, A2, A2, 0, rx=3)
-        s.txt(930 + int(m[tag]['test_acc'] * 200) + 8, yy + 15, f"{m[tag]['test_acc']*100:.2f}%", 12.5, 'start', '400', INK)
-    s.txt(810, 320, 'Differences are inside seed noise;', 12.5, 'start', '400', MUT)
-    s.txt(810, 340, '2 blocks has the best dev NLL.', 12.5, 'start', '400', MUT)
-    s.txt(40, 440, 'Same split, seed, layer set and budget; one variable changed per run. Architecture was never selected '
-                   'on test.', 13, 'start', '400', MUT)
-    s.save('head-depth-ablation.svg')
+def backbone_swap():
+    f = Figure(3, 'Frozen head, different backbone build',
+               'Input tokens, spans and feature protocol are fixed. The extracted feature values are not.', 750)
+    legend(f, 88, 209, [('Archived-feature baseline', BLUE, False), ('Second-build live readout', ORANGE, False)])
+    x, w = 238, 584
+    def xp(v):
+        return x+w*(v-.70)/.15
+    for v in [.70,.75,.80,.85]:
+        f.line(xp(v), 282, xp(v), 578, GRID)
+        f.text(xp(v), 615, f'{v*100:.0f}%', 16, 'middle', fill=MUT)
+    rows = [('dev',.7455,.7380),('test',.7644,.7494),('OOD',.8378,.8343),
+            ('cal',.7742,.7604),('all 7,718',.7806,.7708)]
+    for i,(name,old,new) in enumerate(rows):
+        yy = 302+i*62
+        f.text(88, yy+6, name, 18, weight='700')
+        f.line(xp(new), yy, xp(old), yy, '#c9d3df', 5)
+        f.circle(xp(old), yy, 7, BLUE)
+        f.circle(xp(new), yy, 7, ORANGE)
+        f.text(xp(old)+14, yy-10, f'{old*100:.2f}', 16, fill=BLUE)
+        f.text(xp(new)-14, yy+23, f'{new*100:.2f}', 16, 'end', fill=ORANGE_INK)
+    f.rect(918, 188, 314, 436, ORANGE_BG, 'none')
+    f.text(946, 230, 'ACROSS 7,718 ITEMS', 15, weight='700', fill=ORANGE_INK)
+    f.text(946, 298, '-0.98 pp', 36, weight='700', fill=ORANGE_INK)
+    f.text(946, 330, 'aggregate accuracy change', 17, fill=MUT)
+    f.line(946, 357, 1204, 357, '#eacda6')
+    f.text(946, 412, '8.94%', 36, weight='700', fill=ORANGE_INK)
+    f.text(946, 444, 'items changed answer', 17, fill=MUT)
+    f.text(946, 507, '+253 / -329 correct', 17, weight='700')
+    f.text(946, 540, 'Nominal item-level', 16, fill=MUT)
+    f.text(946, 567, 'p ~ 0.0016', 18, weight='700')
+    f.footer('This is a comparison of two recorded systems, not a weights-only causal ablation.',
+             'Engine, server and config identities also differ; archived and live feature tensors are compared separately.')
+    f.save('backbone-swap')
 
 
-# ---------------------------------------------------------------- figure 8
-def fig_scaling():
-    m = json.load(open(os.path.join(OUT, '_run_metrics.json')))
-    s = S(1160, 470, 'More labelled items kept paying: 2k / 4k / 8k / 16k train')
-    x0, y0, w, h = 120, 360, 700, 280
-    axes(s, x0, y0, w, h, 'train items', 'accuracy', [2000, 4000, 8000, 16000], [], 16000, 0.10)
-    for v in (0.65, 0.70, 0.75):
-        yy = y0 - h * ((v - 0.65) / 0.10)
-        s.line(x0, yy, x0 + w, yy, GRID, 1)
-        s.txt(x0 - 10, yy + 4, f'{v:.2f}', 12, 'end', '400', MUT)
-    for key, col, lab in (('dev_acc', A1, 'dev (1,996)'), ('test_acc', A2, 'test (1,999)')):
-        pts = [(n, m[t][key]) for n, t in ((2000, 'data2k-s0'), (4000, 'data4k-s0'),
-                                           (8000, 'data8k-s0'), (16000, 'baseline-s0'))]
-        dpath = ' '.join(('M' if i == 0 else 'L') + f'{x0+w*(n/16000):.1f},{y0-h*((v-0.65)/0.10):.1f}'
-                         for i, (n, v) in enumerate(pts))
-        s.p.append(f'<path d="{dpath}" fill="none" stroke="{col}" stroke-width="2.6"/>')
-        for n, v in pts:
-            s.p.append(f'<circle cx="{x0+w*(n/16000):.1f}" cy="{y0-h*((v-0.65)/0.10):.1f}" r="4" fill="{col}"/>')
-    legend(s, x0 + 20, y0 - h + 34, [(A1, 'dev (1,996)', None), (A2, 'test (1,999)', None)], bg=(150, 62))
-    s.txt(40, 440, 'Same head, same protocol; only the number of labelled train items changes. dev is used for '
-                   'checkpoint selection, test only for reporting.', 13, 'start', '400', MUT)
-    s.save('data-scaling.svg')
+def depth():
+    f = Figure(7, 'Deeper heads did not improve dev NLL in this run',
+               'Single-seed depth ablation (seed 0): same input layers, width and training-budget policy.', 700)
+    x0,y0,w,h = 128,238,620,300
+    xy = chart(f,x0,y0,w,h,[],[(v,f'{v:.2f}') for v in [.64,.66,.68,.70]], ymin=.64,ymax=.70)
+    f.text(x0, 204, 'Dev NLL (lower is better)', 17, weight='700', fill=MUT)
+    for i,(tag,blocks) in enumerate([('baseline-s0',2),('depth4-s0',4),('depth8-s0',8)]):
+        value = METRICS[tag]['dev_nll']
+        xx = x0+65+i*204
+        yy = xy(0,value)[1]
+        f.rect(xx,yy,100,y0+h-yy,ORANGE if i==0 else BLUE,'none',radius=6)
+        f.text(xx+50,yy-15,f'{value:.4f}',21,'middle','700',ORANGE_INK if i==0 else INK)
+        f.text(xx+50,y0+h+32,f'{blocks} blocks',18,'middle',weight='700')
+    f.rect(844,190,388,394,GRAY_BG,'none')
+    f.text(872,230,'TEST ACCURACY',16,weight='700',fill=MUT)
+    for i,(tag,label) in enumerate([('baseline-s0','2 blocks'),('depth4-s0','4 blocks'),('depth8-s0','8 blocks')]):
+        yy = 294+i*67
+        f.text(872,yy,label,18,weight='700')
+        f.text(1202,yy,f"{METRICS[tag]['test_acc']*100:.2f}%",22,'end','700')
+    f.line(872,460,1202,460)
+    f.text(872,502,'2 blocks: best dev NLL',18,weight='700',fill=ORANGE_INK)
+    f.text(872,539,'No multi-seed depth estimate',16,fill=MUT)
+    f.footer('Architecture is selected by dev NLL, never by the highest test accuracy.',
+             'These three runs do not establish a general depth effect or quantify seed-to-seed noise.')
+    f.save('head-depth-ablation')
+
+
+def scaling():
+    f = Figure(8, 'More labelled data helped this baseline',
+               'Three input layers, 12.67 M parameters, seed 0; this is not the released five-layer head.', 740)
+    xs = [1994,3998,7994,16000]
+    xy = chart(f,116,232,754,326,[(v,label) for v,label in zip(xs,['1,994','3,998','7,994','16,000'])],
+               [(v,f'{v*100:.0f}%') for v in [.65,.70,.75,.80]],xmax=17000,ymin=.65,ymax=.80)
+    f.text(116,200,'Accuracy',17,weight='700',fill=MUT)
+    tags = ['data2k-s0','data4k-s0','data8k-s0','baseline-s0']
+    for key,color in [('dev_acc',BLUE),('test_acc',ORANGE)]:
+        series(f,xy,[(n,METRICS[tag][key]) for n,tag in zip(xs,tags)],color,dots=True)
+    f.text(493,618,'Labelled training items',17,'middle',fill=MUT)
+    f.rect(946,190,286,396,GRAY_BG,'none')
+    legend(f,972,236,[('Dev',BLUE,False),('Test',ORANGE,False)])
+    f.text(972,337,'AT 16,000 ITEMS',15,weight='700',fill=MUT)
+    f.text(972,385,'71.94%',32,weight='700',fill=BLUE)
+    f.text(972,415,'Dev accuracy',17,fill=MUT)
+    f.text(972,479,'75.99%',32,weight='700',fill=ORANGE_INK)
+    f.text(972,509,'Test accuracy',17,fill=MUT)
+    f.footer('Dev selects checkpoints; test is used only for reporting. Normalisation is re-fit per training subset.',
+             'Epoch caps are matched, not optimiser-update counts; early stopping can differ between runs.')
+    f.save('data-scaling')
 
 
 if __name__ == '__main__':
-    fig_architecture(); fig_readout_layout(); fig_reliability(); fig_risk_coverage()
-    fig_latency(); fig_backbone_swap(); fig_depth(); fig_scaling()
+    architecture()
+    reliability()
+    backbone_swap()
+    latency()
+    readout_layout()
+    risk_coverage()
+    depth()
+    scaling()

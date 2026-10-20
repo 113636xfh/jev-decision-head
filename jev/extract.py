@@ -12,12 +12,12 @@ import time
 import urllib.request
 from pathlib import Path
 import numpy as np
-from common import PROMPT_VERSION, SCHEMA, atomic_json, digest, identity, source_hashes, volunteer_for_oom
-from readout import build, layers_of, validate_response
-from fingerprint_model import verify_manifest
+from .common import PROMPT_VERSION, SCHEMA, atomic_json, digest, identity, source_hashes, volunteer_for_oom
+from .readout import build, layers_of, validate_response
+from .fingerprint_model import verify_manifest
 
 def tokenizer():
-    # Reuse existing production dependencies; do not install anything.
+    # Reuse existing local dependencies; do not install anything.
     sys.path.append(STRATA + '/v0.1.41/.venv/lib/python3.12/site-packages')
     sys.path.insert(0, STRATA + '/v0.1.41')
     sys.path.insert(0, STRATA + '/v0.1.41/tools')

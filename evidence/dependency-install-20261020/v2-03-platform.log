@@ -1,0 +1,23 @@
+argv: ["<ENV_ROOT>\\Scripts\\python.exe", "-c", "import json,sys,site,torch,numpy,tokenizers,jinja2; print(json.dumps({'python':sys.version,'executable':sys.executable,'prefix':sys.prefix,'base_prefix':sys.base_prefix,'user_site_enabled':site.ENABLE_USER_SITE,'sys_path':sys.path,'torch':torch.__version__,'torch_file':torch.__file__,'torch_cuda':torch.version.cuda,'numpy':numpy.__version__,'tokenizers':tokenizers.__version__,'jinja2':jinja2.__version__},indent=2)); assert sys.prefix != sys.base_prefix; assert not site.ENABLE_USER_SITE; assert torch.version.cuda is None"]
+{
+  "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "<ENV_ROOT>\\Scripts\\python.exe",
+  "prefix": "<ENV_ROOT>",
+  "base_prefix": "<ENV_ROOT>/base-python",
+  "user_site_enabled": false,
+  "sys_path": [
+    "",
+    "<ENV_ROOT>/base-python\\python312.zip",
+    "<ENV_ROOT>/base-python\\DLLs",
+    "<ENV_ROOT>/base-python\\Lib",
+    "<ENV_ROOT>/base-python",
+    "<ENV_ROOT>",
+    "<ENV_ROOT>\\Lib\\site-packages"
+  ],
+  "torch": "2.6.0+cpu",
+  "torch_file": "<ENV_ROOT>\\Lib\\site-packages\\torch\\__init__.py",
+  "torch_cuda": null,
+  "numpy": "1.26.4",
+  "tokenizers": "0.23.3",
+  "jinja2": "3.1.6"
+}

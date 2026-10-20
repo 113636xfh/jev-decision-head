@@ -24,6 +24,27 @@ reads `[23, 29, 35, 41, -1]`, pools `[span_last, span_mean]`, 4 residual streams
 `compute_backend = gpu_batched_prefill`. **A feature set from another backend is not
 interchangeable with this one.**
 
+### 0a. Build the server we ran on (pinned environment)
+
+One build command, in a new directory (no model is loaded or service started):
+
+```sh
+GGML_DIR=/path/to/pinned-llama.cpp \
+  bash patches/reproduce-build.sh /tmp/strata-repro-NEW
+```
+
+The script clones `Niko1221/Strata`, pins commit `296b59d2f73c8f04a805df29c2fa97655adace78`
+(tag `v0.1.44.1`, tree `063c7282837ecfe9fccad829ff7d7873400f6777`), applies the single
+`0001-strata-v0.1.44.1-jev-readout.patch`, verifies all patched files against the hashes in
+`patches/manifest.json`, and builds the recipe recorded there. Default tools: CUDA 12.9,
+sm70, one build job; overrides and external GGML requirements are documented in
+`patches/README.md`. Clean apply and compilation are verified in
+`patches/evidence/validation-{local,linux}.json`.
+
+A rebuild on your machine will not be byte-identical to the binaries we ran - build paths
+and toolchain leak into the image - and it does not need to be. What the released client
+requires is the readout API the patch adds, checked at startup by `python -m jev.identity`.
+
 ## 1. Held-out splits — trained build
 
 `compute_backend = gpu_batched_prefill`; head + normalisation as above; identity as in the
@@ -39,21 +60,29 @@ interchangeable with this one.**
 Produced by:
 
 ```bash
-python -m jev.train --archive "$JEV_DATA/jev-v4-gpu/cache" \
-        --config jev/experiments.json --run middle5-s1          # -> results/middle5-s1.results.json
-python -m jev.eval_replay --split dev --archive "$JEV_DATA/jev-v3-fast/archive" \
-        --identity identity/runtime-identity.pre-run.json       # harness self-check, must match the row above
+python -m jev.train --shards "$JEV_ARCHIVE_ROOT/jev-v4-gpu/cache" \
+        --out runs/middle5-s1 --layers 23,29,35,41,-1 --seed 1 --epochs 8   # -> results/middle5-s1.results.json
+JEV_ARCHIVE_ROOT=/path/to/archives python -m jev.eval_replay --split dev --limit 20 \
+        --identity identity/runtime-identity.pre-run.json --confirm-window --out rows-smoke
+python -m jev.check_baseline --rows rows-smoke.jsonl --expected-count 20 \
+        --accepted baselines/middle5-s1.dev-predictions.jsonl
 ```
 
-The second command is the harness self-proof: replaying the archived features reproduces
-1488/1996 (dev), 1528/1999 (test), 1668/1991 (OOD), 1341/1732 (cal) — the same counts the
-training run reported. `jev/check_baseline.py` compares per item against
+Historical full archived-feature replay reproduced 1488/1996 (dev), 1528/1999 (test),
+1668/1991 (OOD), 1341/1732 (cal), matching the training run. The current command above
+requests only a 20-item replay/live-comparison smoke, not those full historical counts.
+Private archives are required and are not shipped. `jev/check_baseline.py` compares per item against
 `baselines/middle5-s1.dev-predictions.jsonl`.
 
 ## 2. Held-out splits — second build, same frozen head
 
-Same head, same archived features, same input tokens; only the backbone build differs.
-`compute_backend = gpu_batched_prefill`.
+Same frozen head and input tokens; live readouts are compared against the same archived
+reference features. The live feature values themselves are not the same; the backbone build differs.
+The readout backend is named differently in three artifacts — the training manifest records
+`batched-prefill-one-shot-r2`, the live server answers `batched-prefill` under contract
+`jev-readout-v2`, and older notes write `gpu_batched_prefill`. They describe the same fast path,
+but each name belongs to a specific artifact; do not treat them as interchangeable labels.
+The table below is a **measurement on the abliterated backbone**.
 
 | Split | n | accuracy | Δ vs trained build | McNemar p | ECE |
 |---|---|---|---|---|---|
@@ -66,9 +95,9 @@ Same head, same archived features, same input tokens; only the backbone build di
 Produced by:
 
 ```bash
-python -m jev.identity --endpoint http://127.0.0.1:8100 --out identity/runtime-identity.run-20261018.json
-JEV_DATA=... python jev/run_oodcal.sh          # dev/test/ood/cal replay + summary recomputation
-python -m jev.analyze_flips --rows rows-dev.jsonl ...   # per-item flips, sorted by logit delta
+python -m jev.identity --base http://127.0.0.1:8100 --out identity/runtime-identity.run-20261018.json
+JEV_ARCHIVE_ROOT=/path/to/archives python -m jev.run_all --confirm-window --out-prefix rows
+python -m jev.analyze_flips --rows rows-dev.jsonl --split dev --out-flips flips-dev.jsonl
 ```
 
 Supporting evidence: 8.94% of items changed answer; FP16 vectors byte-identical in only
@@ -87,9 +116,11 @@ as the cause.
 
 ```bash
 python -m jev.eval_benchmark --identity identity/runtime-identity.run-20261018.json \
-        --rendering criteria --out bench-criteria
+        --mode criterion_as_option --tokenizer-dir /path/to/served/tokenizer \
+        --confirm-window --out bench-criteria
 python -m jev.eval_benchmark --identity identity/runtime-identity.run-20261018.json \
-        --rendering labels   --out bench-labels
+        --mode label_as_option --tokenizer-dir /path/to/served/tokenizer \
+        --confirm-window --out bench-labels
 ```
 
 Scoring uses the benchmark's own `scoring.py` (strict Σ = 1 within 1e-3, renormalisation
@@ -101,15 +132,51 @@ Temperature scaling fitted on our `cal` split makes JevBench calibration worse
 The third-party rows in README §2.1 are quoted from their authors' published runs and were not
 rerun here.
 
+## 3a. Release closeout acceptance
+
+| Gate | Actual result |
+|---|---|
+| Patch application, source hashes, compilation | PASS on pinned sources; external GGML/toolchain needed |
+| Genuine isolated CPU dependency install | PASS, Windows CPython 3.12 / torch 2.6.0+cpu profile |
+| Unit tests + offline selfcheck in that venv | PASS (66 tests); one earlier selfcheck run hit an unexplained native crash that later passes did not reproduce |
+| Tokenizer/template | PASS — 20/20 prompts' complete token IDs and all span positions matched pinned serving code |
+| Online interface measurement | PASS — single head call, 20 head distributions, forced decode, both natural cascade routes |
+| Baseline comparison | PASS — 1,996-row self-check; separately derived 20 archived rows match 20/20 |
+| Original smoke row recovery | NOT RECOVERED — derived archived subset is not original live evidence |
+
+The historical tables above describe the systems named in their own headers; they are not
+claims about any particular current deployment.
+
+The vendored tokenizer reads Strata's descriptor/vocab/merges/token-types and matches its Jinja
+whitespace behavior. It does not treat the descriptor as a Hugging Face tokenizer serialization.
+Head inference rounds normalized inputs through FP16, restores FP32, supplies the batch axis,
+and places model/normalization/input on the requested device. CPU head use with remote GPU
+prefill was exercised; this does not validate every CUDA/Python/platform combination.
+
+Full new results: `evidence/final-validation-20261020/results.json`,
+`evidence/live-closeout-20261020/`, and `evidence/dependency-install-20261020/`.
+The natural four-item router test was selected from
+the smoke's confidence extremes to exercise both routes, not to estimate benchmark accuracy.
+
 ## 4. Figures
 
-`docs/fig/make_figs.py` regenerates all eight figures from `docs/fig/_run_metrics.json`,
-`docs/fig/_splits_replay.json` and `docs/fig/_dev_thresholds.json`, which are aggregates of the
-per-item records above (no item text, no ids). Render with:
+`docs/fig/make_figs.py` generates all eight SVGs without running a model or contacting a
+service. Training metrics, reliability bins and coverage curves come from the adjacent
+`_run_metrics.json`, `_splits_replay.json` and `_dev_thresholds.json` aggregates (no item text
+or ids). Latency and backbone-swap summaries retain the published values encoded in the
+generator. These aggregates are plot inputs, not a replacement for per-item source evidence.
 
 ```bash
-python docs/fig/make_figs.py && node render-figs.js
+npm ci --prefix docs/fig               # locked renderer: @resvg/resvg-js 2.6.2
+python docs/fig/make_figs.py
+node docs/fig/render.cjs               # all eight PNGs, 1600 px wide
 ```
+
+The renderer checks PNG dimensions and prints content hashes. Rendering is deterministic on
+the same renderer/font environment; the figures use Arial with Helvetica/sans-serif fallbacks.
+Charts distinguish archived features from second-build live readouts; shared feature protocol
+does not mean identical feature values. Depth results are single-seed, and the scaling curve
+uses the three-input-layer baseline rather than the released five-input-layer head.
 
 ## 5. Known hash changes inside this repository
 

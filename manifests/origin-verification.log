@@ -1,0 +1,10 @@
+checking train
+verified train: 16000
+checking dev
+verified dev: 1996
+checking test
+verified test: 1999
+checking ood
+verified ood: 1991
+checking cal
+verified cal: 1732

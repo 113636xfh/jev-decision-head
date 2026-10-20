@@ -1,0 +1,43 @@
+{
+  "original_archive_sha256": "17f1163bf8a195245357f0252d3e91be80805d177cccc3dc99745b13b050f6d3",
+  "started_utc": "2026-10-20T12:15:05.952819+00:00",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "bootstrap_python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+  "venv": "<ENV_ROOT>",
+  "system_site_packages": false,
+  "scope": "Windows x86-64 CPython 3.12 CPU only; no GPU, server, tokenizer pack, or production requests",
+  "requirements_sha256": {
+    "requirements.txt": "1742c84cd901d494bf9ec2e2a5457c1531510bc2820a9e2ebf6b92962787dd1c",
+    "requirements-cpu.txt": "88ca16df9fc498f39e257b4e67d37029b4e2312f8d01f8b3b3c74b6e1c3cb578"
+  },
+  "steps": [
+    {
+      "name": "01-create-venv",
+      "returncode": 0,
+      "elapsed_s": 11.516,
+      "log": "01-create-venv.log"
+    },
+    {
+      "name": "02-clean-inventory",
+      "returncode": 0,
+      "elapsed_s": 0.922,
+      "log": "02-clean-inventory.log"
+    },
+    {
+      "name": "03-pip-bootstrap",
+      "returncode": 0,
+      "elapsed_s": 41.234,
+      "log": "03-pip-bootstrap.log"
+    },
+    {
+      "name": "04-requirements-install",
+      "returncode": 0,
+      "elapsed_s": 1195.75,
+      "log": "04-requirements-install.log"
+    }
+  ],
+  "quality_gate": "FAIL",
+  "error": "RuntimeError('torch wheel source is not the official CPU index')",
+  "installation_gate": "FAIL",
+  "finished_utc": "2026-10-20T12:35:55.787266+00:00"
+}

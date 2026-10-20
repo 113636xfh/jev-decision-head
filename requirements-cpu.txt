@@ -1,0 +1,6 @@
+# Offline release validation profile: CPython 3.12, Windows x86-64.
+# The +cpu local version forces the official CPU build, not PyPI's CUDA build.
+# Other platforms / Python versions are not certified by this profile's evidence.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.6.0+cpu
+-r requirements.txt

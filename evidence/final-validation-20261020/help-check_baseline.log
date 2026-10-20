@@ -1,0 +1,27 @@
+usage: check_baseline.py [-h] --rows ROWS [--accepted ACCEPTED] [--out OUT]
+                         [--expected-count EXPECTED_COUNT]
+                         [--require-complete]
+
+Compare archived-head decisions against the published accepted baseline,
+offline. Supported row families are accepted predictions
+(gold/pred/probabilities), archived replay rows
+(status/gold/pred_old/n_options), and release head-route predictions
+(options/independent_gold/choice/head_probabilities). They are never guessed
+from a single shared field. Decode-route results are not archived-head
+evidence. Every supplied row must be valid, unique and present in the accepted
+baseline. Full accepted coverage is the default. For intentional smoke
+subsets, --expected-count binds their size; --require-complete still requires
+every accepted uid. This checks recorded decisions, not feature extraction,
+live compatibility, or probability equality.
+
+options:
+  -h, --help            show this help message and exit
+  --rows ROWS           baseline, archived replay, or release head JSONL
+  --accepted ACCEPTED   published baseline (digest checked); custom references
+                        are marked unverified
+  --out OUT
+  --expected-count EXPECTED_COUNT
+                        require exactly this many unique valid rows; permits
+                        an explicit smoke subset
+  --require-complete    require all accepted uids even with --expected-count
+                        (default without it)

@@ -1,0 +1,11 @@
+{
+  "name": "jev-decision-head-figures",
+  "private": true,
+  "description": "Deterministic README figure renderer; no model or browser required",
+  "scripts": {
+    "render": "node render.cjs"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "2.6.2"
+  }
+}

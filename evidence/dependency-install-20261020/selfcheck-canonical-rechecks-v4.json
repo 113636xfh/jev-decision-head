@@ -1,0 +1,22 @@
+{
+  "finished_utc": "2026-10-20T12:39:48.226232+00:00",
+  "trials": [
+    {
+      "number": 1,
+      "returncode": 0,
+      "returncode_hex": "0x0",
+      "error": null,
+      "log": "selfcheck-canonical-recheck-v4-1.log"
+    },
+    {
+      "number": 2,
+      "returncode": 0,
+      "returncode_hex": "0x0",
+      "error": null,
+      "log": "selfcheck-canonical-recheck-v4-2.log"
+    }
+  ],
+  "overall_quality_gate": "FAIL",
+  "reason": "The earlier canonical 0xc0000005 failure remains unexplained; successful reruns do not erase it.",
+  "boundary": "No runtime/selfcheck edits, installation changes, GPU or production calls."
+}

@@ -1,5 +1,8 @@
 __pycache__/
 *.py[cod]
+node_modules/
 # shipped weights are tracked explicitly (see WEIGHTS.md)
 !weights/best.pt
 !weights/norm.npz
+
+.pi/

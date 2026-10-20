@@ -1,0 +1,7 @@
+argv: ["<ENV_ROOT>\\Scripts\\python.exe", "-m", "jev.fingerprint_model", "--help"]
+usage: fingerprint_model.py [-h] --config CONFIG --out OUT
+
+options:
+  -h, --help       show this help message and exit
+  --config CONFIG  Strata config whose artifacts are being identified
+  --out OUT

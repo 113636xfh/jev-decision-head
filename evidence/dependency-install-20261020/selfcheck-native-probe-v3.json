@@ -1,0 +1,17 @@
+{
+  "original_archive_sha256": "1eba399b3199937e8fcd446599eab77452a701e1ad7ac080a91f161b65a2e072",
+  "finished_utc": "2026-10-20T12:38:53.600419+00:00",
+  "argv": [
+    "<ENV_ROOT>\\Scripts\\python.exe",
+    "-X",
+    "faulthandler",
+    "-u",
+    "-m",
+    "jev.selfcheck"
+  ],
+  "returncode": 0,
+  "returncode_hex": "0x0",
+  "error": null,
+  "quality_gate": "PASS",
+  "boundary": "Same environment and code; only unbuffered output/faulthandler added. No runtime or selfcheck edits."
+}

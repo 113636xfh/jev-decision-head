@@ -1,0 +1,172 @@
+{
+  "original_archive_sha256": "5300348a2443428b2000a9f1ad2b129e78c196728ff72db5565fed8b1c63a149",
+  "evidence_kind": "derived-archived-decision-replay",
+  "original_smoke20_rows_recovered": false,
+  "not_original_smoke": "Do not combine these rows with the existing smoke20 summary, identity, latency, or live accuracy claims.",
+  "source_archive_path": "<PROJECT_ROOT>\\work\\jev-abliterated-eval-20261018\\evidence-abliterated-eval-20261018.tar.gz",
+  "source_archive_sha256": "bbb661829ddfb93483f9259022587aa30e550b8e45b88ff87c12c3c1025d5809",
+  "source_member": "rows-dev.jsonl",
+  "source_member_sha256": "7e9b6fc13e66abe29d806688f73acd0ecbe0adda518b617e84d6f5000ec81aea",
+  "source_member_bytes": 839332,
+  "source_rows": 1996,
+  "source_member_copies": [
+    {
+      "name": "rows-dev.jsonl",
+      "offset": 247808,
+      "bytes": 839332,
+      "sha256": "7e9b6fc13e66abe29d806688f73acd0ecbe0adda518b617e84d6f5000ec81aea"
+    },
+    {
+      "name": "rows-dev.jsonl",
+      "offset": 2392576,
+      "bytes": 839332,
+      "sha256": "7e9b6fc13e66abe29d806688f73acd0ecbe0adda518b617e84d6f5000ec81aea"
+    }
+  ],
+  "selection": "First 20 nonblank records, original file order; no filtering or reordering.",
+  "transformation": "Copy only archived decision fields verbatim. No prediction, feature extraction, model load, live request or synthetic values.",
+  "copied_fields": [
+    "uid",
+    "split",
+    "status",
+    "n_options",
+    "gold",
+    "pred_old",
+    "correct_old",
+    "confidence_old"
+  ],
+  "derived_file": "rows-smoke20-derived-archive-v2.jsonl",
+  "derived_sha256": "d5ccd8957755eda3de3752c89f4cade1c911a2d1f2398d691ed73ed8f210ff4e",
+  "derived_rows": 20,
+  "uids": [
+    "community-diversity-v2/20260921/shell_history/checksum_verify/36/2/choice",
+    "browser-control-v1:parent:3dcf965f391b71d8c5745a36:untrusted_page_instructions:operation",
+    "document-family-9b6e7913bd9b867c8c2b:document:13:attributes:span_2:currency",
+    "community-diversity-v2/20260921/contracts/governing_law_venue/24/0/choice",
+    "browser-control-v1:parent:3dcf965f391b71d8c5745a36:ambiguous_observed_target:operation",
+    "wanli-decisions-v1:train:42442",
+    "sponsor-segment-control-v1:family:00025:video:0:s84cc4f0b",
+    "contact-family-838a9cfeabb1182a03a3:document:5:target_present",
+    "community-diversity-v2/20260921/contracts/governing_law_venue/31/2/score",
+    "workflow-controls-v1:security_incidents:42:193:v0:ESCALATE TIER2",
+    "drone-control-v1:parent:1ebf2675aa13e1ae79347994:side_goal_left:maneuver",
+    "wanli-decisions-v1:train:184312",
+    "wanli-decisions-v1:train:289445",
+    "community-diversity-v2/20260921/support/damaged_order/17/1/choice",
+    "sponsor-segment-control-v1:family:00024:video:2:s768644e8",
+    "community-diversity-v2/20260921/contracts/governing_law_venue/52/0/noul",
+    "customer-control-v1:42:871:has_reproducible_steps",
+    "sponsor-segment-control-v1:family:00288:video:1:sc1381587",
+    "sf-d370130c041a42a23ff5a51b",
+    "wanli-decisions-v1:train:109851"
+  ],
+  "archived_correct": 13,
+  "search_scope": [
+    "Main workspace work/jev-abliterated-eval-20261018 direct files and tar members",
+    "Read-only recursive <BUILD_ROOT> search on e5 for rows-smoke20* and smoke20-check*"
+  ],
+  "search_log": "recovery-search-server-v2.log",
+  "other_smoke_archive_members": [
+    {
+      "name": "rows-dev-summary.json",
+      "bytes": 949,
+      "sha256": "2eff5e387db827e79d4df307f14c047e23f3b4c1c30fc5c589122a86e80cd193"
+    },
+    {
+      "name": "smoke/repeat-start.jsonl",
+      "bytes": 7254,
+      "sha256": "a64e675cc54b3900bbcf0ed7a5cadb062b1fc827042183c775a8c3c4b559fbbc"
+    },
+    {
+      "name": "smoke/rows-test.jsonl",
+      "bytes": 863,
+      "sha256": "d2b68cbb17c64863ea3dcdbcf47ca1cf9d4b0a5d9dbad87d045563b77263a753"
+    },
+    {
+      "name": "smoke/rows-dev-summary.json",
+      "bytes": 872,
+      "sha256": "1a1dedbc93821a0cbd7ea24216ec2414ad66f639faf3e38d9c91c925be355742"
+    },
+    {
+      "name": "smoke/jevbench/criterion_as_option/predictions.jsonl",
+      "bytes": 1221,
+      "sha256": "044a3c6ef3ae5302ef3f1e22e031a13991e734af323a2dccd58c5560b7c97852"
+    },
+    {
+      "name": "smoke/jevbench/criterion_as_option/summary.json",
+      "bytes": 1483,
+      "sha256": "70558edfb44fecd544bfb8d56c71fcf32fd903fffd6a1c4ae61caa9cacd0bb11"
+    },
+    {
+      "name": "smoke/jevbench/criterion_as_option/manifest.json",
+      "bytes": 14628,
+      "sha256": "8a4a6ccf4cfa6dc101c7388cc2c7fdc8f9323a3dcc9ada87d5a1adb238dc32ad"
+    },
+    {
+      "name": "smoke/rows-dev.jsonl",
+      "bytes": 887,
+      "sha256": "d96bd58567b902aa19e7a6eeb9c9b0a98cf657d9ef9078234aaa331890e0bc09"
+    },
+    {
+      "name": "smoke/rows-test-summary.json",
+      "bytes": 873,
+      "sha256": "4cc1f56c65f30919e2724c2a4cb1d2746842ba8271fdaae5e94537f5e827ae8f"
+    },
+    {
+      "name": "smoke/repeat-start.json",
+      "bytes": 283,
+      "sha256": "2abda86a6cf29c099b9c1de81805d5bdfc0665313464abc8b2f48920697647e1"
+    },
+    {
+      "name": "smoke2/rows-test.jsonl",
+      "bytes": 860,
+      "sha256": "bf26d2926ec61312057b003daf3d9cb62bcff6e4c1fb2acd5290cd7f8a94da20"
+    },
+    {
+      "name": "smoke2/rows-dev-summary.json",
+      "bytes": 873,
+      "sha256": "599ab7768bd78d9d014b0091187684781a8bd1c7a488a82198e5dc339957dae2"
+    },
+    {
+      "name": "smoke2/jevbench/jevbench/label_as_option/predictions.jsonl",
+      "bytes": 1233,
+      "sha256": "0f406b8baa2a75f76820694b1007fef183d967d74e69852a14546e20ff3f8b00"
+    },
+    {
+      "name": "smoke2/jevbench/jevbench/label_as_option/summary.json",
+      "bytes": 1494,
+      "sha256": "ddec907567f2c980bc9da655c9aec78ae0d339ba436b12d3251b176799a04d2f"
+    },
+    {
+      "name": "smoke2/jevbench/jevbench/label_as_option/manifest.json",
+      "bytes": 14595,
+      "sha256": "39231175ff9bff38e82009143068cfb85c4b6fd67c080e5cc53e0bf83aedf747"
+    },
+    {
+      "name": "smoke2/jevbench/jevbench/criterion_as_option/predictions.jsonl",
+      "bytes": 1226,
+      "sha256": "6c407e0425ddc57890f36e1fd8019c0f02fdb27ac59d30e93731f4eb7dd73ad6"
+    },
+    {
+      "name": "smoke2/jevbench/jevbench/criterion_as_option/summary.json",
+      "bytes": 1474,
+      "sha256": "1a6488bdd357874bf091b6a55c14b3ec5a0183905f0557ba1c3700a21a0d4360"
+    },
+    {
+      "name": "smoke2/jevbench/jevbench/criterion_as_option/manifest.json",
+      "bytes": 14628,
+      "sha256": "8a4a6ccf4cfa6dc101c7388cc2c7fdc8f9323a3dcc9ada87d5a1adb238dc32ad"
+    },
+    {
+      "name": "smoke2/rows-dev.jsonl",
+      "bytes": 893,
+      "sha256": "3f3e9b66c39518e7bb552f53c508f22d2f1b3a5064ea964305e8230090b459a7"
+    },
+    {
+      "name": "smoke2/rows-test-summary.json",
+      "bytes": 875,
+      "sha256": "a026536dd3152be31bf52b9c38c9c7e2dfa1a194e2e9ad3f7d0f56187d519627"
+    }
+  ],
+  "boundary": "Validates stored archived predictions against baseline only; does not recover the missing original live smoke or establish new online compatibility."
+}

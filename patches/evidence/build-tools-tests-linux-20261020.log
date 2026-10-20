@@ -1,0 +1,23 @@
+test_constant_only_change (__main__.Tools.test_constant_only_change) ... ok
+test_cuda_fatbin_only_change (__main__.Tools.test_cuda_fatbin_only_change) ... ok
+test_data_only_change (__main__.Tools.test_data_only_change) ... ok
+test_empty_input (__main__.Tools.test_empty_input) ... ok
+test_error_report (__main__.Tools.test_error_report) ... ok
+test_ggml_extra_or_changed_file_fails_digest (__main__.Tools.test_ggml_extra_or_changed_file_fails_digest) ... ok
+test_identical (__main__.Tools.test_identical) ... ok
+test_instruction_change (__main__.Tools.test_instruction_change) ... ok
+test_missing_input (__main__.Tools.test_missing_input) ... ok
+test_no_text_section (__main__.Tools.test_no_text_section) ... ok
+test_non_elf (__main__.Tools.test_non_elf) ... ok
+test_objdump_not_a_dependency (__main__.Tools.test_objdump_not_a_dependency) ... ok
+test_padding_only_change (__main__.Tools.test_padding_only_change) ... ok
+test_recipe_complete_and_shared (__main__.Tools.test_recipe_complete_and_shared) ... ok
+test_report_never_overwritten (__main__.Tools.test_report_never_overwritten) ... ok
+test_rip_displacement_not_erased (__main__.Tools.test_rip_displacement_not_erased) ... ok
+test_truncated_elf (__main__.Tools.test_truncated_elf) ... ok
+test_verifier_rejects_compare_without_build (__main__.Tools.test_verifier_rejects_compare_without_build) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.844s
+
+OK

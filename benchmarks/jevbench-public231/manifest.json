@@ -1,0 +1,53 @@
+{
+  "by_tier": {
+    "easy": 48,
+    "hard": 111,
+    "original": 72
+  },
+  "contains_gold": true,
+  "families": [
+    "adequacy",
+    "adversarial",
+    "ambiguous",
+    "extraction",
+    "fact",
+    "intent",
+    "judge_hard",
+    "long_policy",
+    "multi_hop",
+    "ordinal",
+    "policy",
+    "probability",
+    "routing",
+    "routing_hard",
+    "temporal_numeric",
+    "tool_selection",
+    "tradeoff",
+    "trap"
+  ],
+  "files": {
+    "tasks.jsonl": {
+      "bytes": 750520,
+      "sha256": "9382abd5870ea051bb1de9162d26a1ca48a1b48ea713b32c706d7347fa8d2523"
+    }
+  },
+  "gold_use": "scoring only; never placed in the prompt and never used for training, calibration or threshold selection",
+  "items": 231,
+  "name": "JevBench-Open public decisions",
+  "notes": "Frozen public snapshot used by the reported 231-item results. Re-derive from the upstream revision if you need the canonical files.",
+  "schema": "jev-public-benchmark-snapshot-v1",
+  "sealed_split": "not included - the upstream sealed split is not part of this snapshot",
+  "splits": [
+    "public"
+  ],
+  "upstream_revision": "7625ecb1b075cfe4d09d34141d353325825eea1d",
+  "upstream_repository": "https://github.com/fstandhartinger/jevbench",
+  "license": "MIT; LICENSE in this directory",
+  "transform": "Concatenate original/easy/hard, add tier, serialize JSONL; no task field removed",
+  "upstream_scorer": {
+    "path": "jev/upstream_scoring.py",
+    "sha256": "6315a838b30936baca4ea33725aabb54ff46b146c14f5213b2fd38549382fcd5",
+    "normalized_lf_sha256": "6aa17d212ea20a3eeb6876149367842e8462c11dcb54d73df062fb406368331e",
+    "changes": "Line endings only; matches cached pinned scorer text"
+  }
+}

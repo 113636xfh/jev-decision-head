@@ -1,0 +1,2373 @@
+{
+  "limits": [
+    "Counts use exact strings/JSON values and hashes, not semantic similarity.",
+    "Missing/null/empty categorical values are excluded from intersections and counted separately.",
+    "Hash commitments permit authorized holders to recompute content checks, not recover withheld bodies.",
+    "These subsets do not prove complete upstream-split or foundation-pretraining disjointness."
+  ],
+  "pairwise_intersections": {
+    "dev__cal": {
+      "component": {
+        "cal_rows_with_shared_value": 0,
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0
+      },
+      "content_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0
+      },
+      "domain": {
+        "cal_rows_with_shared_value": 403,
+        "dev_rows_with_shared_value": 596,
+        "distinct_intersection": 14,
+        "shared_values": [
+          "algorithms",
+          "browser_tools",
+          "code_semantics",
+          "contracts",
+          "evidence_integration",
+          "formal_logic",
+          "games",
+          "ir",
+          "rag",
+          "rubric_judge",
+          "shell_history",
+          "silent-failure-control-v1",
+          "support",
+          "temporal"
+        ]
+      },
+      "family": {
+        "cal_rows_with_shared_value": 1732,
+        "dev_rows_with_shared_value": 1996,
+        "distinct_intersection": 6,
+        "shared_values": [
+          "doom_basic",
+          "evidence",
+          "natural_language_inference",
+          "policy",
+          "routing",
+          "rubric"
+        ]
+      },
+      "group_id": {
+        "cal_rows_with_shared_value": 0,
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0
+      },
+      "id": {
+        "cal_rows_with_shared_value": 0,
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0
+      },
+      "prepared_record_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0
+      },
+      "raw_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0
+      },
+      "scenario_family": {
+        "cal_rows_with_shared_value": 0,
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "shared_values": []
+      },
+      "semantic_context_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0
+      },
+      "source": {
+        "cal_rows_with_shared_value": 1168,
+        "dev_rows_with_shared_value": 1484,
+        "distinct_intersection": 16,
+        "shared_values": [
+          "amount-extraction-control-v1",
+          "browser-control-v1",
+          "context-retention-control-v1",
+          "customer-control-v1",
+          "drone-control-v1",
+          "email-selection-control-v1",
+          "reasoning-control-v1",
+          "silent-failure-control-v1",
+          "snake-v1",
+          "sponsor-segment-control-v1",
+          "tic_tac_toe-v1",
+          "vizdoom-basic-v1",
+          "wanli-decisions-v1",
+          "workflow-controls-v1/agent_trace_observability",
+          "workflow-controls-v1/customer_service",
+          "workflow-controls-v1/security_incidents"
+        ]
+      },
+      "source_instance_id_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0
+      },
+      "state_question_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0
+      },
+      "state_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0
+      },
+      "template_id": {
+        "cal_rows_with_shared_value": 753,
+        "dev_rows_with_shared_value": 874,
+        "distinct_intersection": 29,
+        "shared_values": [
+          "amount-extraction-control-v1/invoice-prefix-id",
+          "context-retention-control-v1/narrative/star",
+          "context-retention-control-v1/register/chain",
+          "customer-control-v1:id:0",
+          "drone-control-v1/id_single_barrier",
+          "email-selection-control-v1/message-fields-id",
+          "reasoning-control-v1:algorithms:id",
+          "reasoning-control-v1:code_semantics:id",
+          "reasoning-control-v1:evidence_integration:id",
+          "reasoning-control-v1:formal_logic:id",
+          "reasoning-control-v1:temporal:id",
+          "silent-failure-control-v1:flat_en:async_job",
+          "silent-failure-control-v1:flat_en:business_rejection",
+          "silent-failure-control-v1:flat_en:empty_search",
+          "silent-failure-control-v1:flat_en:error_count",
+          "silent-failure-control-v1:flat_en:history_current",
+          "silent-failure-control-v1:flat_en:partial_batch",
+          "silent-failure-control-v1:flat_en:quoted_error",
+          "silent-failure-control-v1:flat_en:required_receipt",
+          "silent-failure-control-v1:paragraph_en:html_login",
+          "silent-failure-control-v1:paragraph_en:html_maintenance",
+          "silent-failure-control-v1:record_en:complete_segments",
+          "silent-failure-control-v1:record_en:freshness",
+          "snake-v1-id",
+          "sponsor-segment-control-v1/id",
+          "tic_tac_toe-v1-id",
+          "workflow-controls-v1:agent_trace_observability:id",
+          "workflow-controls-v1:customer_service:id",
+          "workflow-controls-v1:security_incidents:id"
+        ]
+      }
+    },
+    "dev__ood": {
+      "component": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "content_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "domain": {
+        "dev_rows_with_shared_value": 389,
+        "distinct_intersection": 13,
+        "ood_rows_with_shared_value": 256,
+        "shared_values": [
+          "algorithms",
+          "arithmetic",
+          "browser_tools",
+          "code_semantics",
+          "evidence_integration",
+          "formal_logic",
+          "games",
+          "ir",
+          "rag",
+          "shell_history",
+          "silent-failure-control-v1",
+          "support",
+          "temporal"
+        ]
+      },
+      "family": {
+        "dev_rows_with_shared_value": 1996,
+        "distinct_intersection": 6,
+        "ood_rows_with_shared_value": 1991,
+        "shared_values": [
+          "doom_basic",
+          "evidence",
+          "natural_language_inference",
+          "policy",
+          "routing",
+          "rubric"
+        ]
+      },
+      "group_id": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "id": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "prepared_record_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "raw_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "scenario_family": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "shared_values": []
+      },
+      "semantic_context_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "source": {
+        "dev_rows_with_shared_value": 1432,
+        "distinct_intersection": 14,
+        "ood_rows_with_shared_value": 1384,
+        "shared_values": [
+          "amount-extraction-control-v1",
+          "browser-control-v1",
+          "context-retention-control-v1",
+          "customer-control-v1",
+          "drone-control-v1",
+          "email-selection-control-v1",
+          "reasoning-control-v1",
+          "silent-failure-control-v1",
+          "snake-v1",
+          "sponsor-segment-control-v1",
+          "vizdoom-basic-v1",
+          "wanli-decisions-v1",
+          "workflow-controls-v1/agent_trace_observability",
+          "workflow-controls-v1/security_incidents"
+        ]
+      },
+      "source_instance_id_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "state_question_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "state_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "template_id": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "shared_values": []
+      }
+    },
+    "dev__test": {
+      "component": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "content_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "domain": {
+        "dev_rows_with_shared_value": 590,
+        "distinct_intersection": 13,
+        "shared_values": [
+          "algorithms",
+          "browser_tools",
+          "code_semantics",
+          "contracts",
+          "evidence_integration",
+          "games",
+          "ir",
+          "rag",
+          "rubric_judge",
+          "shell_history",
+          "silent-failure-control-v1",
+          "support",
+          "temporal"
+        ],
+        "test_rows_with_shared_value": 353
+      },
+      "family": {
+        "dev_rows_with_shared_value": 1996,
+        "distinct_intersection": 6,
+        "shared_values": [
+          "doom_basic",
+          "evidence",
+          "natural_language_inference",
+          "policy",
+          "routing",
+          "rubric"
+        ],
+        "test_rows_with_shared_value": 1999
+      },
+      "group_id": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "id": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "prepared_record_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "raw_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "scenario_family": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "shared_values": [],
+        "test_rows_with_shared_value": 0
+      },
+      "semantic_context_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "source": {
+        "dev_rows_with_shared_value": 1433,
+        "distinct_intersection": 15,
+        "shared_values": [
+          "amount-extraction-control-v1",
+          "browser-control-v1",
+          "context-retention-control-v1",
+          "customer-control-v1",
+          "drone-control-v1",
+          "email-selection-control-v1",
+          "reasoning-control-v1",
+          "silent-failure-control-v1",
+          "snake-v1",
+          "sponsor-segment-control-v1",
+          "tic_tac_toe-v1",
+          "vizdoom-basic-v1",
+          "wanli-decisions-v1",
+          "workflow-controls-v1/agent_trace_observability",
+          "workflow-controls-v1/customer_service"
+        ],
+        "test_rows_with_shared_value": 1487
+      },
+      "source_instance_id_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "state_question_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "state_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "template_id": {
+        "dev_rows_with_shared_value": 795,
+        "distinct_intersection": 26,
+        "shared_values": [
+          "amount-extraction-control-v1/invoice-prefix-id",
+          "browser-control-v1/id_flat/SELECT",
+          "customer-control-v1:id:0",
+          "drone-control-v1/id_single_barrier",
+          "email-selection-control-v1/message-fields-id",
+          "reasoning-control-v1:algorithms:id",
+          "reasoning-control-v1:code_semantics:id",
+          "reasoning-control-v1:evidence_integration:id",
+          "reasoning-control-v1:temporal:id",
+          "silent-failure-control-v1:envelope_en:async_job",
+          "silent-failure-control-v1:envelope_en:business_rejection",
+          "silent-failure-control-v1:envelope_en:empty_search",
+          "silent-failure-control-v1:envelope_en:error_count",
+          "silent-failure-control-v1:envelope_en:history_current",
+          "silent-failure-control-v1:envelope_en:partial_batch",
+          "silent-failure-control-v1:envelope_en:quoted_error",
+          "silent-failure-control-v1:envelope_en:required_receipt",
+          "silent-failure-control-v1:paragraph_en:html_login",
+          "silent-failure-control-v1:paragraph_en:html_maintenance",
+          "silent-failure-control-v1:record_en:complete_segments",
+          "silent-failure-control-v1:record_en:freshness",
+          "snake-v1-id",
+          "sponsor-segment-control-v1/id",
+          "tic_tac_toe-v1-id",
+          "workflow-controls-v1:agent_trace_observability:id",
+          "workflow-controls-v1:customer_service:id"
+        ],
+        "test_rows_with_shared_value": 976
+      }
+    },
+    "ood__cal": {
+      "component": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "content_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "domain": {
+        "cal_rows_with_shared_value": 339,
+        "distinct_intersection": 12,
+        "ood_rows_with_shared_value": 253,
+        "shared_values": [
+          "algorithms",
+          "browser_tools",
+          "code_semantics",
+          "evidence_integration",
+          "formal_logic",
+          "games",
+          "ir",
+          "rag",
+          "shell_history",
+          "silent-failure-control-v1",
+          "support",
+          "temporal"
+        ]
+      },
+      "family": {
+        "cal_rows_with_shared_value": 1732,
+        "distinct_intersection": 6,
+        "ood_rows_with_shared_value": 1991,
+        "shared_values": [
+          "doom_basic",
+          "evidence",
+          "natural_language_inference",
+          "policy",
+          "routing",
+          "rubric"
+        ]
+      },
+      "group_id": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "id": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "prepared_record_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "raw_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "scenario_family": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "shared_values": []
+      },
+      "semantic_context_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "source": {
+        "cal_rows_with_shared_value": 1104,
+        "distinct_intersection": 14,
+        "ood_rows_with_shared_value": 1384,
+        "shared_values": [
+          "amount-extraction-control-v1",
+          "browser-control-v1",
+          "context-retention-control-v1",
+          "customer-control-v1",
+          "drone-control-v1",
+          "email-selection-control-v1",
+          "reasoning-control-v1",
+          "silent-failure-control-v1",
+          "snake-v1",
+          "sponsor-segment-control-v1",
+          "vizdoom-basic-v1",
+          "wanli-decisions-v1",
+          "workflow-controls-v1/agent_trace_observability",
+          "workflow-controls-v1/security_incidents"
+        ]
+      },
+      "source_instance_id_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "state_question_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "state_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0
+      },
+      "template_id": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "shared_values": []
+      }
+    },
+    "test__cal": {
+      "component": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "content_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "domain": {
+        "cal_rows_with_shared_value": 394,
+        "distinct_intersection": 13,
+        "shared_values": [
+          "algorithms",
+          "browser_tools",
+          "code_semantics",
+          "contracts",
+          "evidence_integration",
+          "games",
+          "ir",
+          "rag",
+          "rubric_judge",
+          "shell_history",
+          "silent-failure-control-v1",
+          "support",
+          "temporal"
+        ],
+        "test_rows_with_shared_value": 353
+      },
+      "family": {
+        "cal_rows_with_shared_value": 1732,
+        "distinct_intersection": 6,
+        "shared_values": [
+          "doom_basic",
+          "evidence",
+          "natural_language_inference",
+          "policy",
+          "routing",
+          "rubric"
+        ],
+        "test_rows_with_shared_value": 1999
+      },
+      "group_id": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "id": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "prepared_record_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "raw_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "scenario_family": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "shared_values": [],
+        "test_rows_with_shared_value": 0
+      },
+      "semantic_context_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "source": {
+        "cal_rows_with_shared_value": 1307,
+        "distinct_intersection": 16,
+        "shared_values": [
+          "amount-extraction-control-v1",
+          "browser-control-v1",
+          "context-retention-control-v1",
+          "customer-control-v1",
+          "drone-control-v1",
+          "email-selection-control-v1",
+          "phone-extraction-control-v1",
+          "reasoning-control-v1",
+          "silent-failure-control-v1",
+          "snake-v1",
+          "sponsor-segment-control-v1",
+          "tic_tac_toe-v1",
+          "vizdoom-basic-v1",
+          "wanli-decisions-v1",
+          "workflow-controls-v1/agent_trace_observability",
+          "workflow-controls-v1/customer_service"
+        ],
+        "test_rows_with_shared_value": 1677
+      },
+      "source_instance_id_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "state_question_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "state_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "template_id": {
+        "cal_rows_with_shared_value": 869,
+        "distinct_intersection": 20,
+        "shared_values": [
+          "amount-extraction-control-v1/invoice-prefix-id",
+          "browser-control-v1/id_flat/TYPE_TEXT",
+          "customer-control-v1:id:0",
+          "customer-control-v1:id:1",
+          "drone-control-v1/id_single_barrier",
+          "email-selection-control-v1/message-fields-id",
+          "phone-extraction-control-v1/card-id",
+          "reasoning-control-v1:algorithms:id",
+          "reasoning-control-v1:code_semantics:id",
+          "reasoning-control-v1:evidence_integration:id",
+          "reasoning-control-v1:temporal:id",
+          "silent-failure-control-v1:paragraph_en:html_login",
+          "silent-failure-control-v1:paragraph_en:html_maintenance",
+          "silent-failure-control-v1:record_en:complete_segments",
+          "silent-failure-control-v1:record_en:freshness",
+          "snake-v1-id",
+          "sponsor-segment-control-v1/id",
+          "tic_tac_toe-v1-id",
+          "workflow-controls-v1:agent_trace_observability:id",
+          "workflow-controls-v1:customer_service:id"
+        ],
+        "test_rows_with_shared_value": 1224
+      }
+    },
+    "test__ood": {
+      "component": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "content_sha256": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "domain": {
+        "distinct_intersection": 11,
+        "ood_rows_with_shared_value": 250,
+        "shared_values": [
+          "algorithms",
+          "browser_tools",
+          "code_semantics",
+          "evidence_integration",
+          "games",
+          "ir",
+          "rag",
+          "shell_history",
+          "silent-failure-control-v1",
+          "support",
+          "temporal"
+        ],
+        "test_rows_with_shared_value": 305
+      },
+      "family": {
+        "distinct_intersection": 6,
+        "ood_rows_with_shared_value": 1991,
+        "shared_values": [
+          "doom_basic",
+          "evidence",
+          "natural_language_inference",
+          "policy",
+          "routing",
+          "rubric"
+        ],
+        "test_rows_with_shared_value": 1999
+      },
+      "group_id": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "id": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "prepared_record_sha256": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "raw_sha256": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "scenario_family": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "shared_values": [],
+        "test_rows_with_shared_value": 0
+      },
+      "semantic_context_sha256": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "source": {
+        "distinct_intersection": 15,
+        "ood_rows_with_shared_value": 1352,
+        "shared_values": [
+          "amount-extraction-control-v1",
+          "browser-control-v1",
+          "citation-control-v1",
+          "context-retention-control-v1",
+          "customer-control-v1",
+          "drone-control-v1",
+          "email-selection-control-v1",
+          "reasoning-control-v1",
+          "silent-failure-control-v1",
+          "snake-v1",
+          "sponsor-segment-control-v1",
+          "vizdoom-basic-v1",
+          "wanli-decisions-v1",
+          "workflow-controls-v1/agent_trace_observability",
+          "workflow-controls-v1/invoice_processing"
+        ],
+        "test_rows_with_shared_value": 1473
+      },
+      "source_instance_id_sha256": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "state_question_sha256": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "state_sha256": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "test_rows_with_shared_value": 0
+      },
+      "template_id": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "shared_values": [],
+        "test_rows_with_shared_value": 0
+      }
+    },
+    "train__cal": {
+      "component": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "content_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "domain": {
+        "cal_rows_with_shared_value": 403,
+        "distinct_intersection": 14,
+        "shared_values": [
+          "algorithms",
+          "browser_tools",
+          "code_semantics",
+          "contracts",
+          "evidence_integration",
+          "formal_logic",
+          "games",
+          "ir",
+          "rag",
+          "rubric_judge",
+          "shell_history",
+          "silent-failure-control-v1",
+          "support",
+          "temporal"
+        ],
+        "train_rows_with_shared_value": 3382
+      },
+      "family": {
+        "cal_rows_with_shared_value": 1732,
+        "distinct_intersection": 6,
+        "shared_values": [
+          "doom_basic",
+          "evidence",
+          "natural_language_inference",
+          "policy",
+          "routing",
+          "rubric"
+        ],
+        "train_rows_with_shared_value": 16000
+      },
+      "group_id": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "id": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "prepared_record_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "raw_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "scenario_family": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "shared_values": [],
+        "train_rows_with_shared_value": 0
+      },
+      "semantic_context_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "source": {
+        "cal_rows_with_shared_value": 1380,
+        "distinct_intersection": 18,
+        "shared_values": [
+          "amount-extraction-control-v1",
+          "browser-control-v1",
+          "context-retention-control-v1",
+          "customer-control-v1",
+          "drone-control-v1",
+          "email-selection-control-v1",
+          "phone-extraction-control-v1",
+          "reasoning-control-v1",
+          "silent-failure-control-v1",
+          "snake-v1",
+          "sponsor-segment-control-v1",
+          "tic_tac_toe-v1",
+          "tile_platformer-v1",
+          "vizdoom-basic-v1",
+          "wanli-decisions-v1",
+          "workflow-controls-v1/agent_trace_observability",
+          "workflow-controls-v1/customer_service",
+          "workflow-controls-v1/security_incidents"
+        ],
+        "train_rows_with_shared_value": 11962
+      },
+      "source_instance_id_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "state_question_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "state_sha256": {
+        "cal_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "template_id": {
+        "cal_rows_with_shared_value": 1015,
+        "distinct_intersection": 33,
+        "shared_values": [
+          "amount-extraction-control-v1/invoice-prefix-id",
+          "browser-control-v1/id_flat/TYPE_TEXT",
+          "context-retention-control-v1/narrative/star",
+          "context-retention-control-v1/register/chain",
+          "customer-control-v1:id:0",
+          "customer-control-v1:id:1",
+          "drone-control-v1/id_single_barrier",
+          "email-selection-control-v1/message-fields-id",
+          "phone-extraction-control-v1/card-id",
+          "reasoning-control-v1:algorithms:id",
+          "reasoning-control-v1:code_semantics:id",
+          "reasoning-control-v1:evidence_integration:id",
+          "reasoning-control-v1:formal_logic:id",
+          "reasoning-control-v1:temporal:id",
+          "silent-failure-control-v1:flat_en:async_job",
+          "silent-failure-control-v1:flat_en:business_rejection",
+          "silent-failure-control-v1:flat_en:empty_search",
+          "silent-failure-control-v1:flat_en:error_count",
+          "silent-failure-control-v1:flat_en:history_current",
+          "silent-failure-control-v1:flat_en:partial_batch",
+          "silent-failure-control-v1:flat_en:quoted_error",
+          "silent-failure-control-v1:flat_en:required_receipt",
+          "silent-failure-control-v1:paragraph_en:html_login",
+          "silent-failure-control-v1:paragraph_en:html_maintenance",
+          "silent-failure-control-v1:record_en:complete_segments",
+          "silent-failure-control-v1:record_en:freshness",
+          "snake-v1-id",
+          "sponsor-segment-control-v1/id",
+          "tic_tac_toe-v1-id",
+          "tile_platformer-v1-id",
+          "workflow-controls-v1:agent_trace_observability:id",
+          "workflow-controls-v1:customer_service:id",
+          "workflow-controls-v1:security_incidents:id"
+        ],
+        "train_rows_with_shared_value": 2290
+      }
+    },
+    "train__dev": {
+      "component": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "content_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "domain": {
+        "dev_rows_with_shared_value": 605,
+        "distinct_intersection": 15,
+        "shared_values": [
+          "algorithms",
+          "arithmetic",
+          "browser_tools",
+          "code_semantics",
+          "contracts",
+          "evidence_integration",
+          "formal_logic",
+          "games",
+          "ir",
+          "rag",
+          "rubric_judge",
+          "shell_history",
+          "silent-failure-control-v1",
+          "support",
+          "temporal"
+        ],
+        "train_rows_with_shared_value": 3411
+      },
+      "family": {
+        "dev_rows_with_shared_value": 1996,
+        "distinct_intersection": 6,
+        "shared_values": [
+          "doom_basic",
+          "evidence",
+          "natural_language_inference",
+          "policy",
+          "routing",
+          "rubric"
+        ],
+        "train_rows_with_shared_value": 16000
+      },
+      "group_id": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "id": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "prepared_record_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "raw_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "scenario_family": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "shared_values": [],
+        "train_rows_with_shared_value": 0
+      },
+      "semantic_context_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "source": {
+        "dev_rows_with_shared_value": 1484,
+        "distinct_intersection": 16,
+        "shared_values": [
+          "amount-extraction-control-v1",
+          "browser-control-v1",
+          "context-retention-control-v1",
+          "customer-control-v1",
+          "drone-control-v1",
+          "email-selection-control-v1",
+          "reasoning-control-v1",
+          "silent-failure-control-v1",
+          "snake-v1",
+          "sponsor-segment-control-v1",
+          "tic_tac_toe-v1",
+          "vizdoom-basic-v1",
+          "wanli-decisions-v1",
+          "workflow-controls-v1/agent_trace_observability",
+          "workflow-controls-v1/customer_service",
+          "workflow-controls-v1/security_incidents"
+        ],
+        "train_rows_with_shared_value": 11695
+      },
+      "source_instance_id_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "state_question_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "state_sha256": {
+        "dev_rows_with_shared_value": 0,
+        "distinct_intersection": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "template_id": {
+        "dev_rows_with_shared_value": 953,
+        "distinct_intersection": 40,
+        "shared_values": [
+          "amount-extraction-control-v1/invoice-prefix-id",
+          "browser-control-v1/id_flat/CLICK",
+          "browser-control-v1/id_flat/SELECT",
+          "context-retention-control-v1/narrative/star",
+          "context-retention-control-v1/register/chain",
+          "customer-control-v1:id:0",
+          "drone-control-v1/id_single_barrier",
+          "email-selection-control-v1/message-fields-id",
+          "reasoning-control-v1:algorithms:id",
+          "reasoning-control-v1:arithmetic:id",
+          "reasoning-control-v1:code_semantics:id",
+          "reasoning-control-v1:evidence_integration:id",
+          "reasoning-control-v1:formal_logic:id",
+          "reasoning-control-v1:temporal:id",
+          "silent-failure-control-v1:envelope_en:async_job",
+          "silent-failure-control-v1:envelope_en:business_rejection",
+          "silent-failure-control-v1:envelope_en:empty_search",
+          "silent-failure-control-v1:envelope_en:error_count",
+          "silent-failure-control-v1:envelope_en:history_current",
+          "silent-failure-control-v1:envelope_en:partial_batch",
+          "silent-failure-control-v1:envelope_en:quoted_error",
+          "silent-failure-control-v1:envelope_en:required_receipt",
+          "silent-failure-control-v1:flat_en:async_job",
+          "silent-failure-control-v1:flat_en:business_rejection",
+          "silent-failure-control-v1:flat_en:empty_search",
+          "silent-failure-control-v1:flat_en:error_count",
+          "silent-failure-control-v1:flat_en:history_current",
+          "silent-failure-control-v1:flat_en:partial_batch",
+          "silent-failure-control-v1:flat_en:quoted_error",
+          "silent-failure-control-v1:flat_en:required_receipt",
+          "silent-failure-control-v1:paragraph_en:html_login",
+          "silent-failure-control-v1:paragraph_en:html_maintenance",
+          "silent-failure-control-v1:record_en:complete_segments",
+          "silent-failure-control-v1:record_en:freshness",
+          "snake-v1-id",
+          "sponsor-segment-control-v1/id",
+          "tic_tac_toe-v1-id",
+          "workflow-controls-v1:agent_trace_observability:id",
+          "workflow-controls-v1:customer_service:id",
+          "workflow-controls-v1:security_incidents:id"
+        ],
+        "train_rows_with_shared_value": 2121
+      }
+    },
+    "train__ood": {
+      "component": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "content_sha256": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "domain": {
+        "distinct_intersection": 13,
+        "ood_rows_with_shared_value": 256,
+        "shared_values": [
+          "algorithms",
+          "arithmetic",
+          "browser_tools",
+          "code_semantics",
+          "evidence_integration",
+          "formal_logic",
+          "games",
+          "ir",
+          "rag",
+          "shell_history",
+          "silent-failure-control-v1",
+          "support",
+          "temporal"
+        ],
+        "train_rows_with_shared_value": 2643
+      },
+      "family": {
+        "distinct_intersection": 6,
+        "ood_rows_with_shared_value": 1991,
+        "shared_values": [
+          "doom_basic",
+          "evidence",
+          "natural_language_inference",
+          "policy",
+          "routing",
+          "rubric"
+        ],
+        "train_rows_with_shared_value": 16000
+      },
+      "group_id": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "id": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "prepared_record_sha256": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "raw_sha256": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "scenario_family": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "shared_values": [],
+        "train_rows_with_shared_value": 0
+      },
+      "semantic_context_sha256": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "source": {
+        "distinct_intersection": 19,
+        "ood_rows_with_shared_value": 1855,
+        "shared_values": [
+          "amount-extraction-control-v1",
+          "browser-control-v1",
+          "citation-control-v1",
+          "context-retention-control-v1",
+          "customer-control-v1",
+          "drone-control-v1",
+          "email-selection-control-v1",
+          "entity-alignment-control-v1",
+          "ir-control-v1",
+          "mailroom-control-v1",
+          "reasoning-control-v1",
+          "silent-failure-control-v1",
+          "snake-v1",
+          "sponsor-segment-control-v1",
+          "vizdoom-basic-v1",
+          "wanli-decisions-v1",
+          "workflow-controls-v1/agent_trace_observability",
+          "workflow-controls-v1/invoice_processing",
+          "workflow-controls-v1/security_incidents"
+        ],
+        "train_rows_with_shared_value": 12055
+      },
+      "source_instance_id_sha256": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "state_question_sha256": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "state_sha256": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "template_id": {
+        "distinct_intersection": 0,
+        "ood_rows_with_shared_value": 0,
+        "shared_values": [],
+        "train_rows_with_shared_value": 0
+      }
+    },
+    "train__test": {
+      "component": {
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "content_sha256": {
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "domain": {
+        "distinct_intersection": 14,
+        "shared_values": [
+          "algorithms",
+          "browser_tools",
+          "code_semantics",
+          "contracts",
+          "evidence_integration",
+          "games",
+          "ir",
+          "rag",
+          "relations",
+          "rubric_judge",
+          "shell_history",
+          "silent-failure-control-v1",
+          "support",
+          "temporal"
+        ],
+        "test_rows_with_shared_value": 356,
+        "train_rows_with_shared_value": 3376
+      },
+      "family": {
+        "distinct_intersection": 6,
+        "shared_values": [
+          "doom_basic",
+          "evidence",
+          "natural_language_inference",
+          "policy",
+          "routing",
+          "rubric"
+        ],
+        "test_rows_with_shared_value": 1999,
+        "train_rows_with_shared_value": 16000
+      },
+      "group_id": {
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "id": {
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "prepared_record_sha256": {
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "raw_sha256": {
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "scenario_family": {
+        "distinct_intersection": 0,
+        "shared_values": [],
+        "test_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "semantic_context_sha256": {
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "source": {
+        "distinct_intersection": 18,
+        "shared_values": [
+          "amount-extraction-control-v1",
+          "browser-control-v1",
+          "citation-control-v1",
+          "context-retention-control-v1",
+          "customer-control-v1",
+          "drone-control-v1",
+          "email-selection-control-v1",
+          "phone-extraction-control-v1",
+          "reasoning-control-v1",
+          "silent-failure-control-v1",
+          "snake-v1",
+          "sponsor-segment-control-v1",
+          "tic_tac_toe-v1",
+          "vizdoom-basic-v1",
+          "wanli-decisions-v1",
+          "workflow-controls-v1/agent_trace_observability",
+          "workflow-controls-v1/customer_service",
+          "workflow-controls-v1/invoice_processing"
+        ],
+        "test_rows_with_shared_value": 1727,
+        "train_rows_with_shared_value": 11957
+      },
+      "source_instance_id_sha256": {
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "state_question_sha256": {
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "state_sha256": {
+        "distinct_intersection": 0,
+        "test_rows_with_shared_value": 0,
+        "train_rows_with_shared_value": 0
+      },
+      "template_id": {
+        "distinct_intersection": 33,
+        "shared_values": [
+          "amount-extraction-control-v1/invoice-prefix-id",
+          "browser-control-v1/id_flat/SELECT",
+          "browser-control-v1/id_flat/TYPE_TEXT",
+          "citation-control-v1/policy-id",
+          "context-retention-control-v1/register/star",
+          "customer-control-v1:id:0",
+          "customer-control-v1:id:1",
+          "drone-control-v1/id_single_barrier",
+          "email-selection-control-v1/message-fields-id",
+          "phone-extraction-control-v1/card-id",
+          "reasoning-control-v1:algorithms:id",
+          "reasoning-control-v1:code_semantics:id",
+          "reasoning-control-v1:evidence_integration:id",
+          "reasoning-control-v1:relations:id",
+          "reasoning-control-v1:temporal:id",
+          "silent-failure-control-v1:envelope_en:async_job",
+          "silent-failure-control-v1:envelope_en:business_rejection",
+          "silent-failure-control-v1:envelope_en:empty_search",
+          "silent-failure-control-v1:envelope_en:error_count",
+          "silent-failure-control-v1:envelope_en:history_current",
+          "silent-failure-control-v1:envelope_en:partial_batch",
+          "silent-failure-control-v1:envelope_en:quoted_error",
+          "silent-failure-control-v1:envelope_en:required_receipt",
+          "silent-failure-control-v1:paragraph_en:html_login",
+          "silent-failure-control-v1:paragraph_en:html_maintenance",
+          "silent-failure-control-v1:record_en:complete_segments",
+          "silent-failure-control-v1:record_en:freshness",
+          "snake-v1-id",
+          "sponsor-segment-control-v1/id",
+          "tic_tac_toe-v1-id",
+          "workflow-controls-v1:agent_trace_observability:id",
+          "workflow-controls-v1:customer_service:id",
+          "workflow-controls-v1:invoice_processing:id"
+        ],
+        "test_rows_with_shared_value": 1385,
+        "train_rows_with_shared_value": 2324
+      }
+    }
+  },
+  "schema": "jev-release-members-audit-v1",
+  "splits": {
+    "cal": {
+      "counts": {
+        "domain": {
+          "\"algorithms\"": 3,
+          "\"browser_tools\"": 24,
+          "\"code_semantics\"": 6,
+          "\"contracts\"": 40,
+          "\"evidence_integration\"": 6,
+          "\"formal_logic\"": 9,
+          "\"games\"": 80,
+          "\"ir\"": 40,
+          "\"rag\"": 64,
+          "\"rubric_judge\"": 24,
+          "\"shell_history\"": 48,
+          "\"silent-failure-control-v1\"": 24,
+          "\"support\"": 32,
+          "\"temporal\"": 3,
+          "<MISSING>": 1329
+        },
+        "family": {
+          "\"doom_basic\"": 27,
+          "\"evidence\"": 612,
+          "\"natural_language_inference\"": 338,
+          "\"policy\"": 540,
+          "\"routing\"": 86,
+          "\"rubric\"": 129
+        },
+        "provenance_split_policy": {
+          "\"all_counterfactuals_and_id_permutations_parent_grouped; dedicated_nested_vocabulary_ood\"": 26,
+          "\"all_document_and_role_counterfactuals_in_original_family; hash_id_splits; reserved_ledger_layout_and_role_wording_ood\"": 248,
+          "\"all_document_contact_counterfactuals_in_family; hash_id_splits; reserved_contact_card_layout_and_role_wording_ood\"": 27,
+          "\"authored_policy_family_disjoint_6_train_1_calibration_1_validation_1_test_1_ood\"": 352,
+          "\"complete_document_family_same_split; hash_id_splits; message_layout_and_role_labels_reserved_ood\"": 190,
+          "\"episode_grouped_v1_with_separate_ood_seeds_and_control_regime\"": 27,
+          "\"full_visible_terrain_layout_grouped_hash_v1; no_ood\"": 22,
+          "\"identical_board_grouped; tic_tac_toe_rotations_and_reflections_grouped; snake_ood_grid_size\"": 48,
+          "\"parent_geometry_and_all_counterfactuals_grouped; dedicated_scaled_multi_barrier_ood\"": 103,
+          "\"reserve_official_test_components_then_85_5_5_5_seed_components_v1\"": 338,
+          "\"reserved_family_ood_then_group_sha256_v1\"": 27,
+          "\"reserved_ood_dialogue_families_then_group_sha256_v1\"": 30,
+          "\"reserved_ood_ranges_and_wording_then_parent_group_sha256_v1\"": 141,
+          "\"whole_provider_contract_family_and_counterfactual_pairs; hash_id_splits; reserved_zh_schema_layout_and_wording_ood\"": 24,
+          "\"whole_task_graph_with_goal_and_recoverability_counterfactuals; reserved_diamond_structure_ood\"": 48,
+          "\"whole_video_family_with_all_payment_counterfactuals; independent_wording_ood\"": 81
+        },
+        "source": {
+          "\"amount-extraction-control-v1\"": 248,
+          "\"browser-control-v1\"": 26,
+          "\"community-diversity-v2/browser_tools/argument_binding\"": 24,
+          "\"community-diversity-v2/contracts/termination_cure\"": 40,
+          "\"community-diversity-v2/games/racing_braking\"": 80,
+          "\"community-diversity-v2/ir/incident_runbook\"": 40,
+          "\"community-diversity-v2/rag/entity_alias_chain\"": 64,
+          "\"community-diversity-v2/rubric_judge/instruction_priority\"": 24,
+          "\"community-diversity-v2/shell_history/port_inspection\"": 48,
+          "\"community-diversity-v2/support/partial_return\"": 32,
+          "\"context-retention-control-v1\"": 48,
+          "\"customer-control-v1\"": 30,
+          "\"drone-control-v1\"": 103,
+          "\"email-selection-control-v1\"": 27,
+          "\"phone-extraction-control-v1\"": 190,
+          "\"reasoning-control-v1\"": 27,
+          "\"silent-failure-control-v1\"": 24,
+          "\"snake-v1\"": 32,
+          "\"sponsor-segment-control-v1\"": 81,
+          "\"tic_tac_toe-v1\"": 16,
+          "\"tile_platformer-v1\"": 22,
+          "\"vizdoom-basic-v1\"": 27,
+          "\"wanli-decisions-v1\"": 338,
+          "\"workflow-controls-v1/agent_trace_observability\"": 42,
+          "\"workflow-controls-v1/customer_service\"": 48,
+          "\"workflow-controls-v1/security_incidents\"": 51
+        },
+        "source_split": {
+          "\"calibration\"": 1732
+        },
+        "split": {
+          "\"calibration\"": 1732
+        }
+      },
+      "hard_gold": {
+        "not_first_original_argmax": 7,
+        "outside_original_target_maxima": 0
+      },
+      "members_file_bytes": 2840204,
+      "members_file_sha256": "85a0124b31db5c6b253b226ff4fb46df4063f44374d5102f6286db0f1dbc29ad",
+      "missing_or_null": {
+        "component": 0,
+        "content_sha256": 0,
+        "domain": 1329,
+        "family": 0,
+        "group_id": 0,
+        "id": 0,
+        "prepared_record_sha256": 0,
+        "raw_sha256": 0,
+        "scenario_family": 1380,
+        "semantic_context_sha256": 1380,
+        "source": 0,
+        "source_instance_id_sha256": 1380,
+        "state_question_sha256": 0,
+        "state_sha256": 0,
+        "template_id": 365
+      },
+      "rows": 1732,
+      "shards": [
+        {
+          "bytes": 912646,
+          "path": "splits/cal/members-00000.jsonl",
+          "rows": 512,
+          "sha256": "485490031dd5ecd19bb1d74b3747262332d0c897fd0b0ba45d2052222f1fd2ce"
+        },
+        {
+          "bytes": 784941,
+          "path": "splits/cal/members-00001.jsonl",
+          "rows": 512,
+          "sha256": "2dcdfcce547b5636a91d66688a5450c9328bf9290192f84f05a684412929f39c"
+        },
+        {
+          "bytes": 833655,
+          "path": "splits/cal/members-00002.jsonl",
+          "rows": 512,
+          "sha256": "cd58d251240f5b86a54659c354da07169e92596b764f1b18a7ff1ad3f80c83d4"
+        },
+        {
+          "bytes": 308962,
+          "path": "splits/cal/members-00003.jsonl",
+          "rows": 196,
+          "sha256": "8d8e7e567c98b94b17c012e21ec8ff5c2b406d8a2c08a2692ca4e24b8628178f"
+        }
+      ],
+      "unique_nonempty": {
+        "component": 265,
+        "content_sha256": 1716,
+        "domain": 14,
+        "family": 6,
+        "group_id": 265,
+        "id": 1732,
+        "prepared_record_sha256": 1732,
+        "raw_sha256": 1732,
+        "scenario_family": 8,
+        "semantic_context_sha256": 176,
+        "source": 26,
+        "source_instance_id_sha256": 44,
+        "state_question_sha256": 1716,
+        "state_sha256": 940,
+        "template_id": 41
+      }
+    },
+    "dev": {
+      "counts": {
+        "domain": {
+          "\"algorithms\"": 15,
+          "\"arithmetic\"": 9,
+          "\"browser_tools\"": 48,
+          "\"code_semantics\"": 3,
+          "\"contracts\"": 120,
+          "\"evidence_integration\"": 6,
+          "\"formal_logic\"": 6,
+          "\"games\"": 48,
+          "\"ir\"": 48,
+          "\"rag\"": 24,
+          "\"rubric_judge\"": 96,
+          "\"shell_history\"": 56,
+          "\"silent-failure-control-v1\"": 48,
+          "\"support\"": 72,
+          "\"temporal\"": 6,
+          "<MISSING>": 1391
+        },
+        "family": {
+          "\"doom_basic\"": 36,
+          "\"evidence\"": 441,
+          "\"natural_language_inference\"": 495,
+          "\"policy\"": 705,
+          "\"routing\"": 121,
+          "\"rubric\"": 198
+        },
+        "provenance_split_policy": {
+          "\"all_counterfactuals_and_id_permutations_parent_grouped; dedicated_nested_vocabulary_ood\"": 54,
+          "\"all_document_and_role_counterfactuals_in_original_family; hash_id_splits; reserved_ledger_layout_and_role_wording_ood\"": 248,
+          "\"all_document_contact_counterfactuals_in_family; hash_id_splits; reserved_contact_card_layout_and_role_wording_ood\"": 54,
+          "\"authored_policy_family_disjoint_6_train_1_calibration_1_validation_1_test_1_ood\"": 512,
+          "\"episode_grouped_v1_with_separate_ood_seeds_and_control_regime\"": 36,
+          "\"identical_board_grouped; tic_tac_toe_rotations_and_reflections_grouped; snake_ood_grid_size\"": 96,
+          "\"parent_geometry_and_all_counterfactuals_grouped; dedicated_scaled_multi_barrier_ood\"": 150,
+          "\"reserve_official_test_components_then_85_5_5_5_seed_components_v1\"": 495,
+          "\"reserved_family_ood_then_group_sha256_v1\"": 45,
+          "\"reserved_ood_dialogue_families_then_group_sha256_v1\"": 12,
+          "\"reserved_ood_ranges_and_wording_then_parent_group_sha256_v1\"": 117,
+          "\"whole_provider_contract_family_and_counterfactual_pairs; hash_id_splits; reserved_zh_schema_layout_and_wording_ood\"": 48,
+          "\"whole_task_graph_with_goal_and_recoverability_counterfactuals; reserved_diamond_structure_ood\"": 48,
+          "\"whole_video_family_with_all_payment_counterfactuals; independent_wording_ood\"": 81
+        },
+        "source": {
+          "\"amount-extraction-control-v1\"": 248,
+          "\"browser-control-v1\"": 54,
+          "\"community-diversity-v2/browser_tools/idempotent_retry\"": 48,
+          "\"community-diversity-v2/contracts/governing_law_venue\"": 120,
+          "\"community-diversity-v2/games/racing_overtake\"": 48,
+          "\"community-diversity-v2/ir/access_schedule\"": 48,
+          "\"community-diversity-v2/rag/policy_exception\"": 24,
+          "\"community-diversity-v2/rubric_judge/trace_consistency\"": 96,
+          "\"community-diversity-v2/shell_history/checksum_verify\"": 56,
+          "\"community-diversity-v2/support/damaged_order\"": 72,
+          "\"context-retention-control-v1\"": 48,
+          "\"customer-control-v1\"": 12,
+          "\"drone-control-v1\"": 150,
+          "\"email-selection-control-v1\"": 54,
+          "\"reasoning-control-v1\"": 45,
+          "\"silent-failure-control-v1\"": 48,
+          "\"snake-v1\"": 68,
+          "\"sponsor-segment-control-v1\"": 81,
+          "\"tic_tac_toe-v1\"": 28,
+          "\"vizdoom-basic-v1\"": 36,
+          "\"wanli-decisions-v1\"": 495,
+          "\"workflow-controls-v1/agent_trace_observability\"": 42,
+          "\"workflow-controls-v1/customer_service\"": 24,
+          "\"workflow-controls-v1/security_incidents\"": 51
+        },
+        "source_split": {
+          "\"validation\"": 1996
+        },
+        "split": {
+          "\"dev\"": 1996
+        }
+      },
+      "hard_gold": {
+        "not_first_original_argmax": 8,
+        "outside_original_target_maxima": 0
+      },
+      "members_file_bytes": 3282196,
+      "members_file_sha256": "fc87de4381456b378665fc0ef2f0d1f325b86308c4cead287b689bbf30107048",
+      "missing_or_null": {
+        "component": 0,
+        "content_sha256": 0,
+        "domain": 1391,
+        "family": 0,
+        "group_id": 0,
+        "id": 0,
+        "prepared_record_sha256": 0,
+        "raw_sha256": 0,
+        "scenario_family": 1484,
+        "semantic_context_sha256": 1484,
+        "source": 0,
+        "source_instance_id_sha256": 1484,
+        "state_question_sha256": 0,
+        "state_sha256": 0,
+        "template_id": 531
+      },
+      "rows": 1996,
+      "shards": [
+        {
+          "bytes": 981008,
+          "path": "splits/dev/members-00000.jsonl",
+          "rows": 512,
+          "sha256": "384dc56ab2677f6c4a518bfeb3f82b6dfa5e6d2db5ffeb8322176b4073231fa9"
+        },
+        {
+          "bytes": 763521,
+          "path": "splits/dev/members-00001.jsonl",
+          "rows": 512,
+          "sha256": "5529d46ba2a3d5d7306ee2838f19b7e3e3bae05c49037307d85e56d5b9b1ea1d"
+        },
+        {
+          "bytes": 798354,
+          "path": "splits/dev/members-00002.jsonl",
+          "rows": 512,
+          "sha256": "43c6ece15f88a1113d8b949fcb187034ff081a9a00efc4da538c5435e0a8d22b"
+        },
+        {
+          "bytes": 739313,
+          "path": "splits/dev/members-00003.jsonl",
+          "rows": 460,
+          "sha256": "33a8fdd03615c9a790b533d40f764c10b7b328782231861c3fcfe6f217636989"
+        }
+      ],
+      "unique_nonempty": {
+        "component": 393,
+        "content_sha256": 1988,
+        "domain": 15,
+        "family": 6,
+        "group_id": 393,
+        "id": 1996,
+        "prepared_record_sha256": 1996,
+        "raw_sha256": 1996,
+        "scenario_family": 8,
+        "semantic_context_sha256": 256,
+        "source": 24,
+        "source_instance_id_sha256": 64,
+        "state_question_sha256": 1988,
+        "state_sha256": 1102,
+        "template_id": 48
+      }
+    },
+    "ood": {
+      "counts": {
+        "domain": {
+          "\"algorithms\"": 6,
+          "\"arithmetic\"": 3,
+          "\"browser_tools\"": 8,
+          "\"code_semantics\"": 6,
+          "\"evidence_integration\"": 3,
+          "\"formal_logic\"": 3,
+          "\"games\"": 32,
+          "\"ir\"": 40,
+          "\"rag\"": 24,
+          "\"shell_history\"": 16,
+          "\"silent-failure-control-v1\"": 96,
+          "\"support\"": 16,
+          "\"temporal\"": 3,
+          "<MISSING>": 1735
+        },
+        "family": {
+          "\"doom_basic\"": 30,
+          "\"evidence\"": 1165,
+          "\"natural_language_inference\"": 124,
+          "\"policy\"": 539,
+          "\"routing\"": 35,
+          "\"rubric\"": 98
+        },
+        "provenance_split_policy": {
+          "\"Whole family includes translations, provider/payment/delivery counterfactuals and taxonomy variants. OOD iff index modulo ten >= 8, otherwise stable hash. Expansion preserves every earlier family.\"": 287,
+          "\"all_counterfactuals_and_id_permutations_parent_grouped; dedicated_nested_vocabulary_ood\"": 122,
+          "\"all_document_and_role_counterfactuals_in_original_family; hash_id_splits; reserved_ledger_layout_and_role_wording_ood\"": 496,
+          "\"all_document_contact_counterfactuals_in_family; hash_id_splits; reserved_contact_card_layout_and_role_wording_ood\"": 54,
+          "\"all_pairs_and_shared_entities_in_original_family_group; hash_id_splits; reserved_alias_and_policy_wording_ood\"": 56,
+          "\"authored_policy_family_disjoint_6_train_1_calibration_1_validation_1_test_1_ood\"": 136,
+          "\"episode_grouped_v1_with_separate_ood_seeds_and_control_regime\"": 30,
+          "\"identical_board_grouped; tic_tac_toe_rotations_and_reflections_grouped; snake_ood_grid_size\"": 112,
+          "\"parent_geometry_and_all_counterfactuals_grouped; dedicated_scaled_multi_barrier_ood\"": 50,
+          "\"reserve_official_test_components_then_85_5_5_5_seed_components_v1\"": 124,
+          "\"reserved_family_ood_then_group_sha256_v1\"": 24,
+          "\"reserved_ood_dialogue_families_then_group_sha256_v1\"": 18,
+          "\"reserved_ood_ranges_and_wording_then_parent_group_sha256_v1\"": 153,
+          "\"whole_original_document_group; independent_id_hash_splits; reserved_operations_wording_ood\"": 40,
+          "\"whole_provider_contract_family_and_counterfactual_pairs; hash_id_splits; reserved_zh_schema_layout_and_wording_ood\"": 96,
+          "\"whole_system_family_all_query_mode_counterfactuals_and_passages; reserved_brief_wording_ood\"": 58,
+          "\"whole_task_graph_with_goal_and_recoverability_counterfactuals; reserved_diamond_structure_ood\"": 54,
+          "\"whole_video_family_with_all_payment_counterfactuals; independent_wording_ood\"": 81
+        },
+        "source": {
+          "\"amount-extraction-control-v1\"": 496,
+          "\"browser-control-v1\"": 122,
+          "\"citation-control-v1\"": 40,
+          "\"community-diversity-v2/browser_tools/confirmation_gate\"": 8,
+          "\"community-diversity-v2/games/crafting_dependencies\"": 32,
+          "\"community-diversity-v2/ir/api_auth_migration\"": 40,
+          "\"community-diversity-v2/rag/qualified_comparison\"": 24,
+          "\"community-diversity-v2/shell_history/log_time_window\"": 16,
+          "\"community-diversity-v2/support/privacy_export\"": 16,
+          "\"context-retention-control-v1\"": 54,
+          "\"customer-control-v1\"": 18,
+          "\"drone-control-v1\"": 50,
+          "\"email-selection-control-v1\"": 54,
+          "\"entity-alignment-control-v1\"": 56,
+          "\"ir-control-v1\"": 58,
+          "\"mailroom-control-v1\"": 287,
+          "\"reasoning-control-v1\"": 24,
+          "\"silent-failure-control-v1\"": 96,
+          "\"snake-v1\"": 112,
+          "\"sponsor-segment-control-v1\"": 81,
+          "\"vizdoom-basic-v1\"": 30,
+          "\"wanli-decisions-v1\"": 124,
+          "\"workflow-controls-v1/agent_trace_observability\"": 21,
+          "\"workflow-controls-v1/invoice_processing\"": 30,
+          "\"workflow-controls-v1/security_incidents\"": 102
+        },
+        "source_split": {
+          "\"ood\"": 1991
+        },
+        "split": {
+          "\"ood\"": 1991
+        }
+      },
+      "hard_gold": {
+        "not_first_original_argmax": 6,
+        "outside_original_target_maxima": 0
+      },
+      "members_file_bytes": 3194121,
+      "members_file_sha256": "0efc5412aebc45237aee790cb218537c51f059163ed823377e9027b63d8c37dd",
+      "missing_or_null": {
+        "component": 0,
+        "content_sha256": 0,
+        "domain": 1735,
+        "family": 0,
+        "group_id": 0,
+        "id": 0,
+        "prepared_record_sha256": 0,
+        "raw_sha256": 0,
+        "scenario_family": 1855,
+        "semantic_context_sha256": 1855,
+        "source": 0,
+        "source_instance_id_sha256": 1855,
+        "state_question_sha256": 0,
+        "state_sha256": 0,
+        "template_id": 154
+      },
+      "rows": 1991,
+      "shards": [
+        {
+          "bytes": 825754,
+          "path": "splits/ood/members-00000.jsonl",
+          "rows": 512,
+          "sha256": "4801c7cb3a7a44cb9dec665d017dd54a24b6bf3f47260f87c6b7443d1aafdad2"
+        },
+        {
+          "bytes": 815767,
+          "path": "splits/ood/members-00001.jsonl",
+          "rows": 512,
+          "sha256": "6587d5cb050eca07f608b1bfb6c0bc76a5cbfe5640f3159cedbcbd35d5f33a30"
+        },
+        {
+          "bytes": 838220,
+          "path": "splits/ood/members-00002.jsonl",
+          "rows": 512,
+          "sha256": "3b8e776031727570c857caf2494c3804d4b1847a086c5335b21cdc42cb1d7ac9"
+        },
+        {
+          "bytes": 714380,
+          "path": "splits/ood/members-00003.jsonl",
+          "rows": 455,
+          "sha256": "b9fb52275d1ff593b0159ca13ca45f5146fbcc0eed39afde41a5b7c707eb87fb"
+        }
+      ],
+      "unique_nonempty": {
+        "component": 160,
+        "content_sha256": 1991,
+        "domain": 13,
+        "family": 6,
+        "group_id": 160,
+        "id": 1991,
+        "prepared_record_sha256": 1991,
+        "raw_sha256": 1991,
+        "scenario_family": 6,
+        "semantic_context_sha256": 68,
+        "source": 25,
+        "source_instance_id_sha256": 17,
+        "state_question_sha256": 1989,
+        "state_sha256": 774,
+        "template_id": 41
+      }
+    },
+    "test": {
+      "counts": {
+        "domain": {
+          "\"algorithms\"": 15,
+          "\"browser_tools\"": 40,
+          "\"code_semantics\"": 3,
+          "\"contracts\"": 40,
+          "\"evidence_integration\"": 12,
+          "\"games\"": 48,
+          "\"ir\"": 40,
+          "\"rag\"": 32,
+          "\"relations\"": 3,
+          "\"rubric_judge\"": 8,
+          "\"shell_history\"": 24,
+          "\"silent-failure-control-v1\"": 48,
+          "\"support\"": 40,
+          "\"temporal\"": 3,
+          "<MISSING>": 1643
+        },
+        "family": {
+          "\"doom_basic\"": 24,
+          "\"evidence\"": 658,
+          "\"natural_language_inference\"": 318,
+          "\"policy\"": 767,
+          "\"routing\"": 83,
+          "\"rubric\"": 149
+        },
+        "provenance_split_policy": {
+          "\"all_counterfactuals_and_id_permutations_parent_grouped; dedicated_nested_vocabulary_ood\"": 182,
+          "\"all_document_and_role_counterfactuals_in_original_family; hash_id_splits; reserved_ledger_layout_and_role_wording_ood\"": 248,
+          "\"all_document_contact_counterfactuals_in_family; hash_id_splits; reserved_contact_card_layout_and_role_wording_ood\"": 54,
+          "\"authored_policy_family_disjoint_6_train_1_calibration_1_validation_1_test_1_ood\"": 272,
+          "\"complete_document_family_same_split; hash_id_splits; message_layout_and_role_labels_reserved_ood\"": 190,
+          "\"episode_grouped_v1_with_separate_ood_seeds_and_control_regime\"": 24,
+          "\"identical_board_grouped; tic_tac_toe_rotations_and_reflections_grouped; snake_ood_grid_size\"": 108,
+          "\"parent_geometry_and_all_counterfactuals_grouped; dedicated_scaled_multi_barrier_ood\"": 250,
+          "\"reserve_official_test_components_then_85_5_5_5_seed_components_v1\"": 318,
+          "\"reserved_family_ood_then_group_sha256_v1\"": 36,
+          "\"reserved_ood_dialogue_families_then_group_sha256_v1\"": 42,
+          "\"reserved_ood_ranges_and_wording_then_parent_group_sha256_v1\"": 75,
+          "\"whole_original_document_group; independent_id_hash_splits; reserved_operations_wording_ood\"": 20,
+          "\"whole_provider_contract_family_and_counterfactual_pairs; hash_id_splits; reserved_zh_schema_layout_and_wording_ood\"": 48,
+          "\"whole_task_graph_with_goal_and_recoverability_counterfactuals; reserved_diamond_structure_ood\"": 24,
+          "\"whole_video_family_with_all_payment_counterfactuals; independent_wording_ood\"": 108
+        },
+        "source": {
+          "\"amount-extraction-control-v1\"": 248,
+          "\"browser-control-v1\"": 182,
+          "\"citation-control-v1\"": 20,
+          "\"community-diversity-v2/browser_tools/goal_completion\"": 40,
+          "\"community-diversity-v2/contracts/exclusivity_exception\"": 40,
+          "\"community-diversity-v2/games/pit_stop\"": 48,
+          "\"community-diversity-v2/ir/warranty_transfer\"": 40,
+          "\"community-diversity-v2/rag/independent_sources\"": 32,
+          "\"community-diversity-v2/rubric_judge/balanced_tradeoff\"": 8,
+          "\"community-diversity-v2/shell_history/incremental_copy\"": 24,
+          "\"community-diversity-v2/support/outage_compensation\"": 40,
+          "\"context-retention-control-v1\"": 24,
+          "\"customer-control-v1\"": 42,
+          "\"drone-control-v1\"": 250,
+          "\"email-selection-control-v1\"": 54,
+          "\"phone-extraction-control-v1\"": 190,
+          "\"reasoning-control-v1\"": 36,
+          "\"silent-failure-control-v1\"": 48,
+          "\"snake-v1\"": 68,
+          "\"sponsor-segment-control-v1\"": 108,
+          "\"tic_tac_toe-v1\"": 40,
+          "\"vizdoom-basic-v1\"": 24,
+          "\"wanli-decisions-v1\"": 318,
+          "\"workflow-controls-v1/agent_trace_observability\"": 21,
+          "\"workflow-controls-v1/customer_service\"": 24,
+          "\"workflow-controls-v1/invoice_processing\"": 30
+        },
+        "source_split": {
+          "\"test\"": 1999
+        },
+        "split": {
+          "\"test\"": 1999
+        }
+      },
+      "hard_gold": {
+        "not_first_original_argmax": 3,
+        "outside_original_target_maxima": 0
+      },
+      "members_file_bytes": 3219345,
+      "members_file_sha256": "536b0207a542ee4ccc643733b9405e27134894144035db135d298e16925fc5fa",
+      "missing_or_null": {
+        "component": 0,
+        "content_sha256": 0,
+        "domain": 1643,
+        "family": 0,
+        "group_id": 0,
+        "id": 0,
+        "prepared_record_sha256": 0,
+        "raw_sha256": 0,
+        "scenario_family": 1727,
+        "semantic_context_sha256": 1727,
+        "source": 0,
+        "source_instance_id_sha256": 1727,
+        "state_question_sha256": 0,
+        "state_sha256": 0,
+        "template_id": 342
+      },
+      "rows": 1999,
+      "shards": [
+        {
+          "bytes": 873248,
+          "path": "splits/test/members-00000.jsonl",
+          "rows": 512,
+          "sha256": "84efafbf577c0e32d04303135807dff0e72d1a49d44a2200e34986a657e4f93a"
+        },
+        {
+          "bytes": 786680,
+          "path": "splits/test/members-00001.jsonl",
+          "rows": 512,
+          "sha256": "a864733f2c4eac39e21865ad0c4bffa3fd3b9af725b11d927125c98ea3d63b53"
+        },
+        {
+          "bytes": 828374,
+          "path": "splits/test/members-00002.jsonl",
+          "rows": 512,
+          "sha256": "faf7a76b8e27f91b07e8470fa0a398780e4df100a4184034a4d65321a75c416e"
+        },
+        {
+          "bytes": 731043,
+          "path": "splits/test/members-00003.jsonl",
+          "rows": 463,
+          "sha256": "71a62a5caa9e43202676b1aae53c480d22079842f712e4473325158c225e4538"
+        }
+      ],
+      "unique_nonempty": {
+        "component": 412,
+        "content_sha256": 1991,
+        "domain": 14,
+        "family": 6,
+        "group_id": 412,
+        "id": 1999,
+        "prepared_record_sha256": 1999,
+        "raw_sha256": 1999,
+        "scenario_family": 8,
+        "semantic_context_sha256": 136,
+        "source": 26,
+        "source_instance_id_sha256": 34,
+        "state_question_sha256": 1991,
+        "state_sha256": 1082,
+        "template_id": 41
+      }
+    },
+    "train": {
+      "counts": {
+        "domain": {
+          "\"algorithms\"": 17,
+          "\"arithmetic\"": 29,
+          "\"browser_tools\"": 408,
+          "\"code_semantics\"": 20,
+          "\"contracts\"": 320,
+          "\"evidence_integration\"": 23,
+          "\"formal_logic\"": 22,
+          "\"games\"": 360,
+          "\"ir\"": 464,
+          "\"rag\"": 344,
+          "\"relations\"": 16,
+          "\"rubric_judge\"": 448,
+          "\"shell_history\"": 376,
+          "\"silent-failure-control-v1\"": 156,
+          "\"support\"": 400,
+          "\"temporal\"": 24,
+          "<MISSING>": 12573
+        },
+        "family": {
+          "\"doom_basic\"": 154,
+          "\"evidence\"": 2290,
+          "\"natural_language_inference\"": 9208,
+          "\"policy\"": 2592,
+          "\"routing\"": 914,
+          "\"rubric\"": 842
+        },
+        "provenance_split_policy": {
+          "\"Whole family includes translations, provider/payment/delivery counterfactuals and taxonomy variants. OOD iff index modulo ten >= 8, otherwise stable hash. Expansion preserves every earlier family.\"": 197,
+          "\"all_counterfactuals_and_id_permutations_parent_grouped; dedicated_nested_vocabulary_ood\"": 187,
+          "\"all_document_and_role_counterfactuals_in_original_family; hash_id_splits; reserved_ledger_layout_and_role_wording_ood\"": 157,
+          "\"all_document_contact_counterfactuals_in_family; hash_id_splits; reserved_contact_card_layout_and_role_wording_ood\"": 189,
+          "\"all_pairs_and_shared_entities_in_original_family_group; hash_id_splits; reserved_alias_and_policy_wording_ood\"": 170,
+          "\"authored_policy_family_disjoint_6_train_1_calibration_1_validation_1_test_1_ood\"": 3120,
+          "\"circle_ood_rectangle_group_hash\"": 194,
+          "\"complete_document_family_same_split; hash_id_splits; message_layout_and_role_labels_reserved_ood\"": 187,
+          "\"episode_grouped_v1_with_separate_ood_seeds_and_control_regime\"": 154,
+          "\"full_visible_terrain_layout_grouped_hash_v1; no_ood\"": 80,
+          "\"identical_board_grouped; tic_tac_toe_rotations_and_reflections_grouped; snake_ood_grid_size\"": 329,
+          "\"identical_visible_observation_grouped_hash_v1; no_ood\"": 2,
+          "\"parent_geometry_and_all_counterfactuals_grouped; dedicated_scaled_multi_barrier_ood\"": 130,
+          "\"reserve_official_test_components_then_85_5_5_5_seed_components_v1\"": 9208,
+          "\"reserved_family_ood_then_group_sha256_v1\"": 151,
+          "\"reserved_ood_dialogue_families_then_group_sha256_v1\"": 150,
+          "\"reserved_ood_ranges_and_wording_then_parent_group_sha256_v1\"": 607,
+          "\"whole_original_document_group; independent_id_hash_splits; reserved_operations_wording_ood\"": 119,
+          "\"whole_provider_contract_family_and_counterfactual_pairs; hash_id_splits; reserved_zh_schema_layout_and_wording_ood\"": 156,
+          "\"whole_system_family_all_query_mode_counterfactuals_and_passages; reserved_brief_wording_ood\"": 119,
+          "\"whole_task_graph_with_goal_and_recoverability_counterfactuals; reserved_diamond_structure_ood\"": 177,
+          "\"whole_video_family_with_all_payment_counterfactuals; independent_wording_ood\"": 217
+        },
+        "source": {
+          "\"amount-extraction-control-v1\"": 157,
+          "\"browser-control-v1\"": 187,
+          "\"citation-control-v1\"": 119,
+          "\"community-diversity-v2/browser_tools/date_range_form\"": 48,
+          "\"community-diversity-v2/browser_tools/pagination\"": 80,
+          "\"community-diversity-v2/browser_tools/stale_dom\"": 104,
+          "\"community-diversity-v2/browser_tools/tool_scope\"": 88,
+          "\"community-diversity-v2/browser_tools/typing_fallback\"": 40,
+          "\"community-diversity-v2/browser_tools/upload_constraint\"": 48,
+          "\"community-diversity-v2/contracts/assignment_consent\"": 80,
+          "\"community-diversity-v2/contracts/audit_right\"": 64,
+          "\"community-diversity-v2/contracts/automatic_renewal\"": 32,
+          "\"community-diversity-v2/contracts/confidentiality_survival\"": 48,
+          "\"community-diversity-v2/contracts/liability_cap\"": 32,
+          "\"community-diversity-v2/contracts/noncompete_scope\"": 64,
+          "\"community-diversity-v2/games/escort_sync\"": 72,
+          "\"community-diversity-v2/games/health_pickup\"": 56,
+          "\"community-diversity-v2/games/projectile_dodge\"": 56,
+          "\"community-diversity-v2/games/reload_cover\"": 80,
+          "\"community-diversity-v2/games/safe_path\"": 56,
+          "\"community-diversity-v2/games/weapon_selection\"": 40,
+          "\"community-diversity-v2/ir/connecting_route\"": 56,
+          "\"community-diversity-v2/ir/hardware_manual\"": 88,
+          "\"community-diversity-v2/ir/inventory_answer\"": 72,
+          "\"community-diversity-v2/ir/regional_returns\"": 56,
+          "\"community-diversity-v2/ir/release_migration\"": 80,
+          "\"community-diversity-v2/ir/study_population\"": 112,
+          "\"community-diversity-v2/rag/citation_coverage\"": 80,
+          "\"community-diversity-v2/rag/contradiction_resolution\"": 56,
+          "\"community-diversity-v2/rag/negative_evidence\"": 64,
+          "\"community-diversity-v2/rag/numerical_claim\"": 48,
+          "\"community-diversity-v2/rag/temporal_fact\"": 48,
+          "\"community-diversity-v2/rag/two_hop_ownership\"": 48,
+          "\"community-diversity-v2/rubric_judge/abstention_quality\"": 40,
+          "\"community-diversity-v2/rubric_judge/comparison_fairness\"": 80,
+          "\"community-diversity-v2/rubric_judge/faithful_summary\"": 48,
+          "\"community-diversity-v2/rubric_judge/format_and_content\"": 80,
+          "\"community-diversity-v2/rubric_judge/negation_preservation\"": 112,
+          "\"community-diversity-v2/rubric_judge/unit_conversion\"": 88,
+          "\"community-diversity-v2/shell_history/archive_extract\"": 40,
+          "\"community-diversity-v2/shell_history/dependency_install\"": 80,
+          "\"community-diversity-v2/shell_history/exact_repo_test\"": 56,
+          "\"community-diversity-v2/shell_history/git_history_query\"": 56,
+          "\"community-diversity-v2/shell_history/quoted_filename\"": 72,
+          "\"community-diversity-v2/shell_history/search_scope\"": 72,
+          "\"community-diversity-v2/support/account_recovery\"": 40,
+          "\"community-diversity-v2/support/delayed_parcel\"": 72,
+          "\"community-diversity-v2/support/duplicate_charge\"": 88,
+          "\"community-diversity-v2/support/refund_window\"": 96,
+          "\"community-diversity-v2/support/subscription_cancellation\"": 48,
+          "\"community-diversity-v2/support/warranty_repair\"": 56,
+          "\"context-retention-control-v1\"": 177,
+          "\"customer-control-v1\"": 150,
+          "\"drone-control-v1\"": 130,
+          "\"email-selection-control-v1\"": 189,
+          "\"entity-alignment-control-v1\"": 170,
+          "\"ir-control-v1\"": 119,
+          "\"mailroom-control-v1\"": 197,
+          "\"painting-geometry-v1\"": 194,
+          "\"phone-extraction-control-v1\"": 187,
+          "\"reasoning-control-v1\"": 151,
+          "\"silent-failure-control-v1\"": 156,
+          "\"snake-v1\"": 179,
+          "\"sponsor-segment-control-v1\"": 217,
+          "\"tic_tac_toe-v1\"": 150,
+          "\"tile_platformer-v1\"": 80,
+          "\"trex_runner-v1\"": 2,
+          "\"vizdoom-basic-v1\"": 154,
+          "\"wanli-decisions-v1\"": 9208,
+          "\"workflow-controls-v1/agent_trace_observability\"": 117,
+          "\"workflow-controls-v1/customer_service\"": 212,
+          "\"workflow-controls-v1/invoice_processing\"": 117,
+          "\"workflow-controls-v1/security_incidents\"": 161
+        },
+        "source_split": {
+          "\"train\"": 16000
+        },
+        "split": {
+          "\"train\"": 16000
+        }
+      },
+      "hard_gold": {
+        "not_first_original_argmax": 74,
+        "outside_original_target_maxima": 0
+      },
+      "members_file_bytes": 25350019,
+      "members_file_sha256": "03c80c24176aa2b49d7f2357e638958bfa360b7356884a8aa46e7920189f1122",
+      "missing_or_null": {
+        "component": 0,
+        "content_sha256": 0,
+        "domain": 12573,
+        "family": 0,
+        "group_id": 0,
+        "id": 0,
+        "prepared_record_sha256": 0,
+        "raw_sha256": 0,
+        "scenario_family": 12880,
+        "semantic_context_sha256": 12880,
+        "source": 0,
+        "source_instance_id_sha256": 12880,
+        "state_question_sha256": 0,
+        "state_sha256": 0,
+        "template_id": 9362
+      },
+      "rows": 16000,
+      "shards": [
+        {
+          "bytes": 967792,
+          "path": "splits/train/members-00000.jsonl",
+          "rows": 512,
+          "sha256": "c096c52c938c48d6a08f3a0af1844ecd5428f33d9e9946515e9d7bfa5e2789c3"
+        },
+        {
+          "bytes": 961376,
+          "path": "splits/train/members-00001.jsonl",
+          "rows": 512,
+          "sha256": "20df20e33bc1600ae0a83f14a0725854b26c5cd90d7dc3889acb2408926f8e36"
+        },
+        {
+          "bytes": 970840,
+          "path": "splits/train/members-00002.jsonl",
+          "rows": 512,
+          "sha256": "30dd9ff535ca172a4675a65bdae714a011e48467718a56957266392333adcf2c"
+        },
+        {
+          "bytes": 983496,
+          "path": "splits/train/members-00003.jsonl",
+          "rows": 512,
+          "sha256": "2f892d568d024f07e3f521b02be202fe2e5976df279048b5c0849cbb2e72eeab"
+        },
+        {
+          "bytes": 974768,
+          "path": "splits/train/members-00004.jsonl",
+          "rows": 512,
+          "sha256": "5b2eb01ced03ab68ee0cb27c7b7a33ea357eae696ca6f103fc5b4841e596df8e"
+        },
+        {
+          "bytes": 986760,
+          "path": "splits/train/members-00005.jsonl",
+          "rows": 512,
+          "sha256": "7167d92af6407e154466dc2f321244310f1d69354d9cdf7f6e2de561ea9c9c4b"
+        },
+        {
+          "bytes": 784888,
+          "path": "splits/train/members-00006.jsonl",
+          "rows": 512,
+          "sha256": "3f4003e1042da3d2a9275719eeedbaa6edbf981bcb2d01b7a0e425905e68caeb"
+        },
+        {
+          "bytes": 762554,
+          "path": "splits/train/members-00007.jsonl",
+          "rows": 512,
+          "sha256": "efb683d1bc8027ed13b2341252564d2348d2f6f5278e7bef3e95b1623051584f"
+        },
+        {
+          "bytes": 762548,
+          "path": "splits/train/members-00008.jsonl",
+          "rows": 512,
+          "sha256": "fbd8b82bc9a2c4a7e4f8afee5a447f69449cac646d5416c3f1c55216bbc3596f"
+        },
+        {
+          "bytes": 762524,
+          "path": "splits/train/members-00009.jsonl",
+          "rows": 512,
+          "sha256": "b985b5cf55b57bafc96ddfded9417e93dcfdb12605d883c12626841cf0467770"
+        },
+        {
+          "bytes": 762588,
+          "path": "splits/train/members-00010.jsonl",
+          "rows": 512,
+          "sha256": "c0c1c93b8dd0f71da579b3959d321026be619e889a53a50167cc8397706e52d7"
+        },
+        {
+          "bytes": 762608,
+          "path": "splits/train/members-00011.jsonl",
+          "rows": 512,
+          "sha256": "f17bd84c2f680092b1e12099a7ea145414aeac44bceee6968c8aa177cb3e436f"
+        },
+        {
+          "bytes": 762584,
+          "path": "splits/train/members-00012.jsonl",
+          "rows": 512,
+          "sha256": "10eda9d398e1defce8c39335075bfaf984bcb6962af0999f5cdb5d372f24e45d"
+        },
+        {
+          "bytes": 762596,
+          "path": "splits/train/members-00013.jsonl",
+          "rows": 512,
+          "sha256": "6a54b4a2ef250fdf85dcd743f236f74e8c20d567bc9be9bd834b691f19946458"
+        },
+        {
+          "bytes": 762532,
+          "path": "splits/train/members-00014.jsonl",
+          "rows": 512,
+          "sha256": "dba2bdd20bf8ab20aca09be342930f1e8b3f17d1b0b0be13dfaaeb6eae01fce4"
+        },
+        {
+          "bytes": 762604,
+          "path": "splits/train/members-00015.jsonl",
+          "rows": 512,
+          "sha256": "f6b7abcc5945b752e52ab639ee68e420798c9cd4fd424e95fc1e813c9503fc95"
+        },
+        {
+          "bytes": 762572,
+          "path": "splits/train/members-00016.jsonl",
+          "rows": 512,
+          "sha256": "ccfca743192a248896d042958a8936a1b76d33cf54f912c6aa071db2019490a6"
+        },
+        {
+          "bytes": 762582,
+          "path": "splits/train/members-00017.jsonl",
+          "rows": 512,
+          "sha256": "946f82fc34ddacb4743e705987fd94c85a3c84bebd7bc4ee9e27520e3781b0ee"
+        },
+        {
+          "bytes": 762602,
+          "path": "splits/train/members-00018.jsonl",
+          "rows": 512,
+          "sha256": "a8f916d765b07a398dcbee4e403a2c3b37f39b3c791196c5958832bd386fb3de"
+        },
+        {
+          "bytes": 762534,
+          "path": "splits/train/members-00019.jsonl",
+          "rows": 512,
+          "sha256": "8968e02d29ab569e844630a377b93362e957bd2543111eadb3c7eeced1849b37"
+        },
+        {
+          "bytes": 762582,
+          "path": "splits/train/members-00020.jsonl",
+          "rows": 512,
+          "sha256": "58193169ffcb75ec8f853c6ac3d43f8934ca5731b878976edd60be951c73ac8d"
+        },
+        {
+          "bytes": 762568,
+          "path": "splits/train/members-00021.jsonl",
+          "rows": 512,
+          "sha256": "6946f05e42bef9730fcb39050f6adaa06cbd0ff756d9e57a097d1046db98a5a7"
+        },
+        {
+          "bytes": 762582,
+          "path": "splits/train/members-00022.jsonl",
+          "rows": 512,
+          "sha256": "f2e79d23a74b8b35bbd08226e5552ed02af3063a9bc26e40ec6ca54cfeba4272"
+        },
+        {
+          "bytes": 762562,
+          "path": "splits/train/members-00023.jsonl",
+          "rows": 512,
+          "sha256": "c99b900c3729c3b3bc626204a77158ea5e2b3cea5eebc55d581505ec05251558"
+        },
+        {
+          "bytes": 817466,
+          "path": "splits/train/members-00024.jsonl",
+          "rows": 512,
+          "sha256": "3551e25a6b749aa21d40b97672c718c944350c387302110ecf03bef945f3449c"
+        },
+        {
+          "bytes": 785091,
+          "path": "splits/train/members-00025.jsonl",
+          "rows": 512,
+          "sha256": "eb00145514171f954baee930151c0e92485ca3f872d48c45dfa57a89eaaf1624"
+        },
+        {
+          "bytes": 801073,
+          "path": "splits/train/members-00026.jsonl",
+          "rows": 512,
+          "sha256": "d240e55797e36d6977ec3141eb3c5503ab8a21703a27a90d3a494011eb3c38e9"
+        },
+        {
+          "bytes": 803587,
+          "path": "splits/train/members-00027.jsonl",
+          "rows": 512,
+          "sha256": "387e0362dcbdf39dff848f2a768bf0eb38c27340a8ef608a45c97b8f271f36b7"
+        },
+        {
+          "bytes": 777346,
+          "path": "splits/train/members-00028.jsonl",
+          "rows": 512,
+          "sha256": "7446711a563d14c2825da9fba9583da86d5dd48369d633791417e967b6236706"
+        },
+        {
+          "bytes": 778959,
+          "path": "splits/train/members-00029.jsonl",
+          "rows": 512,
+          "sha256": "83f0016e254807f6ac6e052299de431bad6927bfc47fb7204ef4f64d31d124ef"
+        },
+        {
+          "bytes": 792925,
+          "path": "splits/train/members-00030.jsonl",
+          "rows": 512,
+          "sha256": "63ab403b27f0ebbc31920f29f812debf4cdf7ba3ca8041a83bd543f4574f0327"
+        },
+        {
+          "bytes": 199930,
+          "path": "splits/train/members-00031.jsonl",
+          "rows": 128,
+          "sha256": "c033055b6834e4b7f135a3c5da1e6609f38b9a29a5612f9a23451e95f16d2c6b"
+        }
+      ],
+      "unique_nonempty": {
+        "component": 6230,
+        "content_sha256": 15981,
+        "domain": 16,
+        "family": 6,
+        "group_id": 6230,
+        "id": 16000,
+        "prepared_record_sha256": 16000,
+        "raw_sha256": 16000,
+        "scenario_family": 48,
+        "semantic_context_sha256": 1560,
+        "source": 73,
+        "source_instance_id_sha256": 390,
+        "state_question_sha256": 15981,
+        "state_sha256": 13380,
+        "template_id": 102
+      }
+    }
+  },
+  "total_rows": 23718,
+  "zero_cross_split_on_checked_keys": {
+    "component": true,
+    "content_sha256": true,
+    "group_id": true,
+    "id": true,
+    "raw_sha256": true,
+    "semantic_context_sha256": true,
+    "state_question_sha256": true
+  }
+}

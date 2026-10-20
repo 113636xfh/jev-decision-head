@@ -1,0 +1,17 @@
+usage: eval_benchmark.py [-h] --mode {criterion_as_option,label_as_option}
+                         --out OUT [--limit LIMIT] [--preflight]
+                         [--identity IDENTITY] [--exclusive]
+                         [--confirm-window] [--deadline DEADLINE]
+                         [--base BASE]
+
+options:
+  -h, --help            show this help message and exit
+  --mode {criterion_as_option,label_as_option}
+  --out OUT
+  --limit LIMIT
+  --preflight
+  --identity IDENTITY
+  --exclusive           use the exclusive readout path instead of shared-slots
+  --confirm-window      required: acknowledges the live engine serves this run
+  --deadline DEADLINE   stop after this local time, keep partial evidence
+  --base BASE

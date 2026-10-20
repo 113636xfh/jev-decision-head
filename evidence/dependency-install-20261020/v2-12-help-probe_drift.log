@@ -1,0 +1,14 @@
+argv: ["<ENV_ROOT>\\Scripts\\python.exe", "-m", "jev.probe_drift", "--help"]
+usage: probe_drift.py [-h] --phase {start,mid,end} [--chat]
+                      [--identity IDENTITY] [--exclusive]
+                      [--out-prefix OUT_PREFIX] [--base BASE]
+
+options:
+  -h, --help            show this help message and exit
+  --phase {start,mid,end}
+  --chat                send one real completion first
+  --identity IDENTITY
+  --exclusive
+  --out-prefix OUT_PREFIX
+                        write repeat-* under this directory
+  --base BASE

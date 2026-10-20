@@ -1,8 +1,8 @@
 """Dev-only operating point selection. No use of test or teacher labels."""
 import argparse,itertools,json
 from pathlib import Path
-from cascade import Policy
-from domain import atomic_json,digest
+from .cascade import Policy
+from .domain import atomic_json,digest
 
 def tune(rows,target_accuracy=.95,min_accepted=20):
     if not rows or any(r.get('split')!='dev' or r.get('independent_gold') not in r.get('options',[]) for r in rows):

@@ -6,7 +6,7 @@ JEV_PY = _os.environ.get('JEV_PY', 'python3')
 import argparse
 import json
 from pathlib import Path
-from common import atomic_json, digest
+from .common import atomic_json, digest
 
 def weight_files(config):
     cfg = json.loads(Path(config).read_text())
@@ -37,7 +37,7 @@ def verify_manifest(manifest, config):
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument('--config', default=STRATA + '/v0.1.41/strata-iq3_s.json')
+    ap.add_argument('--config', required=True, help='Strata config whose artifacts are being identified')
     ap.add_argument('--out', required=True)
     args = ap.parse_args()
     out = Path(args.out)

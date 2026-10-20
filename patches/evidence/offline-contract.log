@@ -1,0 +1,23 @@
+test_busy_chat_slots_never_route_readout_to_bgen (__main__.Admission) ... ok
+test_cooperative_enters_while_chat_read_lease_held (__main__.Admission) ... ok
+test_exception_releases_lease_and_serial_lock (__main__.Admission) ... ok
+test_legacy_and_optout_keep_exclusive (__main__.Admission) ... ok
+test_legacy_excludes_chat (__main__.Admission) ... ok
+test_requires_native_capability (__main__.Admission) ... ok
+test_two_groups_supported (__main__.Admission) ... ok
+test_two_readouts_remain_serial (__main__.Admission) ... ok
+test_unsupported_groups_or_nonbatch_keep_exclusive (__main__.Admission) ... ok
+test_actual_latent_handler_rejects_invalid_inputs (__main__.GuardsAndAuth) ... ok
+test_auth_router_20_cases (__main__.GuardsAndAuth) ... ok
+test_command_control_characters_rejected (__main__.GuardsAndAuth) ... ok
+test_output_path_confined_to_temporary_directory (__main__.GuardsAndAuth) ... ok
+test_busy_prefix_owner_never_reassigned (__main__.SlotRetention) ... ok
+test_full_slots_return_none (__main__.SlotRetention) ... ok
+test_short_overlap_does_not_override_balancing (__main__.SlotRetention) ... ok
+test_tool_tail_rewrite_keeps_prefix_owner (__main__.SlotRetention) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.176s
+
+OK
+{"passed": true, "tests": 17, "scope": "actual Python AST methods; mocked engine I/O; no native/live/numeric acceptance"}

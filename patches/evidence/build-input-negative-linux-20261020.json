@@ -1,0 +1,73 @@
+{
+  "schema": "small-decider-patch-validation-v1",
+  "status": "FAIL",
+  "steps": [
+    {
+      "name": "source_commit",
+      "returncode": 0
+    },
+    {
+      "name": "source_tree",
+      "returncode": 0
+    },
+    {
+      "name": "source_clean",
+      "returncode": 0
+    },
+    {
+      "name": "clone",
+      "returncode": 0
+    },
+    {
+      "name": "checkout",
+      "returncode": 0
+    },
+    {
+      "name": "sandbox_clean",
+      "returncode": 0
+    },
+    {
+      "name": "apply_check_0",
+      "returncode": 0
+    },
+    {
+      "name": "apply_0",
+      "returncode": 0
+    },
+    {
+      "name": "changed_paths",
+      "returncode": 0
+    },
+    {
+      "name": "diff_check",
+      "returncode": 0
+    },
+    {
+      "name": "offline_contract",
+      "returncode": 0
+    }
+  ],
+  "upstream_commit": "296b59d2f73c8f04a805df29c2fa97655adace78",
+  "upstream_tree": "063c7282837ecfe9fccad829ff7d7873400f6777",
+  "started_utc": "2026-10-20T12:01:42.176392+00:00",
+  "build_requested": "cuda",
+  "build_status": "FAIL",
+  "comparison_status": "NOT_REQUESTED",
+  "native_runtime_status": "NOT_RUN",
+  "numeric_compatibility": "UNCERTIFIED",
+  "production_modified": false,
+  "gpu_inference": false,
+  "manifest_sha256": "5d4cc8e7edafa0903dad47d78726640b2d4c28bf3a1b9294c9643e9c7cd5d5a5",
+  "updated_utc": "2026-10-20T12:01:43.988247+00:00",
+  "python_syntax": "PASS",
+  "apply_status": "PASS",
+  "patched_files_sha256": {
+    "include/strata/core/verify.hpp": "8534e025c4410c2ab8957ec8f3e31fdbef0eace3cfa634694a898917014973fa",
+    "include/strata/prefill/prefill.hpp": "a0a2f98a448864c1c161b77e583fdb6956c957183ce2462905cc85da8c26392e",
+    "serve/server.py": "d85622eb988638e089c07d6692b09f09f516a17c74d20c6540f6b874c6f9b65d",
+    "src/core/verify.cpp": "63b9135f36427ca93703b192bbb40534351b489cb6e8f2a34910f238ef2cec97",
+    "src/prefill/prefill.cpp": "08b9c6da71e031084e1b22bf5eee090bfd705515ecb64dbd1842ac3d42cc10ec",
+    "src/program/generate.cpp": "13776c9aaee4388072345cfd865a4e22864395f5faa5f4eaf76294b4601dde8f"
+  },
+  "error": "ValueError: --ggml-dir must contain cached pinned ggml sources"
+}

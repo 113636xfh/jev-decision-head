@@ -1,0 +1,2 @@
+argv: ["<ENV_ROOT>\\Scripts\\python.exe", "-m", "pip", "check"]
+No broken requirements found.
