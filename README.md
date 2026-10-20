@@ -27,10 +27,12 @@ On the 231 publicly released JevBench items this head answers **198/231 (85.71%)
 running inside the same resident model process that serves chat — no second model, no second
 copy of the hardware ([§2](#2-accuracy)).
 
-**Try it in 30 seconds — no server, no GPU, no training workspace** (verified in a clean
-CPU-only environment):
+**Try it offline — no server, no GPU, no build needed** (verified in a clean CPU-only
+environment; the install is a one-time torch download, the self-check itself takes seconds):
 
 ```bash
+git clone https://github.com/113636xfh/jev-decision-head.git
+cd jev-decision-head
 python -m pip install -r requirements-cpu.txt
 python -m jev.selfcheck
 ```
