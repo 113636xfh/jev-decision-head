@@ -292,7 +292,9 @@ python -m jev.selfcheck
 
 # 1. on the serving host: clone the pinned Strata upstream, apply the readout patch
 #    and build the engine - one command (needs CMake, a C++ toolchain, CUDA 12 and the
-#    pinned llama.cpp source containing ggml/; recipe details and overrides:
+#    pinned llama.cpp source containing ggml/; Strata links ggml, the tensor library
+#    from llama.cpp, as its backend - the exact llama.cpp commit and ggml tree digest
+#    are pinned in patches/manifest.json. Recipe details and overrides:
 #    patches/README.md and REPRODUCE.md section 0a):
 GGML_DIR=/path/to/pinned-llama.cpp bash patches/reproduce-build.sh /tmp/strata-build
 #    then start the patched server: serve/launch.example.sh shows the shape of the
