@@ -27,8 +27,7 @@ On the 231 publicly released JevBench items this head answers **198/231 (85.71%)
 running inside the same resident model process that serves chat — no second model, no second
 copy of the hardware ([§2](#2-accuracy)).
 
-**Try it yourself → [Quick start (§6)](#6-quick-start)** — the offline self-check needs no
-server, no GPU and no build; the online path is one patch+build command away.
+**Try it yourself → [Quick start (§6)](#6-quick-start)**
 
 ![Figure 1 — one backbone, two interfaces](docs/fig/architecture.png)
 *Figure 1. One resident backbone serves generation and decision readouts. A decision uses its
