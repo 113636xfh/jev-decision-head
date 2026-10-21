@@ -1,10 +1,11 @@
 # Notice: project artifacts and third-party rights
 
-The MIT license in LICENSE covers the project's own code, original figure work,
-member-export/audit utilities and original decision-head weights/normalization.
-It does not grant additional rights in upstream code, datasets, wording, assets or
-model weights. Patch contributions remain subject to the license of the upstream
-sources from which they derive; this notice does not relicense Strata.
+The Apache-2.0 license in LICENSE covers the project's own code, original figure work and
+member-export/audit utilities. The trained decision-head weights and normalization in
+weights/ are licensed under CC BY 4.0 (LICENSE-WEIGHTS). Neither license grants additional
+rights in upstream code, datasets, wording, assets or model weights. Patch contributions
+remain subject to the license of the upstream sources from which they derive; this notice
+does not relicense Strata.
 
 ## Vendored tokenizer
 
