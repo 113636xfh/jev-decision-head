@@ -51,7 +51,8 @@ guarantee.
 
 ## License and reproduction boundary
 
-The project's original head weights and normalization are offered under MIT. That does not
+The project's original head weights and normalization are offered under CC BY 4.0
+(`LICENSE-WEIGHTS`). That does not
 relicense the backbone, third-party data or original upstream wording; see [NOTICE](NOTICE).
 The source-dependent Open-Jev/WANLI inputs and their caveats remain relevant even though
 this repository redistributes only indices, numeric labels and commitments, not task bodies.
