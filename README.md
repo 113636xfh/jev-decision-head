@@ -3,14 +3,14 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Python](https://img.shields.io/badge/python-3.12%20tested-blue)
 ![selfcheck](https://img.shields.io/badge/selfcheck-passed-brightgreen)
-![backbone](https://img.shields.io/badge/backbone-Qwen3.8--Flash--Next--GSQ--RCO-orange)
+![backbone](https://img.shields.io/badge/backbone-Qwen3.8--Flash--Next--GSQ--RCO%20IQ3__S-orange)
 
 A lightweight Jev-style decision head, plus the Strata patches that let one resident Strata
 process serve **both** LLM generation and Jev-style typed decisions from a single set of
 weights. This repository ships the trained decision-head weights, the Strata interface
 patches, and the training / evaluation code used to get the numbers below.
 
-**The model the head was trained on**: `Qwen3.8-Flash-Next-GSQ-RCO`, served by Strata 0.1.44.1.
+**The model the head was trained on**: `Qwen3.8-Flash-Next-GSQ-RCO IQ3_S`, served by Strata 0.1.44.1.
 The head is a bolt-on: the base model is used as released, **no fine-tuning, no LoRA, no
 gradient into it**. Every number in this README was produced by that base model unless a
 paragraph says otherwise.
@@ -79,7 +79,7 @@ and adds a small head, while every other row is a complete model on its own.
 
 | System | Base | Head | Correct / 231 | p50 latency |
 |---|---|---|---|---|
-| **Jev Decision Head (this repo)** | `Qwen3.8-Flash-Next-GSQ-RCO` | **13.19 M** (base untouched) | **198 (85.71%)** — identical for both option renderings | 1.82 s (see §3) |
+| **Jev Decision Head (this repo)** | `Qwen3.8-Flash-Next-GSQ-RCO IQ3_S` | **13.19 M** (base untouched) | **198 (85.71%)** — identical for both option renderings | 1.82 s (see §3) |
 | Jev 1.13.0 | closed (hosted API) | — | 200 (86.58%) | 291 ms |
 | Open-Jev 27B v1.1 | Qwen3.5-27B | — | 197 (85.28%) | not printed |
 | Open-Jev 9B | Qwen3.5-9B | — | 179 (77.49%) | 189 ms |
@@ -371,7 +371,7 @@ epoch caps, rather than optimiser-update counts, are matched.*
 | Decision datasets behind our splits | `ZefanCai/Open-Jev-v1.1`, `community-hard-mix-v2-redistributable`; see `docs/DATA.md` and `NOTICE` | no task text; membership/targets/hash commitments only |
 | Our splits (dev 1,996 / test 1,999 / OOD, cal) | derived from the above, isolated by parent group and semantics — never by id arithmetic | no; manifest + hashes |
 | Feature archives | produced by `jev.extract` | no; hashes in the archive manifest |
-| Backbone weights | `Qwen3.8-Flash-Next-GSQ-RCO` (the model this head was trained on) | no (re-distribution unconfirmed) |
+| Backbone weights | `Qwen3.8-Flash-Next-GSQ-RCO IQ3_S` (the model this head was trained on) | no (re-distribution unconfirmed) |
 | **Head weights + normalisation** | this repository (`weights/best.pt`, `weights/norm.npz`) | **yes** |
 
 ## 9. Licence
