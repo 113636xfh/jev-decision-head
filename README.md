@@ -379,7 +379,8 @@ epoch caps, rather than optimiser-update counts, are matched.*
 
 Original code, patches, figures and docs: Apache-2.0 (`LICENSE`). The trained head weights
 and normalization (`weights/`): CC BY 4.0 (`LICENSE-WEIGHTS`) — requested attribution:
-"LittleSatellite233 - jev-decision-head decision-head weights". Upstream-derived portions
+"LittleSatellite233 - jev-decision-head decision-head weights"
+(licensor profile: https://github.com/113636xfh). Upstream-derived portions
 retain their own terms: the public-231 benchmark and scorer and the vendored Strata
 tokenizer keep their upstream MIT notices. Training split text, feature archives and
 backbone weights are not redistributed. See `NOTICE` and §8.
