@@ -224,6 +224,7 @@ system until independently checked; it cannot borrow a historical compatibility 
 
 See [NOTICE](../NOTICE). Open-Jev generated content is source-dependent CC0; WANLI-derived
 text remains CC BY 4.0. Customer-control short question descriptions retain an upstream
-TypeSafe documentation licensing qualification. This project's MIT license does not
+TypeSafe documentation licensing qualification. This project's licenses (Apache-2.0 code,
+CC BY 4.0 head weights) do not
 relicense those inputs. Only indices, categories, numeric labels and hashes are shipped,
 not any of the original question/state/option bodies.
