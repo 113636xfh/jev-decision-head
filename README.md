@@ -1,6 +1,7 @@
 # Jev Decision Head
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Weights: CC-BY-4.0](https://img.shields.io/badge/weights-CC--BY--4.0-green.svg)](LICENSE-WEIGHTS)
 ![Python](https://img.shields.io/badge/python-3.12%20tested-blue)
 ![selfcheck](https://img.shields.io/badge/selfcheck-passed-brightgreen)
 ![backbone](https://img.shields.io/badge/backbone-Qwen3.8--Flash--Next--GSQ--RCO%20IQ3__S-orange)
@@ -376,7 +377,9 @@ epoch caps, rather than optimiser-update counts, are matched.*
 
 ## 9. Licence
 
-Original code and head weights: MIT (`LICENSE`); upstream-derived portions retain their own terms.
-The public-231 benchmark and scorer and the vendored Strata tokenizer retain their upstream MIT
-notices. Training split text, feature archives and backbone weights are not redistributed.
-See `NOTICE` and §8.
+Original code, patches, figures and docs: Apache-2.0 (`LICENSE`). The trained head weights
+and normalization (`weights/`): CC BY 4.0 (`LICENSE-WEIGHTS`) — requested attribution:
+"LittleSatellite233 - jev-decision-head decision-head weights". Upstream-derived portions
+retain their own terms: the public-231 benchmark and scorer and the vendored Strata
+tokenizer keep their upstream MIT notices. Training split text, feature archives and
+backbone weights are not redistributed. See `NOTICE` and §8.
